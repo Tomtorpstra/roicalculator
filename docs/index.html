@@ -437,43 +437,6 @@
         <div class="card" id="savingsCard" style="display: none;">
             <h2>Toegevoegde Waarde Verhoging over 3 Jaar</h2>
 
-            <table class="yearly-table">
-                <thead>
-                    <tr>
-                        <th>Periode</th>
-                        <th>T4A/P4A</th>
-                        <th>Blue-T4A</th>
-                        <th>Realisatie %</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="year-header">
-                        <td>Jaar 1</td>
-                        <td id="year1T4A">-</td>
-                        <td id="year1Blue">-</td>
-                        <td>25%</td>
-                    </tr>
-                    <tr class="year-header">
-                        <td>Jaar 2</td>
-                        <td id="year2T4A">-</td>
-                        <td id="year2Blue">-</td>
-                        <td>40%</td>
-                    </tr>
-                    <tr class="year-header">
-                        <td>Jaar 3</td>
-                        <td id="year3T4A">-</td>
-                        <td id="year3Blue">-</td>
-                        <td>35%</td>
-                    </tr>
-                    <tr class="total-row">
-                        <td><strong>TOTAAL (3 jaar)</strong></td>
-                        <td id="totalT4A">-</td>
-                        <td id="totalBlue">-</td>
-                        <td>100%</td>
-                    </tr>
-                </tbody>
-            </table>
-
             <div class="summary-cards">
                 <div class="summary-card">
                     <div class="summary-card-label">T4A/P4A Totale Waarde</div>
@@ -485,16 +448,6 @@
                     <div class="summary-card-value" id="summaryBlue">-</div>
                     <div class="summary-card-sub">over 3 jaar | <span id="linesBlue">-</span> lijnen</div>
                 </div>
-            </div>
-
-            <div class="info-box" style="margin-top: 30px;">
-                <p><strong>Verdeelsleutel toegevoegde waarde:</strong></p>
-                <ul>
-                    <li><strong>Jaar 1 (25%):</strong> Implementatie & meetfase - eerste verbeteringen zichtbaar</li>
-                    <li><strong>Jaar 2 (40%):</strong> Optimalisatiefase - grootste winst door data-gedreven verbeteringen</li>
-                    <li><strong>Jaar 3 (35%):</strong> Volwassenheidsfase - volledige potentieel gerealiseerd</li>
-                </ul>
-                <p style="margin-top: 15px;"><strong>Bron:</strong> TPM-literatuur (Nakajima) geeft aan dat ~1/3 van het potentieel wordt gerealiseerd in de "measurement-only phase".</p>
             </div>
         </div>
 
@@ -1023,13 +976,6 @@
             "5": 8760.0
 };
 
-        // Year distribution percentages based on TPM literature
-        const yearDistribution = {
-            year1: 0.25,
-            year2: 0.40,
-            year3: 0.35
-        };
-
         function formatCurrency(value) {
             return new Intl.NumberFormat('nl-NL', {
                 style: 'currency',
@@ -1068,22 +1014,9 @@
                 return;
             }
 
-            // Calculate total savings based on number of lines
-            const totalT4APerYear = savingsPerLine.t4a * lines;
-            const totalBluePerYear = savingsPerLine.blue * lines;
-
-            // Calculate 3-year totals
-            const total3YearT4A = totalT4APerYear * 3;
-            const total3YearBlue = totalBluePerYear * 3;
-
-            // Calculate yearly distribution
-            const year1T4A = total3YearT4A * yearDistribution.year1;
-            const year2T4A = total3YearT4A * yearDistribution.year2;
-            const year3T4A = total3YearT4A * yearDistribution.year3;
-
-            const year1Blue = total3YearBlue * yearDistribution.year1;
-            const year2Blue = total3YearBlue * yearDistribution.year2;
-            const year3Blue = total3YearBlue * yearDistribution.year3;
+            // Calculate total 3-year savings (Excel values are already 3-year totals per line)
+            const totalT4A = savingsPerLine.t4a * lines;
+            const totalBlue = savingsPerLine.blue * lines;
 
             // Update sector info
             document.getElementById('valuePerHour').textContent = '€' + data.valuePerHour;
@@ -1097,19 +1030,9 @@
             document.getElementById('performance').textContent = '+' + formatPercentage(oeeData.performance);
             document.getElementById('quality').textContent = '+' + formatPercentage(oeeData.quality);
 
-            // Update yearly table
-            document.getElementById('year1T4A').textContent = formatCurrency(year1T4A);
-            document.getElementById('year1Blue').textContent = formatCurrency(year1Blue);
-            document.getElementById('year2T4A').textContent = formatCurrency(year2T4A);
-            document.getElementById('year2Blue').textContent = formatCurrency(year2Blue);
-            document.getElementById('year3T4A').textContent = formatCurrency(year3T4A);
-            document.getElementById('year3Blue').textContent = formatCurrency(year3Blue);
-            document.getElementById('totalT4A').textContent = formatCurrency(total3YearT4A);
-            document.getElementById('totalBlue').textContent = formatCurrency(total3YearBlue);
-
             // Update summary cards
-            document.getElementById('summaryT4A').textContent = formatCurrency(total3YearT4A);
-            document.getElementById('summaryBlue').textContent = formatCurrency(total3YearBlue);
+            document.getElementById('summaryT4A').textContent = formatCurrency(totalT4A);
+            document.getElementById('summaryBlue').textContent = formatCurrency(totalBlue);
             document.getElementById('linesT4A').textContent = lines;
             document.getElementById('linesBlue').textContent = lines;
 
