@@ -16,3 +16,14 @@ Thumbs.db
 # Temporary files
 *.tmp
 ~$*
+
+# PyInstaller
+build/
+dist/
+*.spec
+
+# Claude
+.claude/
+
+# Null file
+nul
