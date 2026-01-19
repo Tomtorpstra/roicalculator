@@ -174,99 +174,6 @@
             margin-top: 4px;
         }
 
-        .yearly-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        .yearly-table th,
-        .yearly-table td {
-            padding: 16px;
-            text-align: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .yearly-table th {
-            color: #00d4ff;
-            font-weight: 600;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .yearly-table td {
-            color: #e2e8f0;
-        }
-
-        .yearly-table tr:hover {
-            background: rgba(255, 255, 255, 0.03);
-        }
-
-        .yearly-table .year-header {
-            background: rgba(124, 58, 237, 0.15);
-            color: #a78bfa;
-            font-weight: 600;
-        }
-
-        .yearly-table .total-row {
-            background: rgba(0, 212, 255, 0.1);
-            font-weight: 700;
-        }
-
-        .yearly-table .total-row td {
-            color: #00d4ff;
-            font-size: 1.1rem;
-        }
-
-        .info-box {
-            background: rgba(0, 212, 255, 0.1);
-            border-left: 4px solid #00d4ff;
-            padding: 15px 20px;
-            border-radius: 0 8px 8px 0;
-            margin-top: 20px;
-        }
-
-        .info-box p {
-            color: #94a3b8;
-            font-size: 0.9rem;
-            line-height: 1.6;
-        }
-
-        .info-box ul {
-            color: #94a3b8;
-            font-size: 0.9rem;
-            line-height: 1.8;
-            margin-top: 10px;
-            padding-left: 20px;
-        }
-
-        .oee-breakdown {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .oee-item {
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 10px;
-            padding: 15px;
-            text-align: center;
-        }
-
-        .oee-item-label {
-            color: #94a3b8;
-            font-size: 0.8rem;
-            margin-bottom: 5px;
-        }
-
-        .oee-item-value {
-            color: #fff;
-            font-size: 1.2rem;
-            font-weight: 600;
-        }
-
         .summary-cards {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -394,16 +301,6 @@
                     <div class="result-unit">EUR per uur</div>
                 </div>
                 <div class="result-item">
-                    <div class="result-label">Typische OEE Start</div>
-                    <div class="result-value" id="oeeStart">-</div>
-                    <div class="result-unit">percentage</div>
-                </div>
-                <div class="result-item">
-                    <div class="result-label">OEE Verhoging</div>
-                    <div class="result-value highlight" id="oeeIncrease">-</div>
-                    <div class="result-unit">percentage punten</div>
-                </div>
-                <div class="result-item">
                     <div class="result-label">Werkbare Uren / Jaar</div>
                     <div class="result-value" id="workHours">-</div>
                     <div class="result-unit">uren</div>
@@ -412,24 +309,6 @@
                     <div class="result-label">Aantal Lijnen</div>
                     <div class="result-value" id="linesDisplay">-</div>
                     <div class="result-unit">productie lijnen</div>
-                </div>
-            </div>
-
-            <div class="info-box">
-                <p><strong>OEE Verhoging Breakdown:</strong></p>
-                <div class="oee-breakdown">
-                    <div class="oee-item">
-                        <div class="oee-item-label">Beschikbaarheid</div>
-                        <div class="oee-item-value" id="availability">-</div>
-                    </div>
-                    <div class="oee-item">
-                        <div class="oee-item-label">Performance</div>
-                        <div class="oee-item-value" id="performance">-</div>
-                    </div>
-                    <div class="oee-item">
-                        <div class="oee-item-label">Kwaliteit</div>
-                        <div class="oee-item-value" id="quality">-</div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -1020,15 +899,8 @@
 
             // Update sector info
             document.getElementById('valuePerHour').textContent = '€' + data.valuePerHour;
-            document.getElementById('oeeStart').textContent = formatPercentage(data.oeeStart);
-            document.getElementById('oeeIncrease').textContent = '+' + formatPercentage(oeeData.total);
             document.getElementById('workHours').textContent = (workHours[shifts] || 0).toLocaleString('nl-NL');
             document.getElementById('linesDisplay').textContent = lines;
-
-            // Update OEE breakdown
-            document.getElementById('availability').textContent = '+' + formatPercentage(oeeData.availability);
-            document.getElementById('performance').textContent = '+' + formatPercentage(oeeData.performance);
-            document.getElementById('quality').textContent = '+' + formatPercentage(oeeData.quality);
 
             // Update summary cards
             document.getElementById('summaryT4A').textContent = formatCurrency(totalT4A);
