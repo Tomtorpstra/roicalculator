@@ -124,6 +124,201 @@
             padding: 10px;
         }
 
+        /* Plant Tabs Styling */
+        .plant-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .plant-tab {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .plant-tab:hover {
+            border-color: #00d4ff;
+            color: #00d4ff;
+        }
+
+        .plant-tab.active {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.2) 0%, rgba(124, 58, 237, 0.2) 100%);
+            border-color: #00d4ff;
+            color: #fff;
+        }
+
+        /* Lines Table Styling */
+        .lines-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+
+        .lines-table th,
+        .lines-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .lines-table th {
+            color: #94a3b8;
+            font-weight: 500;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .lines-table td {
+            color: #e2e8f0;
+        }
+
+        .lines-table select {
+            padding: 10px 12px;
+            font-size: 0.9rem;
+            min-width: 140px;
+        }
+
+        .lines-table .line-number {
+            font-weight: 600;
+            color: #00d4ff;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-add {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #fff;
+        }
+
+        .btn-add:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-remove {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-remove:hover {
+            background: rgba(239, 68, 68, 0.3);
+        }
+
+        .plant-content {
+            display: none;
+        }
+
+        .plant-content.active {
+            display: block;
+        }
+
+        /* Cost Inputs Styling */
+        .cost-inputs {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .cost-input-box {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .cost-input-box label {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .cost-input-box input {
+            margin-top: 8px;
+        }
+
+        /* Break-even Graph Styling */
+        .graph-container {
+            position: relative;
+            width: 100%;
+            height: 350px;
+            margin-top: 20px;
+        }
+
+        #breakEvenCanvas {
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+        }
+
+        .break-even-result {
+            text-align: center;
+            margin-top: 20px;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(0, 212, 255, 0.1) 100%);
+            border-radius: 12px;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .break-even-result .label {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .break-even-result .value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #10b981;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 15px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 4px;
+            border-radius: 2px;
+        }
+
+        .legend-color.benefit {
+            background: #10b981;
+        }
+
+        .legend-color.cost {
+            background: #ef4444;
+        }
+
         .results-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -231,6 +426,15 @@
             .form-row {
                 grid-template-columns: 1fr;
             }
+            .cost-inputs {
+                grid-template-columns: 1fr;
+            }
+            .plant-tabs {
+                flex-direction: column;
+            }
+            .plant-tab {
+                text-align: center;
+            }
         }
     </style>
 </head>
@@ -264,30 +468,44 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="shifts">Ploegen Regime</label>
-                    <select id="shifts" onchange="calculate()">
-                        <option value="">-- Selecteer ploegen --</option>
-                        <option value="1">1 ploeg</option>
-                        <option value="2">2 ploegen</option>
-                        <option value="3">3 ploegen</option>
-                        <option value="4">4 ploegen</option>
-                        <option value="5">5 ploegen</option>
+                    <label for="currentSituation">Huidige OEE Situatie</label>
+                    <select id="currentSituation" onchange="calculate()">
+                        <option value="">-- Selecteer uw huidige situatie --</option>
+                        <option value="noOEE">Geen OEE meting (naar T4A/P4A)</option>
+                        <option value="localOEE">Lokale/basis OEE (upgrade naar T4A/P4A)</option>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label for="lines">Aantal Lijnen</label>
-                    <input type="number" id="lines" min="1" max="100" value="1" onchange="calculate()" oninput="calculate()">
+                    <label for="numPlants">Aantal Plants</label>
+                    <input type="number" id="numPlants" min="1" max="10" value="1" onchange="updatePlantTabs()" oninput="updatePlantTabs()">
                 </div>
             </div>
+        </div>
 
-            <div class="form-group">
-                <label for="currentSituation">Huidige OEE Situatie</label>
-                <select id="currentSituation" onchange="calculate()">
-                    <option value="">-- Selecteer uw huidige situatie --</option>
-                    <option value="noOEE">Geen OEE meting (naar T4A/P4A)</option>
-                    <option value="localOEE">Lokale/basis OEE (upgrade naar T4A/P4A)</option>
-                </select>
+        <div class="card" id="plantsCard">
+            <h2>Plants & Lijnen Configuratie</h2>
+
+            <div class="plant-tabs" id="plantTabs">
+                <!-- Tabs generated dynamically -->
+            </div>
+
+            <div id="plantContents">
+                <!-- Plant content generated dynamically -->
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Project Kosten</h2>
+            <div class="cost-inputs">
+                <div class="cost-input-box">
+                    <label for="fixedFee">Vaste Kosten (Eenmalig Jaar 1)</label>
+                    <input type="number" id="fixedFee" min="0" value="0" onchange="calculate()" oninput="calculate()" placeholder="0">
+                </div>
+                <div class="cost-input-box">
+                    <label for="variableCost">Variabele Kosten (Per Jaar)</label>
+                    <input type="number" id="variableCost" min="0" value="0" onchange="calculate()" oninput="calculate()" placeholder="0">
+                </div>
             </div>
         </div>
 
@@ -301,14 +519,14 @@
                     <div class="result-unit">EUR per uur</div>
                 </div>
                 <div class="result-item">
-                    <div class="result-label">Werkbare Uren / Jaar</div>
-                    <div class="result-value" id="workHours">-</div>
-                    <div class="result-unit">uren</div>
+                    <div class="result-label">Totaal Aantal Lijnen</div>
+                    <div class="result-value" id="totalLinesDisplay">-</div>
+                    <div class="result-unit">over alle plants</div>
                 </div>
                 <div class="result-item">
-                    <div class="result-label">Aantal Lijnen</div>
-                    <div class="result-value" id="linesDisplay">-</div>
-                    <div class="result-unit">productie lijnen</div>
+                    <div class="result-label">Aantal Plants</div>
+                    <div class="result-value" id="plantsDisplay">-</div>
+                    <div class="result-unit">productie locaties</div>
                 </div>
             </div>
         </div>
@@ -327,6 +545,30 @@
                     <div class="summary-card-value" id="summaryBlue">-</div>
                     <div class="summary-card-sub">over 3 jaar | <span id="linesBlue">-</span> lijnen</div>
                 </div>
+            </div>
+        </div>
+
+        <div class="card" id="breakEvenCard" style="display: none;">
+            <h2>Break-even Analyse (T4A/P4A)</h2>
+
+            <div class="graph-container">
+                <canvas id="breakEvenCanvas"></canvas>
+            </div>
+
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color benefit"></div>
+                    <span>Cumulatief Voordeel</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color cost"></div>
+                    <span>Cumulatieve Kosten</span>
+                </div>
+            </div>
+
+            <div class="break-even-result" id="breakEvenResult">
+                <div class="label">Break-even bereikt in</div>
+                <div class="value" id="breakEvenYear">-</div>
             </div>
         </div>
 
@@ -845,7 +1087,7 @@
                                     }
                         }
             }
-};
+        };
 
         const workHours = {
             "1": 2000.0,
@@ -853,7 +1095,14 @@
             "3": 6000.0,
             "4": 8000.0,
             "5": 8760.0
-};
+        };
+
+        // Plant data structure
+        let plantData = {
+            1: { lines: [{ shifts: 1 }] }
+        };
+        let numPlants = 1;
+        let activePlant = 1;
 
         function formatCurrency(value) {
             return new Intl.NumberFormat('nl-NL', {
@@ -868,50 +1117,425 @@
             return (value * 100).toFixed(1) + '%';
         }
 
+        function updatePlantTabs() {
+            const newNumPlants = Math.min(10, Math.max(1, parseInt(document.getElementById('numPlants').value) || 1));
+            numPlants = newNumPlants;
+
+            // Initialize new plants if needed
+            for (let p = 1; p <= numPlants; p++) {
+                if (!plantData[p]) {
+                    plantData[p] = { lines: [{ shifts: 1 }] };
+                }
+            }
+
+            // Remove excess plants
+            for (let p = numPlants + 1; p <= 10; p++) {
+                delete plantData[p];
+            }
+
+            // Adjust active plant if needed
+            if (activePlant > numPlants) {
+                activePlant = numPlants;
+            }
+
+            renderPlantTabs();
+            renderPlantContent();
+            calculate();
+        }
+
+        function renderPlantTabs() {
+            const tabsContainer = document.getElementById('plantTabs');
+            tabsContainer.innerHTML = '';
+
+            for (let p = 1; p <= numPlants; p++) {
+                const tab = document.createElement('div');
+                tab.className = 'plant-tab' + (p === activePlant ? ' active' : '');
+                tab.textContent = 'Plant ' + p;
+                tab.onclick = () => switchPlant(p);
+                tabsContainer.appendChild(tab);
+            }
+        }
+
+        function switchPlant(plantNum) {
+            activePlant = plantNum;
+            renderPlantTabs();
+            renderPlantContent();
+        }
+
+        function renderPlantContent() {
+            const container = document.getElementById('plantContents');
+            container.innerHTML = '';
+
+            for (let p = 1; p <= numPlants; p++) {
+                const content = document.createElement('div');
+                content.className = 'plant-content' + (p === activePlant ? ' active' : '');
+                content.id = 'plant-' + p + '-content';
+
+                let tableHTML = `
+                    <table class="lines-table">
+                        <thead>
+                            <tr>
+                                <th>Lijn</th>
+                                <th>Ploegen Regime</th>
+                                <th>Actie</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                plantData[p].lines.forEach((line, index) => {
+                    tableHTML += `
+                        <tr>
+                            <td class="line-number">${index + 1}</td>
+                            <td>
+                                <select onchange="updateLineShifts(${p}, ${index}, this.value)">
+                                    <option value="1" ${line.shifts === 1 ? 'selected' : ''}>1 ploeg</option>
+                                    <option value="2" ${line.shifts === 2 ? 'selected' : ''}>2 ploegen</option>
+                                    <option value="3" ${line.shifts === 3 ? 'selected' : ''}>3 ploegen</option>
+                                    <option value="4" ${line.shifts === 4 ? 'selected' : ''}>4 ploegen</option>
+                                    <option value="5" ${line.shifts === 5 ? 'selected' : ''}>5 ploegen</option>
+                                </select>
+                            </td>
+                            <td>
+                                <button class="btn btn-remove" onclick="removeLine(${p}, ${index})" ${plantData[p].lines.length <= 1 ? 'disabled' : ''}>Verwijderen</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                tableHTML += `
+                        </tbody>
+                    </table>
+                    <button class="btn btn-add" onclick="addLine(${p})">+ Lijn Toevoegen</button>
+                `;
+
+                content.innerHTML = tableHTML;
+                container.appendChild(content);
+            }
+        }
+
+        function addLine(plantNum) {
+            plantData[plantNum].lines.push({ shifts: 1 });
+            renderPlantContent();
+            calculate();
+        }
+
+        function removeLine(plantNum, lineIndex) {
+            if (plantData[plantNum].lines.length > 1) {
+                plantData[plantNum].lines.splice(lineIndex, 1);
+                renderPlantContent();
+                calculate();
+            }
+        }
+
+        function updateLineShifts(plantNum, lineIndex, shifts) {
+            plantData[plantNum].lines[lineIndex].shifts = parseInt(shifts);
+            calculate();
+        }
+
         function calculate() {
             const sector = document.getElementById('sector').value;
             const situation = document.getElementById('currentSituation').value;
-            const shifts = document.getElementById('shifts').value;
-            const lines = parseInt(document.getElementById('lines').value) || 1;
+            const fixedFee = parseFloat(document.getElementById('fixedFee').value) || 0;
+            const variableCost = parseFloat(document.getElementById('variableCost').value) || 0;
 
             const resultsCard = document.getElementById('resultsCard');
             const savingsCard = document.getElementById('savingsCard');
+            const breakEvenCard = document.getElementById('breakEvenCard');
 
-            if (!sector || !situation || !shifts || !sectorData[sector]) {
+            if (!sector || !situation || !sectorData[sector]) {
                 resultsCard.style.display = 'none';
                 savingsCard.style.display = 'none';
+                breakEvenCard.style.display = 'none';
                 return;
             }
 
             const data = sectorData[sector];
-            const oeeData = situation === 'noOEE' ? data.noOEE : data.upgrade;
-            const savingsPerLine = data.savings[shifts];
 
-            if (!savingsPerLine) {
-                resultsCard.style.display = 'none';
-                savingsCard.style.display = 'none';
-                return;
+            // Calculate total savings from all plants and lines
+            let totalT4A = 0;
+            let totalBlue = 0;
+            let totalLines = 0;
+
+            for (let p = 1; p <= numPlants; p++) {
+                for (let line of plantData[p].lines) {
+                    const savingsPerLine = data.savings[line.shifts];
+                    if (savingsPerLine) {
+                        totalT4A += savingsPerLine.t4a;
+                        totalBlue += savingsPerLine.blue;
+                        totalLines++;
+                    }
+                }
             }
 
-            // Calculate total 3-year savings (Excel values are already 3-year totals per line)
-            const totalT4A = savingsPerLine.t4a * lines;
-            const totalBlue = savingsPerLine.blue * lines;
+            // Convert 3-year savings to annual
+            const annualT4A = totalT4A / 3;
+            const annualBlue = totalBlue / 3;
 
             // Update sector info
-            document.getElementById('valuePerHour').textContent = '€' + data.valuePerHour;
-            document.getElementById('workHours').textContent = (workHours[shifts] || 0).toLocaleString('nl-NL');
-            document.getElementById('linesDisplay').textContent = lines;
+            document.getElementById('valuePerHour').textContent = '\u20AC' + data.valuePerHour;
+            document.getElementById('totalLinesDisplay').textContent = totalLines;
+            document.getElementById('plantsDisplay').textContent = numPlants;
 
             // Update summary cards
             document.getElementById('summaryT4A').textContent = formatCurrency(totalT4A);
             document.getElementById('summaryBlue').textContent = formatCurrency(totalBlue);
-            document.getElementById('linesT4A').textContent = lines;
-            document.getElementById('linesBlue').textContent = lines;
+            document.getElementById('linesT4A').textContent = totalLines;
+            document.getElementById('linesBlue').textContent = totalLines;
 
             // Show results
             resultsCard.style.display = 'block';
             savingsCard.style.display = 'block';
+
+            // Calculate break-even
+            const yearData = calculateBreakEven(annualT4A, fixedFee, variableCost);
+            renderGraph(yearData);
+            displayBreakEven(yearData);
+            breakEvenCard.style.display = 'block';
         }
+
+        function calculateBreakEven(annualBenefit, fixedFee, variableCost) {
+            let cumulativeBenefit = 0;
+            let cumulativeCost = 0;
+            let yearData = [];
+            let year = 0;
+            let breakEvenReached = false;
+
+            // Always calculate at least 5 years, or until break-even + 2 years
+            while (year < 20) {
+                year++;
+                cumulativeBenefit += annualBenefit;
+                cumulativeCost += (year === 1) ? (fixedFee + variableCost) : variableCost;
+
+                yearData.push({
+                    year: year,
+                    cumulativeBenefit: cumulativeBenefit,
+                    cumulativeCost: cumulativeCost
+                });
+
+                if (cumulativeBenefit >= cumulativeCost && !breakEvenReached) {
+                    breakEvenReached = true;
+                }
+
+                // Stop after break-even + 2 years, or after 5 years if no costs
+                if (breakEvenReached && year >= yearData.find(d => d.cumulativeBenefit >= d.cumulativeCost).year + 2) {
+                    break;
+                }
+                if (fixedFee === 0 && variableCost === 0 && year >= 5) {
+                    break;
+                }
+            }
+
+            return yearData;
+        }
+
+        function renderGraph(yearData) {
+            const canvas = document.getElementById('breakEvenCanvas');
+            const ctx = canvas.getContext('2d');
+
+            // Set canvas size for high DPI displays
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            ctx.scale(dpr, dpr);
+
+            const width = rect.width;
+            const height = rect.height;
+            const padding = { top: 30, right: 30, bottom: 50, left: 80 };
+            const graphWidth = width - padding.left - padding.right;
+            const graphHeight = height - padding.top - padding.bottom;
+
+            // Clear canvas
+            ctx.clearRect(0, 0, width, height);
+
+            if (yearData.length === 0) return;
+
+            // Calculate scales
+            const maxYear = yearData[yearData.length - 1].year;
+            const maxValue = Math.max(
+                ...yearData.map(d => Math.max(d.cumulativeBenefit, d.cumulativeCost))
+            );
+
+            const xScale = (year) => padding.left + (year / maxYear) * graphWidth;
+            const yScale = (value) => padding.top + graphHeight - (value / maxValue) * graphHeight;
+
+            // Draw grid lines
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+            ctx.lineWidth = 1;
+
+            // Horizontal grid lines
+            for (let i = 0; i <= 5; i++) {
+                const y = padding.top + (i / 5) * graphHeight;
+                ctx.beginPath();
+                ctx.moveTo(padding.left, y);
+                ctx.lineTo(width - padding.right, y);
+                ctx.stroke();
+
+                // Y-axis labels
+                const value = maxValue * (1 - i / 5);
+                ctx.fillStyle = '#94a3b8';
+                ctx.font = '12px Segoe UI';
+                ctx.textAlign = 'right';
+                ctx.fillText(formatCurrency(value), padding.left - 10, y + 4);
+            }
+
+            // Vertical grid lines and X-axis labels
+            for (let year = 1; year <= maxYear; year++) {
+                const x = xScale(year);
+                ctx.beginPath();
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+                ctx.moveTo(x, padding.top);
+                ctx.lineTo(x, height - padding.bottom);
+                ctx.stroke();
+
+                ctx.fillStyle = '#94a3b8';
+                ctx.textAlign = 'center';
+                ctx.fillText('Jaar ' + year, x, height - padding.bottom + 25);
+            }
+
+            // Draw cost line
+            ctx.beginPath();
+            ctx.strokeStyle = '#ef4444';
+            ctx.lineWidth = 3;
+            yearData.forEach((d, i) => {
+                const x = xScale(d.year);
+                const y = yScale(d.cumulativeCost);
+                if (i === 0) {
+                    ctx.moveTo(xScale(0), yScale(0));
+                    ctx.lineTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            });
+            ctx.stroke();
+
+            // Draw benefit line
+            ctx.beginPath();
+            ctx.strokeStyle = '#10b981';
+            ctx.lineWidth = 3;
+            yearData.forEach((d, i) => {
+                const x = xScale(d.year);
+                const y = yScale(d.cumulativeBenefit);
+                if (i === 0) {
+                    ctx.moveTo(xScale(0), yScale(0));
+                    ctx.lineTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            });
+            ctx.stroke();
+
+            // Find and mark break-even point
+            for (let i = 0; i < yearData.length; i++) {
+                if (yearData[i].cumulativeBenefit >= yearData[i].cumulativeCost) {
+                    // Interpolate to find exact break-even
+                    let breakEvenX, breakEvenY;
+                    if (i === 0) {
+                        breakEvenX = xScale(yearData[i].year);
+                        breakEvenY = yScale(yearData[i].cumulativeBenefit);
+                    } else {
+                        const prevD = yearData[i - 1];
+                        const currD = yearData[i];
+
+                        // Linear interpolation
+                        const benefitDiff = currD.cumulativeBenefit - prevD.cumulativeBenefit;
+                        const costDiff = currD.cumulativeCost - prevD.cumulativeCost;
+                        const prevGap = prevD.cumulativeCost - prevD.cumulativeBenefit;
+                        const gapChangeRate = benefitDiff - costDiff;
+
+                        if (gapChangeRate !== 0) {
+                            const fraction = prevGap / gapChangeRate;
+                            const exactYear = prevD.year + fraction;
+                            const exactValue = prevD.cumulativeBenefit + benefitDiff * fraction;
+                            breakEvenX = xScale(exactYear);
+                            breakEvenY = yScale(exactValue);
+                        } else {
+                            breakEvenX = xScale(currD.year);
+                            breakEvenY = yScale(currD.cumulativeBenefit);
+                        }
+                    }
+
+                    // Draw break-even marker
+                    ctx.beginPath();
+                    ctx.fillStyle = '#fbbf24';
+                    ctx.arc(breakEvenX, breakEvenY, 8, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    ctx.beginPath();
+                    ctx.fillStyle = '#1a1a2e';
+                    ctx.arc(breakEvenX, breakEvenY, 4, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    break;
+                }
+            }
+
+            // Draw data points
+            yearData.forEach((d) => {
+                const x = xScale(d.year);
+
+                // Benefit point
+                ctx.beginPath();
+                ctx.fillStyle = '#10b981';
+                ctx.arc(x, yScale(d.cumulativeBenefit), 5, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Cost point
+                ctx.beginPath();
+                ctx.fillStyle = '#ef4444';
+                ctx.arc(x, yScale(d.cumulativeCost), 5, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        }
+
+        function displayBreakEven(yearData) {
+            const breakEvenResult = document.getElementById('breakEvenYear');
+
+            for (let i = 0; i < yearData.length; i++) {
+                if (yearData[i].cumulativeBenefit >= yearData[i].cumulativeCost) {
+                    if (i === 0) {
+                        breakEvenResult.textContent = 'Jaar 1';
+                    } else {
+                        // Calculate more precise break-even
+                        const prevD = yearData[i - 1];
+                        const currD = yearData[i];
+                        const benefitDiff = currD.cumulativeBenefit - prevD.cumulativeBenefit;
+                        const costDiff = currD.cumulativeCost - prevD.cumulativeCost;
+                        const prevGap = prevD.cumulativeCost - prevD.cumulativeBenefit;
+                        const gapChangeRate = benefitDiff - costDiff;
+
+                        if (gapChangeRate !== 0) {
+                            const fraction = prevGap / gapChangeRate;
+                            const months = Math.ceil(fraction * 12);
+                            if (months <= 0) {
+                                breakEvenResult.textContent = 'Jaar ' + prevD.year;
+                            } else if (months >= 12) {
+                                breakEvenResult.textContent = 'Jaar ' + currD.year;
+                            } else {
+                                breakEvenResult.textContent = 'Jaar ' + prevD.year + ' + ' + months + ' maanden';
+                            }
+                        } else {
+                            breakEvenResult.textContent = 'Jaar ' + currD.year;
+                        }
+                    }
+                    return;
+                }
+            }
+
+            // No break-even within calculated period
+            if (yearData.length > 0 && yearData[yearData.length - 1].cumulativeCost > yearData[yearData.length - 1].cumulativeBenefit) {
+                breakEvenResult.textContent = 'Niet binnen 20 jaar';
+                breakEvenResult.style.color = '#ef4444';
+            } else {
+                breakEvenResult.textContent = 'Direct (geen kosten)';
+            }
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', function() {
+            updatePlantTabs();
+        });
     </script>
 </body>
 </html>
