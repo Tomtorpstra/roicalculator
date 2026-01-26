@@ -29,15 +29,32 @@
 
         /* Header */
         .header {
-            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             margin-bottom: 40px;
         }
 
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .logo {
+            height: 60px;
+            width: auto;
+        }
+
+        .header-title {
+            text-align: left;
+        }
+
         .header h1 {
-            font-size: 2.5rem;
+            font-size: 2rem;
             font-weight: 800;
             color: #0f172a;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
         }
 
         .header h1 span {
@@ -49,7 +66,7 @@
 
         .subtitle {
             color: #64748b;
-            font-size: 1.1rem;
+            font-size: 0.95rem;
             font-weight: 400;
         }
 
@@ -748,6 +765,26 @@
         }
 
         @media (max-width: 640px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+
+            .header-left {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+
+            .header-title {
+                text-align: left;
+            }
+
+            .header h1 {
+                font-size: 1.6rem;
+            }
+
             .form-row {
                 grid-template-columns: 1fr;
             }
@@ -775,8 +812,13 @@
 <body>
     <div class="container">
         <header class="header">
-            <h1>OEE <span>ROI Calculator</span></h1>
-            <p class="subtitle">Bereken uw potentiele besparing met T4A/P4A OEE-optimalisatie</p>
+            <div class="header-left">
+                <img src="logo.png" alt="Decide4Action" class="logo">
+                <div class="header-title">
+                    <h1>OEE <span>ROI Calculator</span></h1>
+                    <p class="subtitle">Bereken uw potentiele besparing met T4A/P4A OEE-optimalisatie</p>
+                </div>
+            </div>
         </header>
 
         <div class="main-layout">
