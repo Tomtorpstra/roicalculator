@@ -64,21 +64,65 @@
         .subtitle {
             color: #64748b;
             font-size: 0.95rem;
-            font-weight: 400;
         }
 
-        /* Two Column Layout */
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .btn-export {
+            background: #0f172a;
+            color: #fff;
+        }
+
+        .btn-export:hover {
+            background: #1e293b;
+        }
+
+        .btn-primary {
+            background: #00AAFF;
+            color: #fff;
+            padding: 8px 16px;
+            font-size: 0.85rem;
+        }
+
+        .btn-primary:hover {
+            background: #0090dd;
+        }
+
+        .btn-remove {
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+
+        .btn-remove:hover {
+            background: #fecaca;
+        }
+
+        .btn-remove:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* Main Layout */
         .main-layout {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr 1.2fr;
             gap: 30px;
             align-items: start;
-        }
-
-        .input-column, .results-column {
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
         }
 
         /* Cards */
@@ -86,14 +130,14 @@
             background: #ffffff;
             border-radius: 16px;
             padding: 28px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.06);
-            border: 1px solid rgba(0, 0, 0, 0.04);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+            margin-bottom: 20px;
         }
 
         .card-header {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
             margin-bottom: 24px;
         }
 
@@ -104,22 +148,37 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
+            flex-shrink: 0;
         }
 
-        .card-icon.blue { background: #eff6ff; color: #3b82f6; }
-        .card-icon.cyan { background: #e0f7ff; color: #00AAFF; }
-        .card-icon.green { background: #ecfdf5; color: #10b981; }
-        .card-icon.orange { background: #fff7ed; color: #f97316; }
+        .card-icon.blue {
+            background: #dbeafe;
+            color: #2563eb;
+        }
 
-        .card h2 {
+        .card-icon.cyan {
+            background: #e0f7fa;
+            color: #00AAFF;
+        }
+
+        .card-icon.green {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .card-icon.orange {
+            background: #ffedd5;
+            color: #ea580c;
+        }
+
+        .card-header h2 {
             font-size: 1.1rem;
-            font-weight: 600;
+            font-weight: 700;
             color: #0f172a;
         }
 
         .card-subtitle {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: #64748b;
             margin-top: 2px;
         }
@@ -129,111 +188,56 @@
             margin-bottom: 20px;
         }
 
-        .form-group:last-child {
-            margin-bottom: 0;
-        }
-
-        label {
+        .form-group label {
             display: block;
-            margin-bottom: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
             color: #374151;
-            font-weight: 500;
-            font-size: 0.9rem;
+            margin-bottom: 6px;
         }
 
-        select, input[type="number"], input[type="text"] {
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group select {
             width: 100%;
-            padding: 12px 16px;
+            padding: 10px 14px;
             border: 2px solid #e5e7eb;
-            border-radius: 10px;
-            background: #ffffff;
-            color: #1e293b;
-            font-size: 0.95rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
             font-family: inherit;
-            transition: all 0.2s ease;
+            color: #1e293b;
+            background: #fff;
+            transition: border-color 0.2s;
         }
 
-        select {
-            cursor: pointer;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 12px center;
-            padding-right: 44px;
-        }
-
-        select:hover, input[type="number"]:hover, input[type="text"]:hover {
-            border-color: #3b82f6;
-        }
-
-        select:focus, input[type="number"]:focus, input[type="text"]:focus {
+        .form-group input:focus,
+        .form-group select:focus {
             outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+            border-color: #00AAFF;
         }
 
-        /* Searchable Select Wrapper */
-        .select-wrapper {
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .currency-input {
             position: relative;
         }
 
-        .select-search {
+        .currency-input::before {
+            content: '\20AC';
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid #e5e7eb;
-            border-radius: 10px;
-            background: #ffffff;
-            font-size: 0.95rem;
-            font-family: inherit;
-            z-index: 10;
-            display: none;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-weight: 600;
         }
 
-        .select-wrapper.searching .select-search {
-            display: block;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
-        }
-
-        .select-wrapper.searching select {
-            opacity: 0;
-        }
-
-        .select-dropdown {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: #ffffff;
-            border: 2px solid #e5e7eb;
-            border-radius: 10px;
-            margin-top: 4px;
-            max-height: 240px;
-            overflow-y: auto;
-            z-index: 100;
-            display: none;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        }
-
-        .select-wrapper.open .select-dropdown {
-            display: block;
-        }
-
-        .select-option {
-            padding: 12px 16px;
-            cursor: pointer;
-            transition: background 0.15s;
-        }
-
-        .select-option:hover, .select-option.highlighted {
-            background: #f1f5f9;
-        }
-
-        .select-option.hidden {
-            display: none;
+        .currency-input input {
+            padding-left: 32px !important;
         }
 
         /* Slider Input */
@@ -250,125 +254,114 @@
             appearance: none;
             background: #e5e7eb;
             border-radius: 3px;
-            cursor: pointer;
+            outline: none;
         }
 
         .slider-input input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 20px;
-            height: 20px;
-            background: #3b82f6;
+            appearance: none;
+            width: 22px;
+            height: 22px;
             border-radius: 50%;
+            background: #00AAFF;
             cursor: pointer;
-            box-shadow: 0 2px 6px rgba(59, 130, 246, 0.4);
         }
 
         .slider-input input[type="number"] {
-            width: 80px;
+            width: 70px;
             text-align: center;
-            padding: 10px;
+            padding: 8px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-family: inherit;
         }
 
-        /* Form Row */
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
-
-        /* Cost Input with Currency */
-        .currency-input {
+        /* Searchable Select */
+        .select-wrapper {
             position: relative;
         }
 
-        .currency-input::before {
-            content: "€";
+        .select-wrapper .select-search {
             position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #6b7280;
-            font-weight: 500;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid #00AAFF;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            background: #fff;
+            z-index: 3;
+            display: none;
         }
 
-        .currency-input input {
-            padding-left: 36px;
+        .select-wrapper.searching .select-search {
+            display: block;
+        }
+
+        .select-wrapper .select-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #fff;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 10;
+            margin-top: 4px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .select-wrapper.open .select-dropdown {
+            display: block;
+        }
+
+        .select-option {
+            padding: 10px 14px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.15s;
+        }
+
+        .select-option:hover {
+            background: #f0f9ff;
+        }
+
+        .select-option.hidden {
+            display: none;
         }
 
         /* Plant Tabs */
         .plant-tabs {
             display: flex;
-            gap: 8px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
+            gap: 4px;
+            margin-bottom: 16px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            padding: 4px;
         }
 
         .plant-tab {
-            padding: 10px 18px;
-            background: #f1f5f9;
-            border: 2px solid transparent;
-            border-radius: 8px;
-            color: #64748b;
+            flex: 1;
+            text-align: center;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-
-        .plant-tab:hover {
-            background: #e2e8f0;
-            color: #334155;
+            color: #64748b;
+            transition: all 0.2s;
         }
 
         .plant-tab.active {
-            background: #eff6ff;
-            border-color: #3b82f6;
-            color: #1d4ed8;
-        }
-
-        /* Lines Table */
-        .lines-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 16px;
-        }
-
-        .lines-table th,
-        .lines-table td {
-            padding: 12px 14px;
-            text-align: left;
-            border-bottom: 1px solid #e5e7eb;
-        }
-
-        .lines-table th {
-            color: #64748b;
-            font-weight: 500;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            background: #f8fafc;
-        }
-
-        .lines-table th:first-child {
-            border-radius: 8px 0 0 0;
-        }
-
-        .lines-table th:last-child {
-            border-radius: 0 8px 0 0;
-        }
-
-        .lines-table td {
-            color: #334155;
-        }
-
-        .lines-table .line-number {
-            font-weight: 600;
-            color: #3b82f6;
-        }
-
-        .lines-table select {
-            padding: 8px 12px;
-            font-size: 0.9rem;
+            background: #fff;
+            color: #00AAFF;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
         .plant-content {
@@ -379,76 +372,138 @@
             display: block;
         }
 
-        /* Buttons */
-        .btn {
-            padding: 10px 18px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 500;
-            font-family: inherit;
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
+        /* Lines Table */
+        .lines-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 16px;
         }
 
-        .btn-primary {
-            background: #3b82f6;
-            color: #ffffff;
+        .lines-table th {
+            text-align: left;
+            padding: 10px 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #64748b;
+            border-bottom: 2px solid #e5e7eb;
         }
 
-        .btn-primary:hover {
-            background: #2563eb;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-        }
-
-        .btn-success {
-            background: #10b981;
-            color: #ffffff;
-        }
-
-        .btn-success:hover {
-            background: #059669;
-        }
-
-        .btn-remove {
-            background: #fef2f2;
-            color: #dc2626;
-            border: 1px solid #fecaca;
-            padding: 6px 12px;
+        .lines-table td {
+            padding: 10px 12px;
             font-size: 0.85rem;
+            border-bottom: 1px solid #f1f5f9;
         }
 
-        .btn-remove:hover {
-            background: #fee2e2;
+        .lines-table select {
+            padding: 6px 10px;
+            border: 2px solid #e5e7eb;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.85rem;
+            width: 100%;
         }
 
-        .btn-remove:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
+        .line-number {
+            font-weight: 700;
+            color: #00AAFF;
         }
 
-        .btn-export {
-            background: #0f172a;
-            color: #ffffff;
-            padding: 12px 24px;
-            font-size: 0.95rem;
+        /* Option Group (Min/Avg/Max buttons) */
+        .option-group {
+            display: flex;
+            gap: 8px;
         }
 
-        .btn-export:hover {
-            background: #1e293b;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.3);
+        .option-btn {
+            flex: 1;
+            padding: 14px 10px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #fff;
         }
 
-        .btn-export svg {
-            flex-shrink: 0;
+        .option-btn:hover {
+            border-color: #93c5fd;
+            background: #f8fafc;
         }
 
-        /* Results Section */
+        .option-btn.active {
+            border-color: #00AAFF;
+            background: #f0f9ff;
+        }
+
+        .option-btn .option-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .option-btn.active .option-label {
+            color: #00AAFF;
+        }
+
+        .option-btn .option-value {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-top: 4px;
+        }
+
+        .option-btn.active .option-value {
+            color: #00AAFF;
+        }
+
+        .option-btn .option-sub {
+            font-size: 0.7rem;
+            color: #94a3b8;
+            margin-top: 2px;
+        }
+
+        /* Computed Value Display */
+        .computed-value {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 18px;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border: 1px solid #bae6fd;
+            border-radius: 10px;
+            margin-top: 4px;
+        }
+
+        .computed-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #0369a1;
+        }
+
+        .computed-number {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #0284c7;
+        }
+
+        .info-text {
+            font-size: 0.78rem;
+            color: #94a3b8;
+            margin-top: 12px;
+            line-height: 1.5;
+        }
+
+        .benchmark-note {
+            font-weight: 400;
+            color: #94a3b8;
+            font-size: 0.75rem;
+        }
+
+        /* Results Placeholder */
         .results-placeholder {
             text-align: center;
             padding: 60px 20px;
@@ -458,11 +513,11 @@
         .results-placeholder-icon {
             font-size: 3rem;
             margin-bottom: 16px;
-            opacity: 0.5;
         }
 
         .results-placeholder h3 {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
+            font-weight: 700;
             color: #64748b;
             margin-bottom: 8px;
         }
@@ -471,117 +526,159 @@
             font-size: 0.9rem;
         }
 
-        /* Big Number Display */
-        .big-number-card {
-            text-align: center;
-            padding: 32px 24px;
-        }
-
-        .big-number-label {
-            font-size: 0.85rem;
-            color: #64748b;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 8px;
-        }
-
-        .big-number {
-            font-size: 3rem;
-            font-weight: 800;
-            line-height: 1.1;
-            margin-bottom: 8px;
-        }
-
-        .big-number.green {
-            color: #10b981;
-        }
-
-        .big-number.blue {
-            color: #3b82f6;
-        }
-
-        .big-number-sub {
-            font-size: 0.9rem;
-            color: #64748b;
-        }
-
-        /* Comparison Cards */
-        .comparison-grid {
+        /* Scenario Grid */
+        .scenario-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
+            grid-template-columns: 1fr 1.15fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
-        .comparison-card {
-            padding: 24px;
+        .scenario-card {
+            padding: 20px 14px;
             border-radius: 12px;
             text-align: center;
+            border: 2px solid #e5e7eb;
+            background: #fff;
+            transition: all 0.3s;
         }
 
-        .comparison-card.t4a {
-            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
-            border: 1px solid #a7f3d0;
+        .scenario-card.expected {
+            border-color: #00AAFF;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            transform: scale(1.03);
+            box-shadow: 0 4px 12px rgba(0,170,255,0.15);
         }
 
-        .comparison-card.blue-t4a {
-            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-            border: 1px solid #93c5fd;
-        }
-
-        .comparison-card-label {
-            font-size: 0.8rem;
-            font-weight: 600;
+        .scenario-label {
+            font-size: 0.72rem;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            color: #94a3b8;
+            margin-bottom: 10px;
+        }
+
+        .scenario-card.expected .scenario-label {
+            color: #00AAFF;
+        }
+
+        .scenario-badge {
+            display: inline-block;
+            padding: 2px 10px;
+            background: #00AAFF;
+            color: #fff;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-radius: 50px;
             margin-bottom: 8px;
         }
 
-        .comparison-card.t4a .comparison-card-label {
-            color: #059669;
+        .scenario-annual {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #0f172a;
         }
 
-        .comparison-card.blue-t4a .comparison-card-label {
-            color: #2563eb;
+        .scenario-card.expected .scenario-annual {
+            color: #0284c7;
+            font-size: 1.7rem;
         }
 
-        .comparison-card-value {
-            font-size: 1.8rem;
+        .scenario-annual-label {
+            font-size: 0.72rem;
+            color: #94a3b8;
+            margin-bottom: 12px;
+        }
+
+        .scenario-divider {
+            height: 1px;
+            background: #e5e7eb;
+            margin: 10px auto;
+            width: 60%;
+        }
+
+        .scenario-card.expected .scenario-divider {
+            background: #bae6fd;
+        }
+
+        .scenario-three-year {
+            font-size: 1.1rem;
             font-weight: 700;
+            color: #374151;
         }
 
-        .comparison-card.t4a .comparison-card-value {
-            color: #047857;
+        .scenario-card.expected .scenario-three-year {
+            color: #0369a1;
         }
 
-        .comparison-card.blue-t4a .comparison-card-value {
-            color: #1d4ed8;
+        .scenario-three-year-label {
+            font-size: 0.7rem;
+            color: #94a3b8;
+            margin-bottom: 10px;
         }
 
-        .comparison-card-sub {
-            font-size: 0.8rem;
+        .scenario-oee {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #16a34a;
+        }
+
+        .scenario-oee-label {
+            font-size: 0.65rem;
+            color: #94a3b8;
+            margin-top: 2px;
+        }
+
+        /* Sector Info Grid */
+        .sector-info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .sector-info-item {
+            text-align: center;
+            padding: 14px;
+            background: #f8fafc;
+            border-radius: 10px;
+        }
+
+        .sector-info-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .sector-info-label {
+            font-size: 0.72rem;
             color: #64748b;
             margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
 
         /* Value Bar Chart */
         .value-bar-container {
-            margin-top: 24px;
-            padding: 20px;
+            margin-top: 20px;
+            padding: 18px;
             background: #f8fafc;
             border-radius: 12px;
         }
 
         .value-bar-title {
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             font-weight: 600;
             color: #374151;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
         }
 
         .value-bar-wrapper {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
         }
 
         .value-bar-item {
@@ -591,15 +688,15 @@
         }
 
         .value-bar-label {
-            width: 100px;
-            font-size: 0.8rem;
+            width: 90px;
+            font-size: 0.78rem;
             color: #64748b;
             text-align: right;
         }
 
         .value-bar-track {
             flex: 1;
-            height: 28px;
+            height: 26px;
             background: #e5e7eb;
             border-radius: 6px;
             overflow: hidden;
@@ -611,9 +708,9 @@
             border-radius: 6px;
             display: flex;
             align-items: center;
-            padding-right: 12px;
+            padding-right: 10px;
             justify-content: flex-end;
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             font-weight: 600;
             color: #ffffff;
             transition: width 0.5s ease;
@@ -632,37 +729,9 @@
             right: 8px;
             top: 50%;
             transform: translateY(-50%);
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             color: #059669;
             font-weight: 600;
-        }
-
-        /* Sector Info Grid */
-        .sector-info-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-        }
-
-        .sector-info-item {
-            text-align: center;
-            padding: 16px;
-            background: #f8fafc;
-            border-radius: 10px;
-        }
-
-        .sector-info-value {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #0f172a;
-        }
-
-        .sector-info-label {
-            font-size: 0.75rem;
-            color: #64748b;
-            margin-top: 4px;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
         }
 
         /* Break-even Section */
@@ -759,6 +828,14 @@
             background: #ef4444;
         }
 
+        .break-even-note {
+            text-align: center;
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
         /* Footer */
         footer {
             text-align: center;
@@ -791,10 +868,6 @@
                 gap: 16px;
             }
 
-            .header-title {
-                text-align: left;
-            }
-
             .header h1 {
                 font-size: 1.6rem;
             }
@@ -803,16 +876,20 @@
                 grid-template-columns: 1fr;
             }
 
-            .comparison-grid {
+            .option-group {
+                flex-direction: column;
+            }
+
+            .scenario-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .scenario-card.expected {
+                transform: none;
             }
 
             .sector-info-grid {
                 grid-template-columns: 1fr;
-            }
-
-            .big-number {
-                font-size: 2.2rem;
             }
 
             .break-even-header {
@@ -855,16 +932,16 @@
 
                     <div class="form-group">
                         <label for="companyName">Bedrijfsnaam</label>
-                        <input type="text" id="companyName" placeholder="Vul uw bedrijfsnaam in" oninput="updateCompanyName()">
+                        <input type="text" id="companyName" placeholder="Vul uw bedrijfsnaam in">
                     </div>
 
                     <div class="form-group">
                         <label for="sector">Sector / Industrie</label>
                         <div class="select-wrapper" id="sectorWrapper">
                             <input type="text" class="select-search" id="sectorSearch" placeholder="Zoek sector...">
-                            <select id="sector" onchange="calculate()">
+                            <select id="sector" onchange="onSectorChange()">
                                 <option value="">-- Selecteer uw sector --</option>
-                                <option value="farmaseutisch">Farmaseutisch</option>
+                                <option value="farmaceutische">Farmaceutische</option>
                                 <option value="food">Food</option>
                                 <option value="bottlers">Bottlers</option>
                                 <option value="textiel">Textiel</option>
@@ -873,10 +950,10 @@
                                 <option value="chemie">Chemie</option>
                                 <option value="kunststof">Kunststof</option>
                                 <option value="metaal">Metaal</option>
-                                <option value="machinebouw">Machine bouw</option>
-                                <option value="autoentransport">Auto en transport</option>
+                                <option value="machinebouw">Machinebouw</option>
+                                <option value="autoentransport">Auto & Transport</option>
                                 <option value="electronica">Electronica</option>
-                                <option value="olieenrafinaderij">Olie en rafinaderij</option>
+                                <option value="olieenrafinaderij">Olie & Raffinaderij</option>
                             </select>
                             <div class="select-dropdown" id="sectorDropdown"></div>
                         </div>
@@ -886,8 +963,8 @@
                         <label for="currentSituation">Huidige OEE Situatie</label>
                         <select id="currentSituation" onchange="calculate()">
                             <option value="">-- Selecteer uw huidige situatie --</option>
-                            <option value="noOEE">Geen OEE meting (naar T4A/P4A)</option>
-                            <option value="localOEE">Lokale/basis OEE (upgrade naar T4A/P4A)</option>
+                            <option value="noOEE">Nieuwe klant - Geen OEE registratie (naar T4A/P4A)</option>
+                            <option value="blueUpgrade">OEE Blue upgrade (naar T4A/P4A)</option>
                         </select>
                     </div>
 
@@ -898,6 +975,68 @@
                             <input type="number" id="numPlants" min="1" max="10" value="1" onchange="updatePlantTabs()" oninput="updatePlantTabs()">
                         </div>
                     </div>
+                </div>
+
+                <!-- Production Parameters Card -->
+                <div class="card" id="productionCard" style="display: none;">
+                    <div class="card-header">
+                        <div class="card-icon green">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                        </div>
+                        <div>
+                            <h2>Productie Parameters</h2>
+                            <p class="card-subtitle">Selecteer uw output en marge op basis van sector benchmarks</p>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Output per uur <span class="benchmark-note">(sector benchmark)</span></label>
+                        <div class="option-group" id="outputOptions">
+                            <div class="option-btn" data-level="min" onclick="selectOutput('min')">
+                                <div class="option-label">Laag</div>
+                                <div class="option-value" id="outputMin">-</div>
+                                <div class="option-sub">eenheden/uur</div>
+                            </div>
+                            <div class="option-btn active" data-level="avg" onclick="selectOutput('avg')">
+                                <div class="option-label">Gemiddeld</div>
+                                <div class="option-value" id="outputAvg">-</div>
+                                <div class="option-sub">eenheden/uur</div>
+                            </div>
+                            <div class="option-btn" data-level="max" onclick="selectOutput('max')">
+                                <div class="option-label">Hoog</div>
+                                <div class="option-value" id="outputMax">-</div>
+                                <div class="option-sub">eenheden/uur</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Marge per eenheid <span class="benchmark-note">(sector benchmark)</span></label>
+                        <div class="option-group" id="marginOptions">
+                            <div class="option-btn" data-level="min" onclick="selectMargin('min')">
+                                <div class="option-label">Laag</div>
+                                <div class="option-value" id="marginMin">-</div>
+                                <div class="option-sub">per eenheid</div>
+                            </div>
+                            <div class="option-btn active" data-level="avg" onclick="selectMargin('avg')">
+                                <div class="option-label">Gemiddeld</div>
+                                <div class="option-value" id="marginAvg">-</div>
+                                <div class="option-sub">per eenheid</div>
+                            </div>
+                            <div class="option-btn" data-level="max" onclick="selectMargin('max')">
+                                <div class="option-label">Hoog</div>
+                                <div class="option-value" id="marginMax">-</div>
+                                <div class="option-sub">per eenheid</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="computed-value">
+                        <span class="computed-label">Toegevoegde waarde per uur:</span>
+                        <span class="computed-number" id="addedValueCalc">-</span>
+                    </div>
+
+                    <p class="info-text">Waarden zijn industrie-typische benchmarkbereiken, gebaseerd op productielijn capaciteiten en gemiddelde contributiemarges in vergelijkbare productieomgevingen.</p>
                 </div>
 
                 <div class="card" id="plantsCard">
@@ -911,13 +1050,8 @@
                         </div>
                     </div>
 
-                    <div class="plant-tabs" id="plantTabs">
-                        <!-- Tabs generated dynamically -->
-                    </div>
-
-                    <div id="plantContents">
-                        <!-- Plant content generated dynamically -->
-                    </div>
+                    <div class="plant-tabs" id="plantTabs"></div>
+                    <div id="plantContents"></div>
                 </div>
 
                 <div class="card">
@@ -956,33 +1090,91 @@
                     <div class="results-placeholder">
                         <div class="results-placeholder-icon">📊</div>
                         <h3>Vul uw gegevens in</h3>
-                        <p>Selecteer uw sector en OEE situatie om uw besparingspotentieel te zien</p>
+                        <p>Selecteer uw sector, productie parameters en OEE situatie om uw besparingspotentieel te zien</p>
                     </div>
                 </div>
 
-                <!-- Results Cards (hidden by default) -->
-                <div class="card" id="bigNumberCard" style="display: none;">
-                    <div class="big-number-card">
-                        <div class="big-number-label">Totale Waarde Verhoging over 3 Jaar</div>
-                        <div class="big-number green" id="totalSavingsDisplay">€ 0</div>
-                        <div class="big-number-sub"><span id="totalLinesDisplay">0</span> lijnen over <span id="totalPlantsDisplay">0</span> plants</div>
+                <!-- Scenario Results Card -->
+                <div class="card" id="scenarioCard" style="display: none;">
+                    <div class="card-header">
+                        <div class="card-icon green">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
+                        </div>
+                        <div>
+                            <h2>Besparingspotentieel</h2>
+                            <p class="card-subtitle"><span id="totalLinesDisplay">0</span> lijnen over <span id="totalPlantsDisplay">0</span> plants</p>
+                        </div>
                     </div>
 
-                    <div class="comparison-grid">
-                        <div class="comparison-card t4a">
-                            <div class="comparison-card-label">T4A/P4A</div>
-                            <div class="comparison-card-value" id="summaryT4A">€ 0</div>
-                            <div class="comparison-card-sub">3 jaar totaal</div>
+                    <div class="scenario-grid">
+                        <div class="scenario-card conservative">
+                            <div class="scenario-label">Conservatief</div>
+                            <div class="scenario-annual" id="conservativeAnnual">-</div>
+                            <div class="scenario-annual-label">per jaar</div>
+                            <div class="scenario-divider"></div>
+                            <div class="scenario-three-year" id="conservativeThreeYear">-</div>
+                            <div class="scenario-three-year-label">over 3 jaar</div>
+                            <div class="scenario-divider"></div>
+                            <div class="scenario-oee" id="conservativeOEE">-</div>
+                            <div class="scenario-oee-label">OEE verbetering</div>
                         </div>
-                        <div class="comparison-card blue-t4a">
-                            <div class="comparison-card-label">Blue-T4A</div>
-                            <div class="comparison-card-value" id="summaryBlue">€ 0</div>
-                            <div class="comparison-card-sub">3 jaar totaal</div>
+
+                        <div class="scenario-card expected">
+                            <div class="scenario-badge">Verwacht</div>
+                            <div class="scenario-label">Verwacht</div>
+                            <div class="scenario-annual" id="expectedAnnual">-</div>
+                            <div class="scenario-annual-label">per jaar</div>
+                            <div class="scenario-divider"></div>
+                            <div class="scenario-three-year" id="expectedThreeYear">-</div>
+                            <div class="scenario-three-year-label">over 3 jaar</div>
+                            <div class="scenario-divider"></div>
+                            <div class="scenario-oee" id="expectedOEE">-</div>
+                            <div class="scenario-oee-label">OEE verbetering</div>
+                        </div>
+
+                        <div class="scenario-card optimistic">
+                            <div class="scenario-label">Optimistisch</div>
+                            <div class="scenario-annual" id="optimisticAnnual">-</div>
+                            <div class="scenario-annual-label">per jaar</div>
+                            <div class="scenario-divider"></div>
+                            <div class="scenario-three-year" id="optimisticThreeYear">-</div>
+                            <div class="scenario-three-year-label">over 3 jaar</div>
+                            <div class="scenario-divider"></div>
+                            <div class="scenario-oee" id="optimisticOEE">-</div>
+                            <div class="scenario-oee-label">OEE verbetering</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sector & Production Details Card -->
+                <div class="card" id="sectorCard" style="display: none;">
+                    <div class="card-header">
+                        <div class="card-icon blue">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                        </div>
+                        <div>
+                            <h2>Sector & Productie Gegevens</h2>
+                            <p class="card-subtitle" id="sectorNameDisplay">-</p>
+                        </div>
+                    </div>
+
+                    <div class="sector-info-grid">
+                        <div class="sector-info-item">
+                            <div class="sector-info-value" id="addedValueDisplay">-</div>
+                            <div class="sector-info-label">Waarde / Uur</div>
+                        </div>
+                        <div class="sector-info-item">
+                            <div class="sector-info-value" id="oeeStartDisplay">-</div>
+                            <div class="sector-info-label">Start OEE</div>
+                        </div>
+                        <div class="sector-info-item">
+                            <div class="sector-info-value" id="oeeImprovementDisplay">-</div>
+                            <div class="sector-info-label">Verwachte Verbetering</div>
                         </div>
                     </div>
 
                     <div class="value-bar-container">
-                        <div class="value-bar-title">Waarde Potentieel Vergelijking</div>
+                        <div class="value-bar-title">OEE Potentieel Vergelijking</div>
                         <div class="value-bar-wrapper">
                             <div class="value-bar-item">
                                 <span class="value-bar-label">Huidige</span>
@@ -1001,33 +1193,7 @@
                     </div>
                 </div>
 
-                <div class="card" id="sectorCard" style="display: none;">
-                    <div class="card-header">
-                        <div class="card-icon blue">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-                        </div>
-                        <div>
-                            <h2>Sector Gegevens</h2>
-                            <p class="card-subtitle" id="sectorNameDisplay">-</p>
-                        </div>
-                    </div>
-
-                    <div class="sector-info-grid">
-                        <div class="sector-info-item">
-                            <div class="sector-info-value" id="valuePerHour">-</div>
-                            <div class="sector-info-label">EUR / Uur</div>
-                        </div>
-                        <div class="sector-info-item">
-                            <div class="sector-info-value" id="oeeStartDisplay">-</div>
-                            <div class="sector-info-label">Start OEE</div>
-                        </div>
-                        <div class="sector-info-item">
-                            <div class="sector-info-value" id="oeeImprovementDisplay">-</div>
-                            <div class="sector-info-label">Verbetering</div>
-                        </div>
-                    </div>
-                </div>
-
+                <!-- Break-even Card -->
                 <div class="card" id="breakEvenCard" style="display: none;">
                     <div class="break-even-header">
                         <div>
@@ -1060,6 +1226,7 @@
                             <span>Cumulatieve Kosten</span>
                         </div>
                     </div>
+                    <div class="break-even-note">Gebaseerd op het verwachte scenario</div>
                 </div>
             </div>
         </div>
@@ -1070,250 +1237,130 @@
     </div>
 
     <script>
-        // Data loaded from Excel file
+        // ==========================================
+        // DATA from Excel "Data sheet"
+        // ==========================================
         const sectorData = {
-            "farmaseutisch": {
-                "name": "Farmaseutisch",
-                "valuePerHour": 160.0,
-                "oeeStart": 0.65,
-                "noOEE": { "availability": 0.045, "performance": 0.035, "quality": 0.02, "total": 0.1 },
-                "upgrade": { "availability": 0.02, "performance": 0.025, "quality": 0.016, "total": 0.061 },
-                "savings": {
-                    "1": { "t4a": 32000.0, "blue": 20200.0 },
-                    "2": { "t4a": 64000.0, "blue": 40400.0 },
-                    "3": { "t4a": 96000.0, "blue": 60600.0 },
-                    "4": { "t4a": 128000.0, "blue": 80800.0 },
-                    "5": { "t4a": 140160.0, "blue": 88476.0 }
-                }
+            "farmaceutische": {
+                name: "Farmaceutische",
+                oeeStart: 0.65,
+                outputPerHour: { min: 1000, avg: 2000, max: 5000 },
+                marginPerUnit: { min: 0.05, avg: 0.08, max: 0.3 },
+                oeeBlueToT4A: { conservative: 0.02, expected: 0.04, optimistic: 0.07 },
+                oeeNothingToT4A: { conservative: 0.04, expected: 0.09, optimistic: 0.16 }
             },
             "food": {
-                "name": "Food",
-                "valuePerHour": 45.0,
-                "oeeStart": 0.55,
-                "noOEE": { "availability": 0.056, "performance": 0.033, "quality": 0.025, "total": 0.114 },
-                "upgrade": { "availability": 0.025, "performance": 0.031, "quality": 0.02, "total": 0.076 },
-                "savings": {
-                    "1": { "t4a": 11200.0, "blue": 6600.0 },
-                    "2": { "t4a": 22400.0, "blue": 13200.0 },
-                    "3": { "t4a": 33600.0, "blue": 19800.0 },
-                    "4": { "t4a": 44800.0, "blue": 26400.0 },
-                    "5": { "t4a": 49056.0, "blue": 28908.0 }
-                }
+                name: "Food",
+                oeeStart: 0.55,
+                outputPerHour: { min: 5000, avg: 15000, max: 25000 },
+                marginPerUnit: { min: 0.002, avg: 0.003, max: 0.02 },
+                oeeBlueToT4A: { conservative: 0.03, expected: 0.06, optimistic: 0.11 },
+                oeeNothingToT4A: { conservative: 0.06, expected: 0.14, optimistic: 0.25 }
             },
             "bottlers": {
-                "name": "Bottlers",
-                "valuePerHour": 70.0,
-                "oeeStart": 0.6,
-                "noOEE": { "availability": 0.079, "performance": 0.061, "quality": 0.035, "total": 0.175 },
-                "upgrade": { "availability": 0.036, "performance": 0.043, "quality": 0.028, "total": 0.107 },
-                "savings": {
-                    "1": { "t4a": 24600.0, "blue": 14800.0 },
-                    "2": { "t4a": 49200.0, "blue": 29600.0 },
-                    "3": { "t4a": 73800.0, "blue": 44400.0 },
-                    "4": { "t4a": 98400.0, "blue": 59200.0 },
-                    "5": { "t4a": 107748.0, "blue": 64824.0 }
-                }
+                name: "Bottlers",
+                oeeStart: 0.60,
+                outputPerHour: { min: 10000, avg: 35000, max: 60000 },
+                marginPerUnit: { min: 0.001, avg: 0.002, max: 0.008 },
+                oeeBlueToT4A: { conservative: 0.02, expected: 0.05, optimistic: 0.09 },
+                oeeNothingToT4A: { conservative: 0.05, expected: 0.12, optimistic: 0.22 }
             },
             "textiel": {
-                "name": "Textiel",
-                "valuePerHour": 35.0,
-                "oeeStart": 0.6,
-                "noOEE": { "availability": 0.051, "performance": 0.044, "quality": 0.025, "total": 0.12 },
-                "upgrade": { "availability": 0.023, "performance": 0.031, "quality": 0.02, "total": 0.074 },
-                "savings": {
-                    "1": { "t4a": 8800.0, "blue": 5400.0 },
-                    "2": { "t4a": 17600.0, "blue": 10800.0 },
-                    "3": { "t4a": 26400.0, "blue": 16200.0 },
-                    "4": { "t4a": 35200.0, "blue": 21600.0 },
-                    "5": { "t4a": 38544.0, "blue": 23652.0 }
-                }
+                name: "Textiel",
+                oeeStart: 0.60,
+                outputPerHour: { min: 100, avg: 400, max: 800 },
+                marginPerUnit: { min: 0.04, avg: 0.09, max: 0.25 },
+                oeeBlueToT4A: { conservative: 0.02, expected: 0.04, optimistic: 0.07 },
+                oeeNothingToT4A: { conservative: 0.04, expected: 0.09, optimistic: 0.18 }
             },
             "hout": {
-                "name": "Hout",
-                "valuePerHour": 40.0,
-                "oeeStart": 0.6,
-                "noOEE": { "availability": 0.068, "performance": 0.053, "quality": 0.04, "total": 0.161 },
-                "upgrade": { "availability": 0.031, "performance": 0.037, "quality": 0.032, "total": 0.1 },
-                "savings": {
-                    "1": { "t4a": 12000.0, "blue": 7600.0 },
-                    "2": { "t4a": 24000.0, "blue": 15200.0 },
-                    "3": { "t4a": 36000.0, "blue": 22800.0 },
-                    "4": { "t4a": 48000.0, "blue": 30400.0 },
-                    "5": { "t4a": 52560.0, "blue": 33288.0 }
-                }
+                name: "Hout",
+                oeeStart: 0.60,
+                outputPerHour: { min: 50, avg: 120, max: 400 },
+                marginPerUnit: { min: 0.1, avg: 0.33, max: 1.2 },
+                oeeBlueToT4A: { conservative: 0.02, expected: 0.05, optimistic: 0.09 },
+                oeeNothingToT4A: { conservative: 0.04, expected: 0.11, optimistic: 0.20 }
             },
             "papier": {
-                "name": "Papier",
-                "valuePerHour": 80.0,
-                "oeeStart": 0.7,
-                "noOEE": { "availability": 0.05, "performance": 0.038, "quality": 0.038, "total": 0.126 },
-                "upgrade": { "availability": 0.023, "performance": 0.026, "quality": 0.03, "total": 0.079 },
-                "savings": {
-                    "1": { "t4a": 20000.0, "blue": 12600.0 },
-                    "2": { "t4a": 40000.0, "blue": 25200.0 },
-                    "3": { "t4a": 60000.0, "blue": 37800.0 },
-                    "4": { "t4a": 80000.0, "blue": 50400.0 },
-                    "5": { "t4a": 87600.0, "blue": 55188.0 }
-                }
+                name: "Papier",
+                oeeStart: 0.70,
+                outputPerHour: { min: 2, avg: 4, max: 15 },
+                marginPerUnit: { min: 5, avg: 20, max: 40 },
+                oeeBlueToT4A: { conservative: 0.01, expected: 0.03, optimistic: 0.05 },
+                oeeNothingToT4A: { conservative: 0.03, expected: 0.07, optimistic: 0.12 }
             },
             "chemie": {
-                "name": "Chemie",
-                "valuePerHour": 110.0,
-                "oeeStart": 0.7,
-                "noOEE": { "availability": 0.041, "performance": 0.027, "quality": 0.023, "total": 0.091 },
-                "upgrade": { "availability": 0.018, "performance": 0.019, "quality": 0.018, "total": 0.055 },
-                "savings": {
-                    "1": { "t4a": 22000.0, "blue": 13600.0 },
-                    "2": { "t4a": 44000.0, "blue": 27200.0 },
-                    "3": { "t4a": 66000.0, "blue": 40800.0 },
-                    "4": { "t4a": 88000.0, "blue": 54400.0 },
-                    "5": { "t4a": 96360.0, "blue": 59568.0 }
-                }
+                name: "Chemie",
+                oeeStart: 0.70,
+                outputPerHour: { min: 1, avg: 2, max: 10 },
+                marginPerUnit: { min: 15, avg: 55, max: 120 },
+                oeeBlueToT4A: { conservative: 0.01, expected: 0.02, optimistic: 0.04 },
+                oeeNothingToT4A: { conservative: 0.03, expected: 0.06, optimistic: 0.11 }
             },
             "kunststof": {
-                "name": "Kunststof",
-                "valuePerHour": 70.0,
-                "oeeStart": 0.6,
-                "noOEE": { "availability": 0.06, "performance": 0.045, "quality": 0.045, "total": 0.15 },
-                "upgrade": { "availability": 0.027, "performance": 0.032, "quality": 0.036, "total": 0.095 },
-                "savings": {
-                    "1": { "t4a": 21000.0, "blue": 13200.0 },
-                    "2": { "t4a": 42000.0, "blue": 26400.0 },
-                    "3": { "t4a": 63000.0, "blue": 39600.0 },
-                    "4": { "t4a": 84000.0, "blue": 52800.0 },
-                    "5": { "t4a": 91980.0, "blue": 57816.0 }
-                }
+                name: "Kunststof",
+                oeeStart: 0.60,
+                outputPerHour: { min: 3000, avg: 10000, max: 20000 },
+                marginPerUnit: { min: 0.002, avg: 0.007, max: 0.015 },
+                oeeBlueToT4A: { conservative: 0.03, expected: 0.06, optimistic: 0.10 },
+                oeeNothingToT4A: { conservative: 0.06, expected: 0.13, optimistic: 0.24 }
             },
             "metaal": {
-                "name": "Metaal",
-                "valuePerHour": 75.0,
-                "oeeStart": 0.6,
-                "noOEE": { "availability": 0.088, "performance": 0.07, "quality": 0.018, "total": 0.176 },
-                "upgrade": { "availability": 0.04, "performance": 0.049, "quality": 0.014, "total": 0.103 },
-                "savings": {
-                    "1": { "t4a": 26200.0, "blue": 15400.0 },
-                    "2": { "t4a": 52400.0, "blue": 30800.0 },
-                    "3": { "t4a": 78600.0, "blue": 46200.0 },
-                    "4": { "t4a": 104800.0, "blue": 61600.0 },
-                    "5": { "t4a": 114756.0, "blue": 67452.0 }
-                }
+                name: "Metaal",
+                oeeStart: 0.60,
+                outputPerHour: { min: 50, avg: 150, max: 500 },
+                marginPerUnit: { min: 0.2, avg: 0.5, max: 3 },
+                oeeBlueToT4A: { conservative: 0.02, expected: 0.05, optimistic: 0.09 },
+                oeeNothingToT4A: { conservative: 0.04, expected: 0.10, optimistic: 0.19 }
             },
             "machinebouw": {
-                "name": "Machine bouw",
-                "valuePerHour": 85.0,
-                "oeeStart": 0.55,
-                "noOEE": { "availability": 0.1, "performance": 0.091, "quality": 0.034, "total": 0.225 },
-                "upgrade": { "availability": 0.045, "performance": 0.064, "quality": 0.027, "total": 0.136 },
-                "savings": {
-                    "1": { "t4a": 38200.0, "blue": 22990.0 },
-                    "2": { "t4a": 76400.0, "blue": 45980.0 },
-                    "3": { "t4a": 114600.0, "blue": 68970.0 },
-                    "4": { "t4a": 152800.0, "blue": 91960.0 },
-                    "5": { "t4a": 167316.0, "blue": 100696.0 }
-                }
+                name: "Machinebouw",
+                oeeStart: 0.55,
+                outputPerHour: { min: 2, avg: 10, max: 40 },
+                marginPerUnit: { min: 2, avg: 8.5, max: 50 },
+                oeeBlueToT4A: { conservative: 0.01, expected: 0.03, optimistic: 0.06 },
+                oeeNothingToT4A: { conservative: 0.03, expected: 0.07, optimistic: 0.14 }
             },
             "autoentransport": {
-                "name": "Auto en transport",
-                "valuePerHour": 90.0,
-                "oeeStart": 0.7,
-                "noOEE": { "availability": 0.06, "performance": 0.045, "quality": 0.045, "total": 0.15 },
-                "upgrade": { "availability": 0.027, "performance": 0.032, "quality": 0.036, "total": 0.095 },
-                "savings": {
-                    "1": { "t4a": 27000.0, "blue": 17000.0 },
-                    "2": { "t4a": 54000.0, "blue": 34000.0 },
-                    "3": { "t4a": 81000.0, "blue": 51000.0 },
-                    "4": { "t4a": 108000.0, "blue": 68000.0 },
-                    "5": { "t4a": 118260.0, "blue": 74460.0 }
-                }
+                name: "Auto & Transport",
+                oeeStart: 0.70,
+                outputPerHour: { min: 30, avg: 180, max: 400 },
+                marginPerUnit: { min: 0.1, avg: 0.5, max: 2 },
+                oeeBlueToT4A: { conservative: 0.02, expected: 0.04, optimistic: 0.08 },
+                oeeNothingToT4A: { conservative: 0.04, expected: 0.09, optimistic: 0.17 }
             },
             "electronica": {
-                "name": "Electronica",
-                "valuePerHour": 95.0,
-                "oeeStart": 0.6,
-                "noOEE": { "availability": 0.08, "performance": 0.074, "quality": 0.046, "total": 0.2 },
-                "upgrade": { "availability": 0.036, "performance": 0.052, "quality": 0.037, "total": 0.125 },
-                "savings": {
-                    "1": { "t4a": 38000.0, "blue": 23600.0 },
-                    "2": { "t4a": 76000.0, "blue": 47200.0 },
-                    "3": { "t4a": 114000.0, "blue": 70800.0 },
-                    "4": { "t4a": 152000.0, "blue": 94400.0 },
-                    "5": { "t4a": 166440.0, "blue": 103368.0 }
-                }
+                name: "Electronica",
+                oeeStart: 0.60,
+                outputPerHour: { min: 500, avg: 1900, max: 8000 },
+                marginPerUnit: { min: 0.02, avg: 0.05, max: 0.3 },
+                oeeBlueToT4A: { conservative: 0.02, expected: 0.05, optimistic: 0.09 },
+                oeeNothingToT4A: { conservative: 0.05, expected: 0.11, optimistic: 0.21 }
             },
             "olieenrafinaderij": {
-                "name": "Olie en rafinaderij",
-                "valuePerHour": 250.0,
-                "oeeStart": 0.8,
-                "noOEE": { "availability": 0.03, "performance": 0.015, "quality": 0.005, "total": 0.05 },
-                "upgrade": { "availability": 0.014, "performance": 0.011, "quality": 0.004, "total": 0.029 },
-                "savings": {
-                    "1": { "t4a": 25200.0, "blue": 14200.0 },
-                    "2": { "t4a": 50400.0, "blue": 28400.0 },
-                    "3": { "t4a": 75600.0, "blue": 42600.0 },
-                    "4": { "t4a": 100800.0, "blue": 56800.0 },
-                    "5": { "t4a": 110376.0, "blue": 62196.0 }
-                }
+                name: "Olie & Raffinaderij",
+                oeeStart: 0.80,
+                outputPerHour: { min: 10, avg: 50, max: 200 },
+                marginPerUnit: { min: 1, avg: 5, max: 8 },
+                oeeBlueToT4A: { conservative: 0.005, expected: 0.02, optimistic: 0.04 },
+                oeeNothingToT4A: { conservative: 0.02, expected: 0.05, optimistic: 0.09 }
             }
         };
 
-        const workHours = { "1": 2000.0, "2": 4000.0, "3": 6000.0, "4": 8000.0, "5": 8760.0 };
+        const workHours = { "1": 2000, "2": 4000, "3": 6000, "4": 8000, "5": 8760 };
 
-        // Plant data structure
+        // ==========================================
+        // STATE
+        // ==========================================
         let plantData = { 1: { lines: [{ shifts: 3 }] } };
         let numPlants = 1;
         let activePlant = 1;
+        let selectedOutput = 'avg';
+        let selectedMargin = 'avg';
 
-        // Searchable select functionality
-        function initSearchableSelect() {
-            const wrapper = document.getElementById('sectorWrapper');
-            const select = document.getElementById('sector');
-            const search = document.getElementById('sectorSearch');
-            const dropdown = document.getElementById('sectorDropdown');
-
-            // Build dropdown options
-            const options = Array.from(select.options).slice(1);
-            dropdown.innerHTML = options.map(opt =>
-                `<div class="select-option" data-value="${opt.value}">${opt.text}</div>`
-            ).join('');
-
-            // Click on select opens dropdown
-            select.addEventListener('click', (e) => {
-                e.preventDefault();
-                wrapper.classList.add('open', 'searching');
-                search.value = '';
-                search.focus();
-                filterOptions('');
-            });
-
-            // Search input
-            search.addEventListener('input', (e) => {
-                filterOptions(e.target.value);
-            });
-
-            search.addEventListener('blur', () => {
-                setTimeout(() => {
-                    wrapper.classList.remove('open', 'searching');
-                }, 150);
-            });
-
-            // Click on option
-            dropdown.addEventListener('click', (e) => {
-                if (e.target.classList.contains('select-option')) {
-                    select.value = e.target.dataset.value;
-                    wrapper.classList.remove('open', 'searching');
-                    calculate();
-                }
-            });
-
-            function filterOptions(query) {
-                const q = query.toLowerCase();
-                dropdown.querySelectorAll('.select-option').forEach(opt => {
-                    const match = opt.textContent.toLowerCase().includes(q);
-                    opt.classList.toggle('hidden', !match);
-                });
-            }
-        }
-
+        // ==========================================
+        // FORMATTING
+        // ==========================================
         function formatCurrency(value) {
             return new Intl.NumberFormat('nl-NL', {
                 style: 'currency',
@@ -1327,6 +1374,150 @@
             return (value * 100).toFixed(1) + '%';
         }
 
+        function formatOutputValue(value) {
+            return new Intl.NumberFormat('nl-NL').format(value);
+        }
+
+        function formatMarginValue(value) {
+            if (value >= 1) {
+                return '\u20AC' + new Intl.NumberFormat('nl-NL', { minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(value);
+            }
+            if (value >= 0.01) {
+                return '\u20AC' + value.toFixed(2);
+            }
+            return '\u20AC' + value.toFixed(3);
+        }
+
+        // ==========================================
+        // SEARCHABLE SELECT
+        // ==========================================
+        function initSearchableSelect() {
+            const wrapper = document.getElementById('sectorWrapper');
+            const select = document.getElementById('sector');
+            const search = document.getElementById('sectorSearch');
+            const dropdown = document.getElementById('sectorDropdown');
+
+            const options = Array.from(select.options).slice(1);
+            dropdown.innerHTML = options.map(opt =>
+                `<div class="select-option" data-value="${opt.value}">${opt.text}</div>`
+            ).join('');
+
+            select.addEventListener('click', (e) => {
+                e.preventDefault();
+                wrapper.classList.add('open', 'searching');
+                search.value = '';
+                search.focus();
+                filterOptions('');
+            });
+
+            search.addEventListener('input', (e) => {
+                filterOptions(e.target.value);
+            });
+
+            search.addEventListener('blur', () => {
+                setTimeout(() => {
+                    wrapper.classList.remove('open', 'searching');
+                }, 150);
+            });
+
+            dropdown.addEventListener('click', (e) => {
+                if (e.target.classList.contains('select-option')) {
+                    select.value = e.target.dataset.value;
+                    wrapper.classList.remove('open', 'searching');
+                    onSectorChange();
+                }
+            });
+
+            function filterOptions(query) {
+                const q = query.toLowerCase();
+                dropdown.querySelectorAll('.select-option').forEach(opt => {
+                    const match = opt.textContent.toLowerCase().includes(q);
+                    opt.classList.toggle('hidden', !match);
+                });
+            }
+        }
+
+        // ==========================================
+        // SECTOR CHANGE
+        // ==========================================
+        function onSectorChange() {
+            const sector = document.getElementById('sector').value;
+            const productionCard = document.getElementById('productionCard');
+
+            if (sector && sectorData[sector]) {
+                productionCard.style.display = 'block';
+                updateProductionOptions(sectorData[sector]);
+            } else {
+                productionCard.style.display = 'none';
+            }
+
+            // Reset selections to avg
+            selectedOutput = 'avg';
+            selectedMargin = 'avg';
+            updateOptionButtonStates();
+            calculate();
+        }
+
+        function updateProductionOptions(data) {
+            // Output per hour values
+            document.getElementById('outputMin').textContent = formatOutputValue(data.outputPerHour.min);
+            document.getElementById('outputAvg').textContent = formatOutputValue(data.outputPerHour.avg);
+            document.getElementById('outputMax').textContent = formatOutputValue(data.outputPerHour.max);
+
+            // Margin per unit values
+            document.getElementById('marginMin').textContent = formatMarginValue(data.marginPerUnit.min);
+            document.getElementById('marginAvg').textContent = formatMarginValue(data.marginPerUnit.avg);
+            document.getElementById('marginMax').textContent = formatMarginValue(data.marginPerUnit.max);
+
+            // Update computed value
+            updateComputedValue(data);
+        }
+
+        function updateComputedValue(data) {
+            if (!data) return;
+            const output = data.outputPerHour[selectedOutput];
+            const margin = data.marginPerUnit[selectedMargin];
+            const addedValue = output * margin;
+            document.getElementById('addedValueCalc').textContent = formatCurrency(addedValue) + ' /uur';
+        }
+
+        // ==========================================
+        // OPTION BUTTON SELECTION
+        // ==========================================
+        function selectOutput(level) {
+            selectedOutput = level;
+            updateOptionButtonStates();
+            const sector = document.getElementById('sector').value;
+            if (sector && sectorData[sector]) {
+                updateComputedValue(sectorData[sector]);
+            }
+            calculate();
+        }
+
+        function selectMargin(level) {
+            selectedMargin = level;
+            updateOptionButtonStates();
+            const sector = document.getElementById('sector').value;
+            if (sector && sectorData[sector]) {
+                updateComputedValue(sectorData[sector]);
+            }
+            calculate();
+        }
+
+        function updateOptionButtonStates() {
+            // Output buttons
+            document.querySelectorAll('#outputOptions .option-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.level === selectedOutput);
+            });
+            // Margin buttons
+            document.querySelectorAll('#marginOptions .option-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.level === selectedMargin);
+            });
+        }
+
+        // ==========================================
+        // PLANT / LINE MANAGEMENT
+        // ==========================================
         function syncPlantSlider(value) {
             document.getElementById('numPlants').value = value;
             updatePlantTabs();
@@ -1446,6 +1637,9 @@
             calculate();
         }
 
+        // ==========================================
+        // MAIN CALCULATION
+        // ==========================================
         function calculate() {
             const sector = document.getElementById('sector').value;
             const situation = document.getElementById('currentSituation').value;
@@ -1453,15 +1647,14 @@
             const variableCost = parseFloat(document.getElementById('variableCost').value) || 0;
 
             const placeholderCard = document.getElementById('placeholderCard');
-            const bigNumberCard = document.getElementById('bigNumberCard');
+            const scenarioCard = document.getElementById('scenarioCard');
             const sectorCard = document.getElementById('sectorCard');
             const breakEvenCard = document.getElementById('breakEvenCard');
-
             const exportBtn = document.getElementById('exportBtn');
 
             if (!sector || !situation || !sectorData[sector]) {
                 placeholderCard.style.display = 'block';
-                bigNumberCard.style.display = 'none';
+                scenarioCard.style.display = 'none';
                 sectorCard.style.display = 'none';
                 breakEvenCard.style.display = 'none';
                 exportBtn.style.display = 'none';
@@ -1469,64 +1662,84 @@
             }
 
             placeholderCard.style.display = 'none';
-            bigNumberCard.style.display = 'block';
+            scenarioCard.style.display = 'block';
             sectorCard.style.display = 'block';
             breakEvenCard.style.display = 'block';
             exportBtn.style.display = 'inline-flex';
 
             const data = sectorData[sector];
-            const oeeData = situation === 'noOEE' ? data.noOEE : data.upgrade;
+            const output = data.outputPerHour[selectedOutput];
+            const margin = data.marginPerUnit[selectedMargin];
+            const addedValuePerHour = output * margin;
 
-            // Calculate total savings from all plants and lines
-            let totalT4A = 0;
-            let totalBlue = 0;
+            // Get OEE increases based on situation
+            const oeeData = situation === 'noOEE' ? data.oeeNothingToT4A : data.oeeBlueToT4A;
+
+            // Calculate for each scenario
+            const scenarios = ['conservative', 'expected', 'optimistic'];
+            const results = {};
+
             let totalLines = 0;
-
             for (let p = 1; p <= numPlants; p++) {
-                for (let line of plantData[p].lines) {
-                    const savingsPerLine = data.savings[line.shifts];
-                    if (savingsPerLine) {
-                        totalT4A += savingsPerLine.t4a;
-                        totalBlue += savingsPerLine.blue;
-                        totalLines++;
-                    }
-                }
+                totalLines += plantData[p].lines.length;
             }
 
-            const annualT4A = totalT4A / 3;
+            for (const scenario of scenarios) {
+                const oeeIncrease = oeeData[scenario];
+                let totalAnnual = 0;
 
-            // Update big number display
-            document.getElementById('totalSavingsDisplay').textContent = formatCurrency(totalT4A);
+                for (let p = 1; p <= numPlants; p++) {
+                    for (const line of plantData[p].lines) {
+                        const hours = workHours[line.shifts.toString()];
+                        const annual = addedValuePerHour * oeeIncrease * hours;
+                        totalAnnual += annual;
+                    }
+                }
+
+                results[scenario] = {
+                    annual: totalAnnual,
+                    threeYear: totalAnnual * 3,
+                    oeeIncrease: oeeIncrease
+                };
+            }
+
+            // Update scenario cards
             document.getElementById('totalLinesDisplay').textContent = totalLines;
             document.getElementById('totalPlantsDisplay').textContent = numPlants;
 
-            // Update comparison cards
-            document.getElementById('summaryT4A').textContent = formatCurrency(totalT4A);
-            document.getElementById('summaryBlue').textContent = formatCurrency(totalBlue);
+            for (const scenario of scenarios) {
+                document.getElementById(scenario + 'Annual').textContent = formatCurrency(results[scenario].annual);
+                document.getElementById(scenario + 'ThreeYear').textContent = formatCurrency(results[scenario].threeYear);
+                document.getElementById(scenario + 'OEE').textContent = '+' + formatPercentage(results[scenario].oeeIncrease);
+            }
 
-            // Update sector info
+            // Update sector info card
             document.getElementById('sectorNameDisplay').textContent = data.name;
-            document.getElementById('valuePerHour').textContent = '€' + data.valuePerHour;
+            document.getElementById('addedValueDisplay').textContent = formatCurrency(addedValuePerHour) + '/uur';
             document.getElementById('oeeStartDisplay').textContent = formatPercentage(data.oeeStart);
-            document.getElementById('oeeImprovementDisplay').textContent = '+' + formatPercentage(oeeData.total);
+            document.getElementById('oeeImprovementDisplay').textContent = '+' + formatPercentage(oeeData.expected);
 
             // Update value bars
             const currentOEE = data.oeeStart * 100;
-            const potentialOEE = Math.min(95, (data.oeeStart + oeeData.total) * 100);
+            const potentialOEE = Math.min(95, (data.oeeStart + oeeData.expected) * 100);
             const gap = potentialOEE - currentOEE;
 
             document.getElementById('currentBar').style.width = currentOEE + '%';
             document.getElementById('currentBar').textContent = currentOEE.toFixed(0) + '%';
             document.getElementById('potentialBar').style.width = potentialOEE + '%';
             document.getElementById('potentialBar').textContent = potentialOEE.toFixed(0) + '%';
-            document.getElementById('gapLabel').textContent = '+' + gap.toFixed(0) + '%';
+            document.getElementById('gapLabel').textContent = '+' + gap.toFixed(1) + '%';
 
-            // Calculate break-even
-            const yearData = calculateBreakEven(annualT4A, fixedFee, variableCost);
+            // Break-even using Expected scenario
+            const annualBenefit = results.expected.annual;
+            const yearData = calculateBreakEven(annualBenefit, fixedFee, variableCost);
             renderGraph(yearData);
             displayBreakEven(yearData, fixedFee, variableCost);
         }
 
+        // ==========================================
+        // BREAK-EVEN
+        // ==========================================
         function calculateBreakEven(annualBenefit, fixedFee, variableCost) {
             let cumulativeBenefit = 0;
             let cumulativeCost = 0;
@@ -1586,7 +1799,7 @@
             const xScale = (year) => padding.left + (year / maxYear) * graphWidth;
             const yScale = (value) => padding.top + graphHeight - (value / maxValue) * graphHeight;
 
-            // Draw grid
+            // Grid
             ctx.strokeStyle = '#e5e7eb';
             ctx.lineWidth = 1;
 
@@ -1617,7 +1830,7 @@
                 ctx.fillText('Jaar ' + year, x, height - padding.bottom + 20);
             }
 
-            // Draw cost line
+            // Cost line
             ctx.beginPath();
             ctx.strokeStyle = '#ef4444';
             ctx.lineWidth = 3;
@@ -1635,7 +1848,7 @@
             });
             ctx.stroke();
 
-            // Draw benefit line
+            // Benefit line
             ctx.beginPath();
             ctx.strokeStyle = '#10b981';
             ctx.lineWidth = 3;
@@ -1651,7 +1864,7 @@
             });
             ctx.stroke();
 
-            // Find and mark break-even point
+            // Break-even marker
             for (let i = 0; i < yearData.length; i++) {
                 if (yearData[i].cumulativeBenefit >= yearData[i].cumulativeCost) {
                     let breakEvenX, breakEvenY;
@@ -1678,7 +1891,6 @@
                         }
                     }
 
-                    // Draw break-even marker
                     ctx.beginPath();
                     ctx.fillStyle = '#fbbf24';
                     ctx.arc(breakEvenX, breakEvenY, 10, 0, Math.PI * 2);
@@ -1693,7 +1905,7 @@
                 }
             }
 
-            // Draw data points
+            // Data points
             yearData.forEach((d) => {
                 const x = xScale(d.year);
 
@@ -1717,10 +1929,8 @@
 
             for (let i = 0; i < yearData.length; i++) {
                 if (yearData[i].cumulativeBenefit >= yearData[i].cumulativeCost) {
-                    // Calculate total months from start
                     let totalMonths;
                     if (i === 0) {
-                        // Break-even within first year
                         const annualBenefit = yearData[0].cumulativeBenefit;
                         const year1Cost = yearData[0].cumulativeCost;
                         if (annualBenefit > 0) {
@@ -1744,7 +1954,6 @@
                         }
                     }
 
-                    // Display in months
                     if (totalMonths <= 0) totalMonths = 1;
                     breakEvenYear.textContent = totalMonths + ' maanden';
                     return;
@@ -1759,10 +1968,9 @@
             }
         }
 
-        function updateCompanyName() {
-            // Company name is used in PDF export
-        }
-
+        // ==========================================
+        // PDF EXPORT
+        // ==========================================
         function exportPDF() {
             const companyName = document.getElementById('companyName').value || 'Bedrijf';
             const sector = document.getElementById('sector').value;
@@ -1774,46 +1982,58 @@
             }
 
             const data = sectorData[sector];
-            const oeeData = situation === 'noOEE' ? data.noOEE : data.upgrade;
+            const output = data.outputPerHour[selectedOutput];
+            const margin = data.marginPerUnit[selectedMargin];
+            const addedValuePerHour = output * margin;
+            const oeeData = situation === 'noOEE' ? data.oeeNothingToT4A : data.oeeBlueToT4A;
             const fixedFee = parseFloat(document.getElementById('fixedFee').value) || 0;
             const variableCost = parseFloat(document.getElementById('variableCost').value) || 0;
 
-            // Calculate totals
-            let totalT4A = 0;
-            let totalBlue = 0;
+            // Calculate all scenarios
+            const scenarios = ['conservative', 'expected', 'optimistic'];
+            const results = {};
             let totalLines = 0;
 
-            for (let p = 1; p <= numPlants; p++) {
-                for (let line of plantData[p].lines) {
-                    const savingsPerLine = data.savings[line.shifts];
-                    if (savingsPerLine) {
-                        totalT4A += savingsPerLine.t4a;
-                        totalBlue += savingsPerLine.blue;
-                        totalLines++;
+            for (const scenario of scenarios) {
+                let totalAnnual = 0;
+                let lineCount = 0;
+
+                for (let p = 1; p <= numPlants; p++) {
+                    for (const line of plantData[p].lines) {
+                        const hours = workHours[line.shifts.toString()];
+                        totalAnnual += addedValuePerHour * oeeData[scenario] * hours;
+                        lineCount++;
                     }
                 }
+
+                totalLines = lineCount;
+                results[scenario] = {
+                    annual: totalAnnual,
+                    threeYear: totalAnnual * 3,
+                    oeeIncrease: oeeData[scenario]
+                };
             }
 
-            const annualT4A = totalT4A / 3;
+            const expectedAnnual = results.expected.annual;
             const totalCost3Years = fixedFee + (variableCost * 3);
-            const netBenefit = totalT4A - totalCost3Years;
-            const roi = totalCost3Years > 0 ? ((totalT4A / totalCost3Years) * 100).toFixed(0) : '∞';
+            const netBenefit = results.expected.threeYear - totalCost3Years;
+            const roi = totalCost3Years > 0 ? ((results.expected.threeYear / totalCost3Years) * 100).toFixed(0) : '\u221E';
 
-            // Calculate break-even in months
+            // Break-even in months
             let breakEvenMonths = 0;
             let cumulativeBenefit = 0;
             let cumulativeCost = 0;
             for (let year = 1; year <= 20; year++) {
-                cumulativeBenefit += annualT4A;
+                cumulativeBenefit += expectedAnnual;
                 cumulativeCost += (year === 1) ? (fixedFee + variableCost) : variableCost;
                 if (cumulativeBenefit >= cumulativeCost) {
                     if (year === 1) {
-                        breakEvenMonths = Math.ceil((cumulativeCost / annualT4A) * 12);
+                        breakEvenMonths = Math.ceil((cumulativeCost / expectedAnnual) * 12);
                     } else {
-                        const prevBenefit = cumulativeBenefit - annualT4A;
+                        const prevBenefit = cumulativeBenefit - expectedAnnual;
                         const prevCost = cumulativeCost - variableCost;
                         const prevGap = prevCost - prevBenefit;
-                        const gapChange = annualT4A - variableCost;
+                        const gapChange = expectedAnnual - variableCost;
                         const fraction = prevGap / gapChange;
                         breakEvenMonths = Math.ceil(((year - 1) + fraction) * 12);
                     }
@@ -1821,15 +2041,9 @@
                 }
             }
 
-            // Build plant/line summary
-            let plantSummary = '';
-            for (let p = 1; p <= numPlants; p++) {
-                plantSummary += `Plant ${p}: ${plantData[p].lines.length} lijn(en) - `;
-                plantSummary += plantData[p].lines.map((l, i) => `Lijn ${i+1}: ${l.shifts} ploeg(en)`).join(', ');
-                plantSummary += '\n';
-            }
+            const situationLabel = situation === 'noOEE' ? 'Nieuwe klant - Geen OEE' : 'OEE Blue upgrade';
+            const outputLabels = { min: 'Laag', avg: 'Gemiddeld', max: 'Hoog' };
 
-            // Create PDF content using a new window (print to PDF)
             const printContent = `
 <!DOCTYPE html>
 <html>
@@ -1841,7 +2055,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', Arial, sans-serif; color: #1e293b; line-height: 1.5; font-size: 11pt; }
 
-        /* Header */
         .header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 15px; border-bottom: 3px solid #00AAFF; margin-bottom: 25px; }
         .header-left h1 { font-size: 22pt; font-weight: 800; color: #0f172a; }
         .header-left h1 span { color: #00AAFF; }
@@ -1849,9 +2062,7 @@
         .header-right { text-align: right; font-size: 9pt; color: #64748b; }
         .header-right .brand { font-weight: 700; color: #0f172a; font-size: 10pt; }
 
-        /* Executive Summary Box */
         .exec-summary { background: #0f172a; color: #ffffff; padding: 20px 25px; border-radius: 8px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
-        .exec-summary .main-value { }
         .exec-summary .main-value .label { font-size: 9pt; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.8; }
         .exec-summary .main-value .number { font-size: 28pt; font-weight: 800; color: #00AAFF; }
         .exec-summary .metrics { display: flex; gap: 30px; }
@@ -1861,29 +2072,25 @@
         .exec-summary .metric.green .value { color: #4ade80; }
         .exec-summary .metric.cyan .value { color: #00AAFF; }
 
-        /* Two Column Layout */
         .content-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 25px; }
-
-        /* Sections */
         .section { margin-bottom: 20px; }
         .section-title { font-size: 11pt; font-weight: 700; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; margin-bottom: 12px; }
 
-        /* Info Table */
         .info-table { width: 100%; }
         .info-table tr td { padding: 6px 0; border-bottom: 1px solid #f1f5f9; font-size: 10pt; }
         .info-table tr:last-child td { border-bottom: none; }
         .info-table .label { color: #64748b; width: 50%; }
         .info-table .value { font-weight: 600; color: #0f172a; text-align: right; }
 
-        /* Stats Grid */
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .stat-card { background: #f8fafc; padding: 12px; border-radius: 6px; text-align: center; }
-        .stat-card .value { font-size: 14pt; font-weight: 700; color: #0f172a; }
-        .stat-card .label { font-size: 8pt; color: #64748b; text-transform: uppercase; margin-top: 2px; }
-        .stat-card.highlight { background: #ecfdf5; }
-        .stat-card.highlight .value { color: #059669; }
+        .scenario-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+        .scenario-table th { text-align: center; padding: 10px; font-size: 9pt; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b; border-bottom: 2px solid #e5e7eb; }
+        .scenario-table th.expected { color: #00AAFF; background: #f0f9ff; border-radius: 6px 6px 0 0; }
+        .scenario-table td { text-align: center; padding: 8px; font-size: 10pt; border-bottom: 1px solid #f1f5f9; }
+        .scenario-table td.expected { background: #f0f9ff; }
+        .scenario-table .row-label { text-align: left; color: #64748b; font-size: 9pt; }
+        .scenario-table .value-row td { font-weight: 700; font-size: 12pt; color: #0f172a; }
+        .scenario-table .value-row td.expected { color: #0284c7; }
 
-        /* Financials Table */
         .financials { background: #f8fafc; border-radius: 8px; padding: 15px; }
         .financials-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e5e7eb; }
         .financials-row:last-child { border-bottom: none; }
@@ -1893,13 +2100,11 @@
         .financials-row.total .label { color: #fff; font-weight: 600; }
         .financials-row.total .value { color: #4ade80; font-size: 12pt; }
 
-        /* Plant Config */
         .plant-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
         .plant-card { background: #f8fafc; padding: 10px 12px; border-radius: 6px; border-left: 3px solid #00AAFF; }
         .plant-card .plant-name { font-weight: 600; font-size: 10pt; color: #0f172a; margin-bottom: 4px; }
         .plant-card .plant-lines { font-size: 9pt; color: #64748b; }
 
-        /* Footer */
         .footer { margin-top: 30px; padding-top: 15px; border-top: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; font-size: 8pt; color: #94a3b8; }
         .footer-brand { font-weight: 600; color: #64748b; }
 
@@ -1922,8 +2127,8 @@
 
     <div class="exec-summary">
         <div class="main-value">
-            <div class="label">Totale Waarde Verhoging (3 jaar)</div>
-            <div class="number">${formatCurrency(totalT4A)}</div>
+            <div class="label">Verwachte Besparing (per jaar)</div>
+            <div class="number">${formatCurrency(expectedAnnual)}</div>
         </div>
         <div class="metrics">
             <div class="metric green">
@@ -1932,13 +2137,47 @@
             </div>
             <div class="metric cyan">
                 <div class="value">${roi}%</div>
-                <div class="label">ROI</div>
+                <div class="label">ROI (3 jaar)</div>
             </div>
             <div class="metric green">
                 <div class="value">${formatCurrency(netBenefit)}</div>
-                <div class="label">Netto Voordeel</div>
+                <div class="label">Netto Voordeel (3 jaar)</div>
             </div>
         </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Scenario Analyse</div>
+        <table class="scenario-table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Conservatief</th>
+                    <th class="expected">Verwacht</th>
+                    <th>Optimistisch</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="value-row">
+                    <td class="row-label">Per Jaar</td>
+                    <td>${formatCurrency(results.conservative.annual)}</td>
+                    <td class="expected">${formatCurrency(results.expected.annual)}</td>
+                    <td>${formatCurrency(results.optimistic.annual)}</td>
+                </tr>
+                <tr class="value-row">
+                    <td class="row-label">Over 3 Jaar</td>
+                    <td>${formatCurrency(results.conservative.threeYear)}</td>
+                    <td class="expected">${formatCurrency(results.expected.threeYear)}</td>
+                    <td>${formatCurrency(results.optimistic.threeYear)}</td>
+                </tr>
+                <tr>
+                    <td class="row-label">OEE Verbetering</td>
+                    <td>+${formatPercentage(results.conservative.oeeIncrease)}</td>
+                    <td class="expected">+${formatPercentage(results.expected.oeeIncrease)}</td>
+                    <td>+${formatPercentage(results.optimistic.oeeIncrease)}</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
     <div class="content-grid">
@@ -1948,7 +2187,10 @@
                 <table class="info-table">
                     <tr><td class="label">Bedrijf</td><td class="value">${companyName}</td></tr>
                     <tr><td class="label">Sector</td><td class="value">${data.name}</td></tr>
-                    <tr><td class="label">OEE Situatie</td><td class="value">${situation === 'noOEE' ? 'Geen OEE meting' : 'Upgrade bestaande'}</td></tr>
+                    <tr><td class="label">OEE Situatie</td><td class="value">${situationLabel}</td></tr>
+                    <tr><td class="label">Output per uur</td><td class="value">${formatOutputValue(output)} (${outputLabels[selectedOutput]})</td></tr>
+                    <tr><td class="label">Marge per eenheid</td><td class="value">${formatMarginValue(margin)} (${outputLabels[selectedMargin]})</td></tr>
+                    <tr><td class="label">Waarde per uur</td><td class="value">${formatCurrency(addedValuePerHour)}</td></tr>
                     <tr><td class="label">Aantal Plants</td><td class="value">${numPlants}</td></tr>
                     <tr><td class="label">Totaal Lijnen</td><td class="value">${totalLines}</td></tr>
                 </table>
@@ -1957,37 +2199,14 @@
             <div class="section">
                 <div class="section-title">OEE Verbetering</div>
                 <table class="info-table">
-                    <tr><td class="label">Waarde per uur</td><td class="value">€${data.valuePerHour}</td></tr>
                     <tr><td class="label">Huidige OEE</td><td class="value">${(data.oeeStart * 100).toFixed(0)}%</td></tr>
-                    <tr><td class="label">Verbetering</td><td class="value">+${(oeeData.total * 100).toFixed(1)}%</td></tr>
-                    <tr><td class="label">Potentieel OEE</td><td class="value">${Math.min(95, (data.oeeStart + oeeData.total) * 100).toFixed(0)}%</td></tr>
+                    <tr><td class="label">Verwachte verbetering</td><td class="value">+${formatPercentage(oeeData.expected)}</td></tr>
+                    <tr><td class="label">Potentieel OEE</td><td class="value">${Math.min(95, (data.oeeStart + oeeData.expected) * 100).toFixed(0)}%</td></tr>
                 </table>
             </div>
         </div>
 
         <div>
-            <div class="section">
-                <div class="section-title">Waarde Verhoging</div>
-                <div class="stats-grid">
-                    <div class="stat-card highlight">
-                        <div class="value">${formatCurrency(totalT4A)}</div>
-                        <div class="label">T4A/P4A (3 jaar)</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="value">${formatCurrency(totalBlue)}</div>
-                        <div class="label">Blue-T4A (3 jaar)</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="value">${formatCurrency(annualT4A)}</div>
-                        <div class="label">Per Jaar (T4A)</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="value">${formatCurrency(totalBlue / 3)}</div>
-                        <div class="label">Per Jaar (Blue)</div>
-                    </div>
-                </div>
-            </div>
-
             <div class="section">
                 <div class="section-title">Investering</div>
                 <div class="financials">
@@ -2004,23 +2223,23 @@
                         <span class="value">${formatCurrency(totalCost3Years)}</span>
                     </div>
                     <div class="financials-row total">
-                        <span class="label">Netto Voordeel (3 jaar)</span>
+                        <span class="label">Netto Voordeel (3 jaar, verwacht)</span>
                         <span class="value">${formatCurrency(netBenefit)}</span>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <div class="section">
-        <div class="section-title">Plants & Lijnen Configuratie</div>
-        <div class="plant-grid">
-            ${Array.from({length: numPlants}, (_, i) => i + 1).map(p => `
-                <div class="plant-card">
-                    <div class="plant-name">Plant ${p}</div>
-                    <div class="plant-lines">${plantData[p].lines.map((l, j) => `Lijn ${j+1}: ${l.shifts} ploeg${l.shifts > 1 ? 'en' : ''}`).join(' | ')}</div>
+            <div class="section">
+                <div class="section-title">Plants & Lijnen</div>
+                <div class="plant-grid">
+                    ${Array.from({length: numPlants}, (_, i) => i + 1).map(p => `
+                        <div class="plant-card">
+                            <div class="plant-name">Plant ${p}</div>
+                            <div class="plant-lines">${plantData[p].lines.map((l, j) => `Lijn ${j+1}: ${l.shifts} ploeg${l.shifts > 1 ? 'en' : ''}`).join(' | ')}</div>
+                        </div>
+                    `).join('')}
                 </div>
-            `).join('')}
+            </div>
         </div>
     </div>
 
@@ -2031,7 +2250,6 @@
 </body>
 </html>`;
 
-            // Open print window
             const printWindow = window.open('', '_blank');
             printWindow.document.write(printContent);
             printWindow.document.close();
@@ -2041,7 +2259,9 @@
             }, 250);
         }
 
-        // Initialize
+        // ==========================================
+        // INITIALIZE
+        // ==========================================
         document.addEventListener('DOMContentLoaded', function() {
             initSearchableSelect();
             updatePlantTabs();
