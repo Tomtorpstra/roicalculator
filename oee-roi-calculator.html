@@ -593,9 +593,15 @@
             border: 2px solid #e5e7eb;
             background: #fff;
             transition: all 0.3s;
+            cursor: pointer;
         }
 
-        .scenario-card.expected {
+        .scenario-card:hover {
+            border-color: #93c5fd;
+            background: #f8fafc;
+        }
+
+        .scenario-card.selected {
             border-color: #00AAFF;
             background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
             transform: scale(1.03);
@@ -611,7 +617,7 @@
             margin-bottom: 10px;
         }
 
-        .scenario-card.expected .scenario-label {
+        .scenario-card.selected .scenario-label {
             color: #00AAFF;
         }
 
@@ -634,7 +640,7 @@
             color: #0f172a;
         }
 
-        .scenario-card.expected .scenario-annual {
+        .scenario-card.selected .scenario-annual {
             color: #0284c7;
             font-size: 1.7rem;
         }
@@ -652,7 +658,7 @@
             width: 60%;
         }
 
-        .scenario-card.expected .scenario-divider {
+        .scenario-card.selected .scenario-divider {
             background: #bae6fd;
         }
 
@@ -662,7 +668,7 @@
             color: #374151;
         }
 
-        .scenario-card.expected .scenario-three-year {
+        .scenario-card.selected .scenario-three-year {
             color: #0369a1;
         }
 
@@ -941,7 +947,7 @@
                 grid-template-columns: 1fr;
             }
 
-            .scenario-card.expected {
+            .scenario-card.selected {
                 transform: none;
             }
 
@@ -1050,7 +1056,7 @@
                         </div>
                         <div>
                             <h2 data-i18n="cardProductionTitle">Productie Parameters</h2>
-                            <p class="card-subtitle" data-i18n="cardProductionSubtitle">Selecteer uw output en marge op basis van sector benchmarks</p>
+                            <p class="card-subtitle" data-i18n="cardProductionSubtitle">Stel standaard output en marge in voor alle lijnen</p>
                         </div>
                     </div>
 
@@ -1125,7 +1131,7 @@
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
                         </div>
                         <div>
-                            <h2 data-i18n="cardCostsTitle">Project Kosten</h2>
+                            <h2 data-i18n="cardCostsTitle">Project kosten uit offerte</h2>
                             <p class="card-subtitle" data-i18n="cardCostsSubtitle">Eenmalige en jaarlijkse kosten voor ROI berekening</p>
                         </div>
                     </div>
@@ -1138,7 +1144,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="variableCost" data-i18n="variableCostLabel">Variabele Kosten (Per Jaar)</label>
+                            <label for="variableCost" data-i18n="variableCostLabel">Onderhoudskosten (per jaar)</label>
                             <div class="currency-input">
                                 <input type="number" id="variableCost" min="0" value="3000" onchange="calculate()" oninput="calculate()" data-i18n-placeholder="variableCostPlaceholder" placeholder="Bijv. 3.000">
                             </div>
@@ -1172,7 +1178,7 @@
                     </div>
 
                     <div class="scenario-grid">
-                        <div class="scenario-card conservative">
+                        <div class="scenario-card" data-scenario="conservative" onclick="selectScenario('conservative')">
                             <div class="scenario-label" data-i18n="conservative">Conservatief</div>
                             <div class="scenario-annual" id="conservativeAnnual">-</div>
                             <div class="scenario-annual-label" data-i18n="perYear">per jaar</div>
@@ -1184,7 +1190,7 @@
                             <div class="scenario-oee-label" data-i18n="oeeImprovement">OEE verbetering</div>
                         </div>
 
-                        <div class="scenario-card expected">
+                        <div class="scenario-card selected" data-scenario="expected" onclick="selectScenario('expected')">
                             <div class="scenario-badge" data-i18n="expected">Verwacht</div>
                             <div class="scenario-annual" id="expectedAnnual">-</div>
                             <div class="scenario-annual-label" data-i18n="perYear">per jaar</div>
@@ -1196,7 +1202,7 @@
                             <div class="scenario-oee-label" data-i18n="oeeImprovement">OEE verbetering</div>
                         </div>
 
-                        <div class="scenario-card optimistic">
+                        <div class="scenario-card" data-scenario="optimistic" onclick="selectScenario('optimistic')">
                             <div class="scenario-label" data-i18n="optimistic">Optimistisch</div>
                             <div class="scenario-annual" id="optimisticAnnual">-</div>
                             <div class="scenario-annual-label" data-i18n="perYear">per jaar</div>
@@ -1290,7 +1296,7 @@
                             <span data-i18n="cumulativeCosts">Cumulatieve Kosten</span>
                         </div>
                     </div>
-                    <div class="break-even-note" data-i18n="breakEvenNote">Gebaseerd op het verwachte scenario</div>
+                    <div class="break-even-note">Gebaseerd op het verwachte scenario</div>
                 </div>
             </div>
         </div>
@@ -1323,7 +1329,7 @@
                 situationBlue: 'OEE Blue upgrade (naar T4A/P4A)',
                 numPlantsLabel: 'Aantal Plants',
                 cardProductionTitle: 'Productie Parameters',
-                cardProductionSubtitle: 'Selecteer uw output en marge op basis van sector benchmarks',
+                cardProductionSubtitle: 'Stel standaard output en marge in voor alle lijnen',
                 outputLabel: 'Maximal output per uur',
                 benchmarkNote: '(sector benchmark)',
                 optionLow: 'Laag',
@@ -1339,16 +1345,18 @@
                 cardPlantsSubtitle: 'Configureer lijnen per plant met individuele ploegen',
                 thLine: 'Lijn',
                 thShiftRegime: 'Ploegen Regime',
+                thOutput: 'Output',
+                thMargin: 'Marge',
                 thAction: 'Actie',
                 shift: 'ploeg',
                 shifts: 'ploegen',
                 removeBtn: 'Verwijderen',
                 addLineBtn: '+ Lijn Toevoegen',
-                cardCostsTitle: 'Project Kosten',
+                cardCostsTitle: 'Project kosten uit offerte',
                 cardCostsSubtitle: 'Eenmalige en jaarlijkse kosten voor ROI berekening',
                 fixedFeeLabel: 'Vaste Kosten (Eenmalig)',
                 fixedFeePlaceholder: 'Bijv. 15.000',
-                variableCostLabel: 'Variabele Kosten (Per Jaar)',
+                variableCostLabel: 'Onderhoudskosten (per jaar)',
                 variableCostPlaceholder: 'Bijv. 3.000',
                 costsInfoText: 'Standaard waarden zijn geschatte gemiddelden. Pas aan naar uw situatie.',
                 placeholderTitle: 'Vul uw gegevens in',
@@ -1371,7 +1379,8 @@
                 cardBreakEvenTitle: 'Break-even Analyse',
                 cumulativeBenefit: 'Cumulatief Voordeel',
                 cumulativeCosts: 'Cumulatieve Kosten',
-                breakEvenNote: 'Gebaseerd op het verwachte scenario',
+                breakEvenNotePrefix: 'Gebaseerd op het',
+                breakEvenNoteSuffix: 'scenario',
                 months: 'maanden',
                 overMonths: '> 240 maanden',
                 yearLabel: 'Jaar',
@@ -1402,7 +1411,7 @@
                 pdfPotentialOee: 'Potentieel OEE',
                 pdfInvestment: 'Investering',
                 pdfFixedCosts: 'Vaste kosten (eenmalig)',
-                pdfVariableCosts: 'Variabele kosten (per jaar)',
+                pdfVariableCosts: 'Onderhoudskosten (per jaar)',
                 pdfTotalCosts3yr: 'Totale kosten (3 jaar)',
                 pdfNetBenefitExpected: 'Netto Voordeel (3 jaar, verwacht)',
                 pdfPlantsLines: 'Plants & Lijnen',
@@ -1432,7 +1441,7 @@
                 situationBlue: 'OEE Blue upgrade (to T4A/P4A)',
                 numPlantsLabel: 'Number of Plants',
                 cardProductionTitle: 'Production Parameters',
-                cardProductionSubtitle: 'Select your output and margin based on sector benchmarks',
+                cardProductionSubtitle: 'Set default output and margin for all lines',
                 outputLabel: 'Maximum output per hour',
                 benchmarkNote: '(sector benchmark)',
                 optionLow: 'Low',
@@ -1448,16 +1457,18 @@
                 cardPlantsSubtitle: 'Configure lines per plant with individual shifts',
                 thLine: 'Line',
                 thShiftRegime: 'Shift Regime',
+                thOutput: 'Output',
+                thMargin: 'Margin',
                 thAction: 'Action',
                 shift: 'shift',
                 shifts: 'shifts',
                 removeBtn: 'Remove',
                 addLineBtn: '+ Add Line',
-                cardCostsTitle: 'Project Costs',
+                cardCostsTitle: 'Project costs from quotation',
                 cardCostsSubtitle: 'One-time and annual costs for ROI calculation',
                 fixedFeeLabel: 'Fixed Costs (One-time)',
                 fixedFeePlaceholder: 'E.g. 15,000',
-                variableCostLabel: 'Variable Costs (Per Year)',
+                variableCostLabel: 'Maintenance Costs (per year)',
                 variableCostPlaceholder: 'E.g. 3,000',
                 costsInfoText: 'Default values are estimated averages. Adjust to your situation.',
                 placeholderTitle: 'Enter your details',
@@ -1480,7 +1491,8 @@
                 cardBreakEvenTitle: 'Break-even Analysis',
                 cumulativeBenefit: 'Cumulative Benefit',
                 cumulativeCosts: 'Cumulative Costs',
-                breakEvenNote: 'Based on the expected scenario',
+                breakEvenNotePrefix: 'Based on the',
+                breakEvenNoteSuffix: 'scenario',
                 months: 'months',
                 overMonths: '> 240 months',
                 yearLabel: 'Year',
@@ -1511,7 +1523,7 @@
                 pdfPotentialOee: 'Potential OEE',
                 pdfInvestment: 'Investment',
                 pdfFixedCosts: 'Fixed costs (one-time)',
-                pdfVariableCosts: 'Variable costs (per year)',
+                pdfVariableCosts: 'Maintenance costs (per year)',
                 pdfTotalCosts3yr: 'Total costs (3 years)',
                 pdfNetBenefitExpected: 'Net Benefit (3 years, expected)',
                 pdfPlantsLines: 'Plants & Lines',
@@ -1678,11 +1690,12 @@
         // ==========================================
         // STATE
         // ==========================================
-        let plantData = { 1: { lines: [{ shifts: 3 }] } };
+        let plantData = { 1: { lines: [{ shifts: 3, outputLevel: 'avg', marginLevel: 'avg' }] } };
         let numPlants = 1;
         let activePlant = 1;
         let selectedOutput = 'avg';
         let selectedMargin = 'avg';
+        let selectedScenario = 'expected';
 
         // ==========================================
         // FORMATTING
@@ -1788,7 +1801,16 @@
             // Reset selections to avg
             selectedOutput = 'avg';
             selectedMargin = 'avg';
+            for (let p = 1; p <= numPlants; p++) {
+                if (plantData[p]) {
+                    for (const line of plantData[p].lines) {
+                        line.outputLevel = 'avg';
+                        line.marginLevel = 'avg';
+                    }
+                }
+            }
             updateOptionButtonStates();
+            renderPlantContent();
             calculate();
         }
 
@@ -1820,7 +1842,14 @@
         // ==========================================
         function selectOutput(level) {
             selectedOutput = level;
+            // Update all lines to this output level
+            for (let p = 1; p <= numPlants; p++) {
+                for (const line of plantData[p].lines) {
+                    line.outputLevel = level;
+                }
+            }
             updateOptionButtonStates();
+            renderPlantContent();
             const sector = document.getElementById('sector').value;
             if (sector && sectorData[sector]) {
                 updateComputedValue(sectorData[sector]);
@@ -1830,11 +1859,28 @@
 
         function selectMargin(level) {
             selectedMargin = level;
+            // Update all lines to this margin level
+            for (let p = 1; p <= numPlants; p++) {
+                for (const line of plantData[p].lines) {
+                    line.marginLevel = level;
+                }
+            }
             updateOptionButtonStates();
+            renderPlantContent();
             const sector = document.getElementById('sector').value;
             if (sector && sectorData[sector]) {
                 updateComputedValue(sectorData[sector]);
             }
+            calculate();
+        }
+
+        function selectScenario(scenario) {
+            selectedScenario = scenario;
+            document.querySelectorAll('.scenario-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            const selectedCard = document.querySelector(`.scenario-card[data-scenario="${scenario}"]`);
+            if (selectedCard) selectedCard.classList.add('selected');
             calculate();
         }
 
@@ -1864,7 +1910,7 @@
 
             for (let p = 1; p <= numPlants; p++) {
                 if (!plantData[p]) {
-                    plantData[p] = { lines: [{ shifts: 3 }] };
+                    plantData[p] = { lines: [{ shifts: 3, outputLevel: 'avg', marginLevel: 'avg' }] };
                 }
             }
 
@@ -1914,6 +1960,8 @@
                         <thead>
                             <tr>
                                 <th>${t('thLine')}</th>
+                                <th>${t('thOutput')}</th>
+                                <th>${t('thMargin')}</th>
                                 <th>${t('thShiftRegime')}</th>
                                 <th>${t('thAction')}</th>
                             </tr>
@@ -1923,9 +1971,25 @@
 
                 plantData[p].lines.forEach((line, index) => {
                     const shiftWord = (s) => s === 1 ? t('shift') : t('shifts');
+                    const ol = line.outputLevel || 'avg';
+                    const ml = line.marginLevel || 'avg';
                     tableHTML += `
                         <tr>
                             <td class="line-number">${index + 1}</td>
+                            <td>
+                                <select onchange="updateLineOutput(${p}, ${index}, this.value)">
+                                    <option value="min" ${ol === 'min' ? 'selected' : ''}>${t('optionLow')}</option>
+                                    <option value="avg" ${ol === 'avg' ? 'selected' : ''}>${t('optionAvg')}</option>
+                                    <option value="max" ${ol === 'max' ? 'selected' : ''}>${t('optionHigh')}</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select onchange="updateLineMargin(${p}, ${index}, this.value)">
+                                    <option value="min" ${ml === 'min' ? 'selected' : ''}>${t('optionLow')}</option>
+                                    <option value="avg" ${ml === 'avg' ? 'selected' : ''}>${t('optionAvg')}</option>
+                                    <option value="max" ${ml === 'max' ? 'selected' : ''}>${t('optionHigh')}</option>
+                                </select>
+                            </td>
                             <td>
                                 <select onchange="updateLineShifts(${p}, ${index}, this.value)">
                                     <option value="1" ${line.shifts === 1 ? 'selected' : ''}>1 ${shiftWord(1)}</option>
@@ -1954,7 +2018,7 @@
         }
 
         function addLine(plantNum) {
-            plantData[plantNum].lines.push({ shifts: 3 });
+            plantData[plantNum].lines.push({ shifts: 3, outputLevel: selectedOutput, marginLevel: selectedMargin });
             renderPlantContent();
             calculate();
         }
@@ -1969,6 +2033,16 @@
 
         function updateLineShifts(plantNum, lineIndex, shifts) {
             plantData[plantNum].lines[lineIndex].shifts = parseInt(shifts);
+            calculate();
+        }
+
+        function updateLineOutput(plantNum, lineIndex, level) {
+            plantData[plantNum].lines[lineIndex].outputLevel = level;
+            calculate();
+        }
+
+        function updateLineMargin(plantNum, lineIndex, level) {
+            plantData[plantNum].lines[lineIndex].marginLevel = level;
             calculate();
         }
 
@@ -2003,18 +2077,16 @@
             exportBtn.style.display = 'inline-flex';
 
             const data = sectorData[sector];
-            const output = data.outputPerHour[selectedOutput];
-            const margin = data.marginPerUnit[selectedMargin];
-            const addedValuePerHour = output * margin;
 
             // Get OEE increases based on situation
             const oeeData = situation === 'noOEE' ? data.oeeNothingToT4A : data.oeeBlueToT4A;
 
-            // Calculate for each scenario
+            // Calculate for each scenario (per-line output/margin)
             const scenarios = ['conservative', 'expected', 'optimistic'];
             const results = {};
 
             let totalLines = 0;
+            let totalAddedValue = 0;
             for (let p = 1; p <= numPlants; p++) {
                 totalLines += plantData[p].lines.length;
             }
@@ -2026,8 +2098,12 @@
                 for (let p = 1; p <= numPlants; p++) {
                     for (const line of plantData[p].lines) {
                         const hours = workHours[line.shifts.toString()];
-                        const annual = addedValuePerHour * oeeIncrease * hours;
+                        const lineOutput = data.outputPerHour[line.outputLevel || 'avg'];
+                        const lineMargin = data.marginPerUnit[line.marginLevel || 'avg'];
+                        const lineAddedValue = lineOutput * lineMargin;
+                        const annual = lineAddedValue * oeeIncrease * hours;
                         totalAnnual += annual;
+                        if (scenario === 'conservative') totalAddedValue += lineAddedValue;
                     }
                 }
 
@@ -2037,6 +2113,8 @@
                     oeeIncrease: oeeIncrease
                 };
             }
+
+            const avgAddedValue = totalLines > 0 ? totalAddedValue / totalLines : 0;
 
             // Update scenario cards
             document.getElementById('totalLinesDisplay').textContent = totalLines;
@@ -2050,13 +2128,13 @@
 
             // Update sector info card
             document.getElementById('sectorNameDisplay').textContent = data.name;
-            document.getElementById('addedValueDisplay').textContent = formatCurrency(addedValuePerHour) + t('perHourSuffix');
+            document.getElementById('addedValueDisplay').textContent = formatCurrency(avgAddedValue) + t('perHourSuffix');
             document.getElementById('oeeStartDisplay').textContent = formatPercentage(data.oeeStart);
-            document.getElementById('oeeImprovementDisplay').textContent = '+' + formatPercentage(oeeData.expected);
+            document.getElementById('oeeImprovementDisplay').textContent = '+' + formatPercentage(oeeData[selectedScenario]);
 
-            // Update value bars
+            // Update value bars using selected scenario
             const currentOEE = data.oeeStart * 100;
-            const potentialOEE = Math.min(95, (data.oeeStart + oeeData.expected) * 100);
+            const potentialOEE = Math.min(95, (data.oeeStart + oeeData[selectedScenario]) * 100);
             const gap = potentialOEE - currentOEE;
 
             document.getElementById('currentBar').style.width = currentOEE + '%';
@@ -2065,8 +2143,15 @@
             document.getElementById('potentialBar').textContent = potentialOEE.toFixed(0) + '%';
             document.getElementById('gapLabel').textContent = '+' + gap.toFixed(1) + '%';
 
-            // Break-even using Expected scenario
-            const annualBenefit = results.expected.annual;
+            // Update break-even note with selected scenario name
+            const scenarioLabels = { conservative: t('conservative'), expected: t('expected'), optimistic: t('optimistic') };
+            const breakEvenNoteEl = document.querySelector('.break-even-note');
+            if (breakEvenNoteEl) {
+                breakEvenNoteEl.textContent = t('breakEvenNotePrefix') + ' ' + scenarioLabels[selectedScenario].toLowerCase() + ' ' + t('breakEvenNoteSuffix');
+            }
+
+            // Break-even using selected scenario
+            const annualBenefit = results[selectedScenario].annual;
             const yearData = calculateBreakEven(annualBenefit, fixedFee, variableCost);
             renderGraph(yearData);
             displayBreakEven(yearData, fixedFee, variableCost);
@@ -2076,16 +2161,19 @@
         // BREAK-EVEN
         // ==========================================
         function calculateBreakEven(annualBenefit, fixedFee, variableCost) {
-            let cumulativeBenefit = 0;
-            let cumulativeCost = 0;
+            const MIN_YEARS = 5;
             let yearData = [];
-            let year = 0;
+
+            // Year 0: upfront investment, no benefit yet
+            yearData.push({ year: 0, cumulativeBenefit: 0, cumulativeCost: fixedFee });
+
+            let cumulativeBenefit = 0;
+            let cumulativeCost = fixedFee;
             let breakEvenReached = false;
 
-            while (year < 20) {
-                year++;
+            for (let year = 1; year <= 20; year++) {
                 cumulativeBenefit += annualBenefit;
-                cumulativeCost += (year === 1) ? (fixedFee + variableCost) : variableCost;
+                cumulativeCost += variableCost;
 
                 yearData.push({
                     year: year,
@@ -2097,15 +2185,63 @@
                     breakEvenReached = true;
                 }
 
-                if (breakEvenReached && year >= yearData.find(d => d.cumulativeBenefit >= d.cumulativeCost).year + 2) {
-                    break;
-                }
-                if (fixedFee === 0 && variableCost === 0 && year >= 5) {
-                    break;
+                if (year >= MIN_YEARS) {
+                    if (breakEvenReached) {
+                        const beYear = yearData.find(d => d.year > 0 && d.cumulativeBenefit >= d.cumulativeCost).year;
+                        if (year >= beYear + 2) break;
+                    }
+                    if (fixedFee === 0 && variableCost === 0) break;
                 }
             }
 
             return yearData;
+        }
+
+        // S-curve: generates smooth monthly points using sigmoid redistribution
+        function generateSCurvePoints(yearData) {
+            if (yearData.length < 2) return yearData;
+
+            const maxYear = yearData[yearData.length - 1].year;
+            const totalBenefit = yearData[yearData.length - 1].cumulativeBenefit;
+
+            if (totalBenefit <= 0 || maxYear <= 0) return yearData;
+
+            const points = [];
+            const steps = maxYear * 12; // monthly resolution
+
+            // Sigmoid parameters
+            const k = 6;
+            const x0 = 0.35;
+            const sigmoid = (val) => 1 / (1 + Math.exp(-k * (val - x0)));
+            const sigStart = sigmoid(0);
+            const sigEnd = sigmoid(1);
+            const normalizedSigmoid = (val) => (sigmoid(val) - sigStart) / (sigEnd - sigStart);
+
+            for (let step = 0; step <= steps; step++) {
+                const tNorm = step / steps;
+                const yearFrac = tNorm * maxYear;
+
+                // S-curve benefit
+                const benefitAtPoint = totalBenefit * normalizedSigmoid(tNorm);
+
+                // Linear cost interpolation from yearData
+                let costAtPoint = 0;
+                for (let i = 0; i < yearData.length - 1; i++) {
+                    if (yearFrac >= yearData[i].year && yearFrac <= yearData[i + 1].year) {
+                        const span = yearData[i + 1].year - yearData[i].year;
+                        const frac = span > 0 ? (yearFrac - yearData[i].year) / span : 0;
+                        costAtPoint = yearData[i].cumulativeCost + frac * (yearData[i + 1].cumulativeCost - yearData[i].cumulativeCost);
+                        break;
+                    }
+                }
+                if (yearFrac >= yearData[yearData.length - 1].year) {
+                    costAtPoint = yearData[yearData.length - 1].cumulativeCost;
+                }
+
+                points.push({ year: yearFrac, cumulativeBenefit: benefitAtPoint, cumulativeCost: costAtPoint });
+            }
+
+            return points;
         }
 
         function renderGraph(yearData) {
@@ -2165,7 +2301,10 @@
                 ctx.fillText(t('yearLabel') + ' ' + year, x, height - padding.bottom + 20);
             }
 
-            // Cost line
+            // Generate S-curve points for benefit line
+            const sCurvePoints = generateSCurvePoints(yearData);
+
+            // Cost line (linear, from yearData including year 0)
             ctx.beginPath();
             ctx.strokeStyle = '#ef4444';
             ctx.lineWidth = 3;
@@ -2174,79 +2313,70 @@
             yearData.forEach((d, i) => {
                 const x = xScale(d.year);
                 const y = yScale(d.cumulativeCost);
-                if (i === 0) {
-                    ctx.moveTo(xScale(0), yScale(0));
-                    ctx.lineTo(x, y);
-                } else {
-                    ctx.lineTo(x, y);
-                }
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
             });
             ctx.stroke();
 
-            // Benefit line
+            // Benefit line (S-curve, smooth)
             ctx.beginPath();
             ctx.strokeStyle = '#10b981';
             ctx.lineWidth = 3;
-            yearData.forEach((d, i) => {
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            sCurvePoints.forEach((d, i) => {
                 const x = xScale(d.year);
                 const y = yScale(d.cumulativeBenefit);
-                if (i === 0) {
-                    ctx.moveTo(xScale(0), yScale(0));
-                    ctx.lineTo(x, y);
-                } else {
-                    ctx.lineTo(x, y);
-                }
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
             });
             ctx.stroke();
 
-            // Break-even marker
-            for (let i = 0; i < yearData.length; i++) {
-                if (yearData[i].cumulativeBenefit >= yearData[i].cumulativeCost) {
-                    let breakEvenX, breakEvenY;
-                    if (i === 0) {
-                        breakEvenX = xScale(yearData[i].year);
-                        breakEvenY = yScale(yearData[i].cumulativeBenefit);
-                    } else {
-                        const prevD = yearData[i - 1];
-                        const currD = yearData[i];
-                        const benefitDiff = currD.cumulativeBenefit - prevD.cumulativeBenefit;
-                        const costDiff = currD.cumulativeCost - prevD.cumulativeCost;
-                        const prevGap = prevD.cumulativeCost - prevD.cumulativeBenefit;
-                        const gapChangeRate = benefitDiff - costDiff;
+            // Break-even marker (where S-curve benefit crosses cost)
+            for (let i = 1; i < sCurvePoints.length; i++) {
+                if (sCurvePoints[i].cumulativeBenefit >= sCurvePoints[i].cumulativeCost) {
+                    const prev = sCurvePoints[i - 1];
+                    const curr = sCurvePoints[i];
+                    const benefitDiff = curr.cumulativeBenefit - prev.cumulativeBenefit;
+                    const costDiff = curr.cumulativeCost - prev.cumulativeCost;
+                    const prevGap = prev.cumulativeCost - prev.cumulativeBenefit;
+                    const gapChange = benefitDiff - costDiff;
 
-                        if (gapChangeRate !== 0) {
-                            const fraction = prevGap / gapChangeRate;
-                            const exactYear = prevD.year + fraction;
-                            const exactValue = prevD.cumulativeBenefit + benefitDiff * fraction;
-                            breakEvenX = xScale(exactYear);
-                            breakEvenY = yScale(exactValue);
-                        } else {
-                            breakEvenX = xScale(currD.year);
-                            breakEvenY = yScale(currD.cumulativeBenefit);
-                        }
+                    let beYear, beValue;
+                    if (gapChange > 0) {
+                        const frac = prevGap / gapChange;
+                        const stepSize = curr.year - prev.year;
+                        beYear = prev.year + frac * stepSize;
+                        beValue = prev.cumulativeBenefit + benefitDiff * frac;
+                    } else {
+                        beYear = curr.year;
+                        beValue = curr.cumulativeBenefit;
                     }
 
                     ctx.beginPath();
                     ctx.fillStyle = '#fbbf24';
-                    ctx.arc(breakEvenX, breakEvenY, 10, 0, Math.PI * 2);
+                    ctx.arc(xScale(beYear), yScale(beValue), 10, 0, Math.PI * 2);
                     ctx.fill();
-
                     ctx.beginPath();
                     ctx.fillStyle = '#ffffff';
-                    ctx.arc(breakEvenX, breakEvenY, 5, 0, Math.PI * 2);
+                    ctx.arc(xScale(beYear), yScale(beValue), 5, 0, Math.PI * 2);
                     ctx.fill();
-
                     break;
                 }
             }
 
-            // Data points
+            // Data point dots at integer years
             yearData.forEach((d) => {
+                if (d.year === 0) return;
                 const x = xScale(d.year);
+
+                // Find S-curve benefit at this year
+                const sCurveAtYear = sCurvePoints.find(p => Math.abs(p.year - d.year) < 0.01);
+                const benefitY = sCurveAtYear ? sCurveAtYear.cumulativeBenefit : d.cumulativeBenefit;
 
                 ctx.beginPath();
                 ctx.fillStyle = '#10b981';
-                ctx.arc(x, yScale(d.cumulativeBenefit), 5, 0, Math.PI * 2);
+                ctx.arc(x, yScale(benefitY), 5, 0, Math.PI * 2);
                 ctx.fill();
 
                 ctx.beginPath();
@@ -2262,31 +2392,22 @@
 
             badge.classList.remove('warning', 'error');
 
-            for (let i = 0; i < yearData.length; i++) {
+            // Skip year 0 (index 0) - start from year 1
+            for (let i = 1; i < yearData.length; i++) {
                 if (yearData[i].cumulativeBenefit >= yearData[i].cumulativeCost) {
-                    let totalMonths;
-                    if (i === 0) {
-                        const annualBenefit = yearData[0].cumulativeBenefit;
-                        const year1Cost = yearData[0].cumulativeCost;
-                        if (annualBenefit > 0) {
-                            totalMonths = Math.ceil((year1Cost / annualBenefit) * 12);
-                        } else {
-                            totalMonths = 12;
-                        }
-                    } else {
-                        const prevD = yearData[i - 1];
-                        const currD = yearData[i];
-                        const benefitDiff = currD.cumulativeBenefit - prevD.cumulativeBenefit;
-                        const costDiff = currD.cumulativeCost - prevD.cumulativeCost;
-                        const prevGap = prevD.cumulativeCost - prevD.cumulativeBenefit;
-                        const gapChangeRate = benefitDiff - costDiff;
+                    const prevD = yearData[i - 1];
+                    const currD = yearData[i];
+                    const benefitDiff = currD.cumulativeBenefit - prevD.cumulativeBenefit;
+                    const costDiff = currD.cumulativeCost - prevD.cumulativeCost;
+                    const prevGap = prevD.cumulativeCost - prevD.cumulativeBenefit;
+                    const gapChangeRate = benefitDiff - costDiff;
 
-                        if (gapChangeRate !== 0) {
-                            const fraction = prevGap / gapChangeRate;
-                            totalMonths = Math.ceil((prevD.year + fraction) * 12);
-                        } else {
-                            totalMonths = currD.year * 12;
-                        }
+                    let totalMonths;
+                    if (gapChangeRate !== 0) {
+                        const fraction = prevGap / gapChangeRate;
+                        totalMonths = Math.ceil((prevD.year + fraction) * 12);
+                    } else {
+                        totalMonths = currD.year * 12;
                     }
 
                     if (totalMonths <= 0) totalMonths = 1;
@@ -2317,31 +2438,34 @@
             }
 
             const data = sectorData[sector];
-            const output = data.outputPerHour[selectedOutput];
-            const margin = data.marginPerUnit[selectedMargin];
-            const addedValuePerHour = output * margin;
             const oeeData = situation === 'noOEE' ? data.oeeNothingToT4A : data.oeeBlueToT4A;
             const fixedFee = parseFloat(document.getElementById('fixedFee').value) || 0;
             const variableCost = parseFloat(document.getElementById('variableCost').value) || 0;
 
-            // Calculate all scenarios
+            // Calculate all scenarios (per-line output/margin)
             const scenarios = ['conservative', 'expected', 'optimistic'];
             const results = {};
             let totalLines = 0;
+            let totalAddedValue = 0;
+
+            for (let p = 1; p <= numPlants; p++) {
+                totalLines += plantData[p].lines.length;
+            }
 
             for (const scenario of scenarios) {
                 let totalAnnual = 0;
-                let lineCount = 0;
 
                 for (let p = 1; p <= numPlants; p++) {
                     for (const line of plantData[p].lines) {
                         const hours = workHours[line.shifts.toString()];
-                        totalAnnual += addedValuePerHour * oeeData[scenario] * hours;
-                        lineCount++;
+                        const lineOutput = data.outputPerHour[line.outputLevel || 'avg'];
+                        const lineMargin = data.marginPerUnit[line.marginLevel || 'avg'];
+                        const lineAddedValue = lineOutput * lineMargin;
+                        totalAnnual += lineAddedValue * oeeData[scenario] * hours;
+                        if (scenario === 'conservative') totalAddedValue += lineAddedValue;
                     }
                 }
 
-                totalLines = lineCount;
                 results[scenario] = {
                     annual: totalAnnual,
                     threeYear: totalAnnual * 3,
@@ -2349,26 +2473,30 @@
                 };
             }
 
-            const expectedAnnual = results.expected.annual;
+            const avgAddedValue = totalLines > 0 ? totalAddedValue / totalLines : 0;
+            const selectedAnnual = results[selectedScenario].annual;
             const totalCost3Years = fixedFee + (variableCost * 3);
-            const netBenefit = results.expected.threeYear - totalCost3Years;
-            const roi = totalCost3Years > 0 ? ((results.expected.threeYear / totalCost3Years) * 100).toFixed(0) : '\u221E';
+            const netBenefit = results[selectedScenario].threeYear - totalCost3Years;
+            const roi = totalCost3Years > 0 ? ((results[selectedScenario].threeYear / totalCost3Years) * 100).toFixed(0) : '\u221E';
 
-            // Break-even in months
+            // Break-even in months (using selected scenario)
             let breakEvenMonths = 0;
             let cumulativeBenefit = 0;
-            let cumulativeCost = 0;
+            let cumulativeCost = fixedFee;
             for (let year = 1; year <= 20; year++) {
-                cumulativeBenefit += expectedAnnual;
-                cumulativeCost += (year === 1) ? (fixedFee + variableCost) : variableCost;
+                cumulativeBenefit += selectedAnnual;
+                cumulativeCost += variableCost;
                 if (cumulativeBenefit >= cumulativeCost) {
                     if (year === 1) {
-                        breakEvenMonths = Math.ceil((cumulativeCost / expectedAnnual) * 12);
+                        const prevGap = fixedFee;
+                        const gapChange = selectedAnnual - variableCost;
+                        const fraction = prevGap / gapChange;
+                        breakEvenMonths = Math.ceil(fraction * 12);
                     } else {
-                        const prevBenefit = cumulativeBenefit - expectedAnnual;
+                        const prevBenefit = cumulativeBenefit - selectedAnnual;
                         const prevCost = cumulativeCost - variableCost;
                         const prevGap = prevCost - prevBenefit;
-                        const gapChange = expectedAnnual - variableCost;
+                        const gapChange = selectedAnnual - variableCost;
                         const fraction = prevGap / gapChange;
                         breakEvenMonths = Math.ceil(((year - 1) + fraction) * 12);
                     }
@@ -2378,6 +2506,7 @@
 
             const situationLabel = situation === 'noOEE' ? t('situationLabelNoOEE') : t('situationLabelBlue');
             const outputLabels = { min: t('outputLabelLow'), avg: t('outputLabelAvg'), max: t('outputLabelHigh') };
+            const scenarioLabels = { conservative: t('conservative'), expected: t('expected'), optimistic: t('optimistic') };
             const dateLocale = currentLang === 'nl' ? 'nl-NL' : 'en-GB';
 
             const printContent = `
@@ -2463,8 +2592,8 @@
 
     <div class="exec-summary">
         <div class="main-value">
-            <div class="label">${t('pdfExpectedSavings')}</div>
-            <div class="number">${formatCurrency(expectedAnnual)}</div>
+            <div class="label">${scenarioLabels[selectedScenario]} - ${t('pdfExpectedSavings')}</div>
+            <div class="number">${formatCurrency(selectedAnnual)}</div>
         </div>
         <div class="metrics">
             <div class="metric green">
@@ -2488,29 +2617,29 @@
             <thead>
                 <tr>
                     <th></th>
-                    <th>${t('conservative')}</th>
-                    <th class="expected">${t('expected')}</th>
-                    <th>${t('optimistic')}</th>
+                    <th${selectedScenario === 'conservative' ? ' class="expected"' : ''}>${t('conservative')}</th>
+                    <th${selectedScenario === 'expected' ? ' class="expected"' : ''}>${t('expected')}</th>
+                    <th${selectedScenario === 'optimistic' ? ' class="expected"' : ''}>${t('optimistic')}</th>
                 </tr>
             </thead>
             <tbody>
                 <tr class="value-row">
                     <td class="row-label">${t('pdfPerYear')}</td>
-                    <td>${formatCurrency(results.conservative.annual)}</td>
-                    <td class="expected">${formatCurrency(results.expected.annual)}</td>
-                    <td>${formatCurrency(results.optimistic.annual)}</td>
+                    <td${selectedScenario === 'conservative' ? ' class="expected"' : ''}>${formatCurrency(results.conservative.annual)}</td>
+                    <td${selectedScenario === 'expected' ? ' class="expected"' : ''}>${formatCurrency(results.expected.annual)}</td>
+                    <td${selectedScenario === 'optimistic' ? ' class="expected"' : ''}>${formatCurrency(results.optimistic.annual)}</td>
                 </tr>
                 <tr class="value-row">
                     <td class="row-label">${t('pdfOver3Years')}</td>
-                    <td>${formatCurrency(results.conservative.threeYear)}</td>
-                    <td class="expected">${formatCurrency(results.expected.threeYear)}</td>
-                    <td>${formatCurrency(results.optimistic.threeYear)}</td>
+                    <td${selectedScenario === 'conservative' ? ' class="expected"' : ''}>${formatCurrency(results.conservative.threeYear)}</td>
+                    <td${selectedScenario === 'expected' ? ' class="expected"' : ''}>${formatCurrency(results.expected.threeYear)}</td>
+                    <td${selectedScenario === 'optimistic' ? ' class="expected"' : ''}>${formatCurrency(results.optimistic.threeYear)}</td>
                 </tr>
                 <tr>
                     <td class="row-label">${t('pdfOeeImprovement')}</td>
-                    <td>+${formatPercentage(results.conservative.oeeIncrease)}</td>
-                    <td class="expected">+${formatPercentage(results.expected.oeeIncrease)}</td>
-                    <td>+${formatPercentage(results.optimistic.oeeIncrease)}</td>
+                    <td${selectedScenario === 'conservative' ? ' class="expected"' : ''}>+${formatPercentage(results.conservative.oeeIncrease)}</td>
+                    <td${selectedScenario === 'expected' ? ' class="expected"' : ''}>+${formatPercentage(results.expected.oeeIncrease)}</td>
+                    <td${selectedScenario === 'optimistic' ? ' class="expected"' : ''}>+${formatPercentage(results.optimistic.oeeIncrease)}</td>
                 </tr>
             </tbody>
         </table>
@@ -2524,9 +2653,8 @@
                     <tr><td class="label">${t('pdfCompany')}</td><td class="value">${companyName}</td></tr>
                     <tr><td class="label">${t('pdfSector')}</td><td class="value">${data.name}</td></tr>
                     <tr><td class="label">${t('pdfOeeSituation')}</td><td class="value">${situationLabel}</td></tr>
-                    <tr><td class="label">${t('pdfMaxOutput')}</td><td class="value">${formatOutputValue(output)} (${outputLabels[selectedOutput]})</td></tr>
-                    <tr><td class="label">${t('pdfMarginPerUnit')}</td><td class="value">${formatMarginValue(margin)} (${outputLabels[selectedMargin]})</td></tr>
-                    <tr><td class="label">${t('pdfValuePerHour')}</td><td class="value">${formatCurrency(addedValuePerHour)}</td></tr>
+                    <tr><td class="label">${t('pdfValuePerHour')}</td><td class="value">${formatCurrency(avgAddedValue)}</td></tr>
+                    <tr><td class="label">${t('breakEvenNotePrefix')} scenario</td><td class="value">${scenarioLabels[selectedScenario]}</td></tr>
                     <tr><td class="label">${t('pdfNumPlants')}</td><td class="value">${numPlants}</td></tr>
                     <tr><td class="label">${t('pdfTotalLines')}</td><td class="value">${totalLines}</td></tr>
                 </table>
@@ -2536,8 +2664,8 @@
                 <div class="section-title">${t('pdfOeeImprovementSection')}</div>
                 <table class="info-table">
                     <tr><td class="label">${t('pdfCurrentOee')}</td><td class="value">${(data.oeeStart * 100).toFixed(0)}%</td></tr>
-                    <tr><td class="label">${t('pdfExpectedImprov')}</td><td class="value">+${formatPercentage(oeeData.expected)}</td></tr>
-                    <tr><td class="label">${t('pdfPotentialOee')}</td><td class="value">${Math.min(95, (data.oeeStart + oeeData.expected) * 100).toFixed(0)}%</td></tr>
+                    <tr><td class="label">${t('pdfExpectedImprov')}</td><td class="value">+${formatPercentage(oeeData[selectedScenario])}</td></tr>
+                    <tr><td class="label">${t('pdfPotentialOee')}</td><td class="value">${Math.min(95, (data.oeeStart + oeeData[selectedScenario]) * 100).toFixed(0)}%</td></tr>
                 </table>
             </div>
         </div>
@@ -2559,7 +2687,7 @@
                         <span class="value">${formatCurrency(totalCost3Years)}</span>
                     </div>
                     <div class="financials-row total">
-                        <span class="label">${t('pdfNetBenefitExpected')}</span>
+                        <span class="label">${t('pdfNetBenefitExpected')} (${scenarioLabels[selectedScenario]})</span>
                         <span class="value">${formatCurrency(netBenefit)}</span>
                     </div>
                 </div>
@@ -2571,7 +2699,7 @@
                     ${Array.from({length: numPlants}, (_, i) => i + 1).map(p => `
                         <div class="plant-card">
                             <div class="plant-name">Plant ${p}</div>
-                            <div class="plant-lines">${plantData[p].lines.map((l, j) => `${t('pdfLine')} ${j+1}: ${l.shifts} ${l.shifts > 1 ? t('shifts') : t('shift')}`).join(' | ')}</div>
+                            <div class="plant-lines">${plantData[p].lines.map((l, j) => `${t('pdfLine')} ${j+1}: ${l.shifts} ${l.shifts > 1 ? t('shifts') : t('shift')} | ${t('thOutput')}: ${outputLabels[l.outputLevel || 'avg']} | ${t('thMargin')}: ${outputLabels[l.marginLevel || 'avg']}`).join('<br>')}</div>
                         </div>
                     `).join('')}
                 </div>
