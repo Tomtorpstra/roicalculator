@@ -463,20 +463,6 @@
         }
 
         /* Option Group (Min/Avg/Max buttons) */
-        /* Set All Row */
-        .set-all-row td {
-            background: #f0f9ff;
-            font-weight: 600;
-            border-bottom: 2px solid #00AAFF !important;
-        }
-
-        .set-all-row .line-number {
-            color: #0284c7;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
         .lines-table select {
             min-width: 150px;
         }
@@ -1869,25 +1855,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="set-all-row">
-                                <td class="line-number">${t('setAllLabel')}</td>
-                                <td>
-                                    <select onchange="selectOutput(this.value)">
-                                        <option value="min" ${selectedOutput === 'min' ? 'selected' : ''}>${getOutputOptionText('min', data)}</option>
-                                        <option value="avg" ${selectedOutput === 'avg' ? 'selected' : ''}>${getOutputOptionText('avg', data)}</option>
-                                        <option value="max" ${selectedOutput === 'max' ? 'selected' : ''}>${getOutputOptionText('max', data)}</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <select onchange="selectMargin(this.value)">
-                                        <option value="min" ${selectedMargin === 'min' ? 'selected' : ''}>${getMarginOptionText('min', data)}</option>
-                                        <option value="avg" ${selectedMargin === 'avg' ? 'selected' : ''}>${getMarginOptionText('avg', data)}</option>
-                                        <option value="max" ${selectedMargin === 'max' ? 'selected' : ''}>${getMarginOptionText('max', data)}</option>
-                                    </select>
-                                </td>
-                                <td>&mdash;</td>
-                                <td>&mdash;</td>
-                            </tr>
                 `;
 
                 plantData[p].lines.forEach((line, index) => {
