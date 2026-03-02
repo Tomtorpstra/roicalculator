@@ -1049,67 +1049,6 @@
                 </div>
 
                 <!-- Production Parameters Card -->
-                <div class="card" id="productionCard" style="display: none;">
-                    <div class="card-header">
-                        <div class="card-icon green">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-                        </div>
-                        <div>
-                            <h2 data-i18n="cardProductionTitle">Productie Parameters</h2>
-                            <p class="card-subtitle" data-i18n="cardProductionSubtitle">Stel standaard output en marge in voor alle lijnen</p>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label><span data-i18n="outputLabel">Maximal output per uur</span> <span class="benchmark-note" data-i18n="benchmarkNote">(sector benchmark)</span></label>
-                        <div class="option-group" id="outputOptions">
-                            <div class="option-btn" data-level="min" onclick="selectOutput('min')">
-                                <div class="option-label" data-i18n="optionLow">Laag</div>
-                                <div class="option-value" id="outputMin">-</div>
-                                <div class="option-sub" data-i18n="unitsPerHour">eenheden/uur</div>
-                            </div>
-                            <div class="option-btn active" data-level="avg" onclick="selectOutput('avg')">
-                                <div class="option-label" data-i18n="optionAvg">Gemiddeld</div>
-                                <div class="option-value" id="outputAvg">-</div>
-                                <div class="option-sub" data-i18n="unitsPerHour">eenheden/uur</div>
-                            </div>
-                            <div class="option-btn" data-level="max" onclick="selectOutput('max')">
-                                <div class="option-label" data-i18n="optionHigh">Hoog</div>
-                                <div class="option-value" id="outputMax">-</div>
-                                <div class="option-sub" data-i18n="unitsPerHour">eenheden/uur</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label><span data-i18n="marginLabel">Marge per eenheid</span> <span class="benchmark-note" data-i18n="benchmarkNote">(sector benchmark)</span></label>
-                        <div class="option-group" id="marginOptions">
-                            <div class="option-btn" data-level="min" onclick="selectMargin('min')">
-                                <div class="option-label" data-i18n="optionLow">Laag</div>
-                                <div class="option-value" id="marginMin">-</div>
-                                <div class="option-sub" data-i18n="perUnit">per eenheid</div>
-                            </div>
-                            <div class="option-btn active" data-level="avg" onclick="selectMargin('avg')">
-                                <div class="option-label" data-i18n="optionAvg">Gemiddeld</div>
-                                <div class="option-value" id="marginAvg">-</div>
-                                <div class="option-sub" data-i18n="perUnit">per eenheid</div>
-                            </div>
-                            <div class="option-btn" data-level="max" onclick="selectMargin('max')">
-                                <div class="option-label" data-i18n="optionHigh">Hoog</div>
-                                <div class="option-value" id="marginMax">-</div>
-                                <div class="option-sub" data-i18n="perUnit">per eenheid</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="computed-value">
-                        <span class="computed-label" data-i18n="addedValueLabel">Toegevoegde waarde per uur:</span>
-                        <span class="computed-number" id="addedValueCalc">-</span>
-                    </div>
-
-                    <p class="info-text" data-i18n="benchmarkInfoText">Waarden zijn industrie-typische benchmarkbereiken, gebaseerd op productielijn capaciteiten en gemiddelde contributiemarges in vergelijkbare productieomgevingen.</p>
-                </div>
-
                 <div class="card" id="plantsCard">
                     <div class="card-header">
                         <div class="card-icon cyan">
@@ -1119,6 +1058,57 @@
                             <h2 data-i18n="cardPlantsTitle">Plants & Lijnen Configuratie</h2>
                             <p class="card-subtitle" data-i18n="cardPlantsSubtitle">Configureer lijnen per plant met individuele ploegen</p>
                         </div>
+                    </div>
+
+                    <div id="productionSection" style="display: none;">
+                        <div class="form-group">
+                            <label><span data-i18n="outputLabel">Maximal output per uur</span> <span class="benchmark-note" data-i18n="benchmarkNote">(sector benchmark)</span></label>
+                            <div class="option-group" id="outputOptions">
+                                <div class="option-btn" data-level="min" onclick="selectOutput('min')">
+                                    <div class="option-label" data-i18n="optionLow">Laag</div>
+                                    <div class="option-value" id="outputMin">-</div>
+                                    <div class="option-sub" data-i18n="unitsPerHour">eenheden/uur</div>
+                                </div>
+                                <div class="option-btn active" data-level="avg" onclick="selectOutput('avg')">
+                                    <div class="option-label" data-i18n="optionAvg">Gemiddeld</div>
+                                    <div class="option-value" id="outputAvg">-</div>
+                                    <div class="option-sub" data-i18n="unitsPerHour">eenheden/uur</div>
+                                </div>
+                                <div class="option-btn" data-level="max" onclick="selectOutput('max')">
+                                    <div class="option-label" data-i18n="optionHigh">Hoog</div>
+                                    <div class="option-value" id="outputMax">-</div>
+                                    <div class="option-sub" data-i18n="unitsPerHour">eenheden/uur</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label><span data-i18n="marginLabel">Marge per eenheid</span> <span class="benchmark-note" data-i18n="benchmarkNote">(sector benchmark)</span></label>
+                            <div class="option-group" id="marginOptions">
+                                <div class="option-btn" data-level="min" onclick="selectMargin('min')">
+                                    <div class="option-label" data-i18n="optionLow">Laag</div>
+                                    <div class="option-value" id="marginMin">-</div>
+                                    <div class="option-sub" data-i18n="perUnit">per eenheid</div>
+                                </div>
+                                <div class="option-btn active" data-level="avg" onclick="selectMargin('avg')">
+                                    <div class="option-label" data-i18n="optionAvg">Gemiddeld</div>
+                                    <div class="option-value" id="marginAvg">-</div>
+                                    <div class="option-sub" data-i18n="perUnit">per eenheid</div>
+                                </div>
+                                <div class="option-btn" data-level="max" onclick="selectMargin('max')">
+                                    <div class="option-label" data-i18n="optionHigh">Hoog</div>
+                                    <div class="option-value" id="marginMax">-</div>
+                                    <div class="option-sub" data-i18n="perUnit">per eenheid</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="computed-value">
+                            <span class="computed-label" data-i18n="addedValueLabel">Toegevoegde waarde per uur:</span>
+                            <span class="computed-number" id="addedValueCalc">-</span>
+                        </div>
+
+                        <p class="info-text" data-i18n="benchmarkInfoText">Waarden zijn industrie-typische benchmarkbereiken, gebaseerd op productielijn capaciteiten en gemiddelde contributiemarges in vergelijkbare productieomgevingen.</p>
                     </div>
 
                     <div class="plant-tabs" id="plantTabs"></div>
@@ -1789,13 +1779,13 @@
         // ==========================================
         function onSectorChange() {
             const sector = document.getElementById('sector').value;
-            const productionCard = document.getElementById('productionCard');
+            const productionSection = document.getElementById('productionSection');
 
             if (sector && sectorData[sector]) {
-                productionCard.style.display = 'block';
+                productionSection.style.display = 'block';
                 updateProductionOptions(sectorData[sector]);
             } else {
-                productionCard.style.display = 'none';
+                productionSection.style.display = 'none';
             }
 
             // Reset selections to avg
