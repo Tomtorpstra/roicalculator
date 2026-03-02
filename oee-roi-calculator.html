@@ -1680,7 +1680,8 @@
             // Remove old listeners by cloning
             const newSelect = select.cloneNode(true);
             select.parentNode.replaceChild(newSelect, select);
-            newSelect.addEventListener('click', (e) => {
+            // Use mousedown to prevent native dropdown from opening
+            newSelect.addEventListener('mousedown', (e) => {
                 e.preventDefault();
                 wrapper.classList.add('open', 'searching');
                 search.value = '';
