@@ -264,6 +264,10 @@ body {
     gap: 16px;
 }
 
+.form-row-3 {
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
 .currency-input {
     position: relative;
 }
@@ -451,6 +455,38 @@ body {
 .line-number {
     font-weight: 700;
     color: #00AAFF;
+}
+
+.line-name-input {
+    padding: 6px 10px;
+    border: 2px solid #e5e7eb;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.85rem;
+    width: 100%;
+    min-width: 100px;
+    transition: border-color 0.2s;
+}
+
+.line-name-input:focus {
+    outline: none;
+    border-color: #00AAFF;
+}
+
+.custom-value-input {
+    margin-top: 6px;
+    padding: 6px 10px;
+    border: 2px solid #00AAFF;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.85rem;
+    width: 100%;
+    background: #f0f9ff;
+}
+
+.custom-value-input:focus {
+    outline: none;
+    border-color: #0090dd;
 }
 
 /* Computed Value Display */
@@ -920,7 +956,8 @@ footer {
         justify-content: space-between;
     }
 
-    .form-row {
+    .form-row,
+    .form-row-3 {
         grid-template-columns: 1fr;
     }
 

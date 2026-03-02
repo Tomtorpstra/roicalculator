@@ -38,7 +38,10 @@ const translations = {
         thMargin: 'Marge',
         marginTooltipTitle: 'Margin/Unit is: contributiemarge per extra geproduceerd product',
         marginTooltipBody: '= verkoopprijs (netto) \u2212 variabele kosten per product. Deze waardes zijn bedoeld als startpunt, D4A kan deze waardes aanpassen op basis van uw behoefte. D4A berekent de marge per eenheid als netto verkoopprijs minus variabele kosten per product. Dat is de bijdrage van \u00e9\u00e9n extra geproduceerd stuk. De ranges in onze tabel zijn benchmark-ordegroottes; voor de definitieve businesscase vervangen we die door jullie werkelijke prijs- en kostdata.',
+        thLineName: 'Naam',
         thAction: 'Actie',
+        lineNamePlaceholder: 'Lijn',
+        optionCustom: 'Handmatig',
         shift: 'ploeg',
         shifts: 'ploegen',
         removeBtn: 'Verwijderen',
@@ -49,6 +52,10 @@ const translations = {
         fixedFeePlaceholder: 'Bijv. 15.000',
         variableCostLabel: 'Onderhoudskosten (per jaar)',
         variableCostPlaceholder: 'Bijv. 3.000',
+        internalCostLabel: 'Interne Kosten (Eenmalig)',
+        internalCostPlaceholder: 'Bijv. 5.000',
+        internalCostTooltipTitle: 'Interne kosten zijn:',
+        internalCostTooltipBody: 'implementatie-uren, trainingsuren, IT hardware, IT software.',
         costsInfoText: 'Standaard waarden zijn geschatte gemiddelden. Pas aan naar uw situatie.',
         placeholderTitle: 'Vul uw gegevens in',
         placeholderText: 'Selecteer uw sector, productie parameters en OEE situatie om uw besparingspotentieel te zien',
@@ -102,6 +109,7 @@ const translations = {
         pdfPotentialOee: 'Potentieel OEE',
         pdfInvestment: 'Investering',
         pdfFixedCosts: 'Vaste kosten (eenmalig)',
+        pdfInternalCosts: 'Interne kosten (eenmalig)',
         pdfVariableCosts: 'Onderhoudskosten (per jaar)',
         pdfTotalCosts3yr: 'Totale kosten (3 jaar)',
         pdfNetBenefitExpected: 'Netto Voordeel (3 jaar, verwacht)',
@@ -150,7 +158,10 @@ const translations = {
         thMargin: 'Margin',
         marginTooltipTitle: 'Margin per Unit: the contribution margin per additional unit produced',
         marginTooltipBody: '= net selling price \u2212 variable cost per product. These values are intended as a starting point. D4A can adjust them based on your specific situation and requirements. D4A calculates the margin per unit as the net selling price minus the variable cost per product. This represents the economic contribution of one additional unit produced. The ranges shown in our table are industry benchmark order-of-magnitude estimates. For the final business case, we will replace them with your actual pricing and cost data.',
+        thLineName: 'Name',
         thAction: 'Action',
+        lineNamePlaceholder: 'Line',
+        optionCustom: 'Custom',
         shift: 'shift',
         shifts: 'shifts',
         removeBtn: 'Remove',
@@ -161,6 +172,10 @@ const translations = {
         fixedFeePlaceholder: 'E.g. 15,000',
         variableCostLabel: 'Maintenance Costs (per year)',
         variableCostPlaceholder: 'E.g. 3,000',
+        internalCostLabel: 'Internal Costs (One-time)',
+        internalCostPlaceholder: 'E.g. 5,000',
+        internalCostTooltipTitle: 'Internal costs could be:',
+        internalCostTooltipBody: 'implementation hours, training hours, IT hardware, IT software.',
         costsInfoText: 'Default values are estimated averages. Adjust to your situation.',
         placeholderTitle: 'Enter your details',
         placeholderText: 'Select your sector, production parameters and OEE situation to see your savings potential',
@@ -214,6 +229,7 @@ const translations = {
         pdfPotentialOee: 'Potential OEE',
         pdfInvestment: 'Investment',
         pdfFixedCosts: 'Fixed costs (one-time)',
+        pdfInternalCosts: 'Internal costs (one-time)',
         pdfVariableCosts: 'Maintenance costs (per year)',
         pdfTotalCosts3yr: 'Total costs (3 years)',
         pdfNetBenefitExpected: 'Net Benefit (3 years, expected)',
@@ -398,7 +414,7 @@ const workHours = { "1": 2000, "2": 4000, "3": 6000, "4": 8000, "5": 8760 };
 // ==========================================
 // STATE
 // ==========================================
-let plantData = { 1: { lines: [{ shifts: 3, outputLevel: 'avg', marginLevel: 'avg' }] } };
+let plantData = { 1: { lines: [{ shifts: 3, outputLevel: 'avg', marginLevel: 'avg', name: '', customOutput: null, customMargin: null }] } };
 let numPlants = 1;
 let activePlant = 1;
 let selectedScenario = 'expected';
@@ -525,8 +541,8 @@ function updateComputedValue(data) {
     for (let p = 1; p <= numPlants; p++) {
         if (plantData[p]) {
             for (const line of plantData[p].lines) {
-                const output = data.outputPerHour[line.outputLevel || 'avg'];
-                const margin = data.marginPerUnit[line.marginLevel || 'avg'];
+                const output = line.outputLevel === 'custom' ? (line.customOutput || 0) : data.outputPerHour[line.outputLevel || 'avg'];
+                const margin = line.marginLevel === 'custom' ? (line.customMargin || 0) : data.marginPerUnit[line.marginLevel || 'avg'];
                 totalAddedValue += output * margin;
                 lineCount++;
             }
@@ -633,6 +649,7 @@ function renderPlantContent() {
                 <thead>
                     <tr>
                         <th>${t('thLine')}</th>
+                        <th>${t('thLineName')}</th>
                         <th>${t('thOutput')}</th>
                         <th class="th-tooltip">${t('thMargin')} <span style="font-size:0.7rem; opacity:0.6;">&#9432;</span><div class="tooltip-text"><span class="tooltip-title">${t('marginTooltipTitle')}</span>${t('marginTooltipBody')}</div></th>
                         <th>${t('thShiftRegime')}</th>
@@ -646,22 +663,31 @@ function renderPlantContent() {
             const shiftWord = (s) => s === 1 ? t('shift') : t('shifts');
             const ol = line.outputLevel || 'avg';
             const ml = line.marginLevel || 'avg';
+            const customOutputHTML = ol === 'custom' ? `<input type="number" class="custom-value-input" value="${line.customOutput || ''}" onchange="updateLineCustomOutput(${p}, ${index}, this.value)" oninput="updateLineCustomOutput(${p}, ${index}, this.value)" placeholder="${t('unitsPerHour')}">` : '';
+            const customMarginHTML = ml === 'custom' ? `<input type="number" class="custom-value-input" step="0.001" value="${line.customMargin || ''}" onchange="updateLineCustomMargin(${p}, ${index}, this.value)" oninput="updateLineCustomMargin(${p}, ${index}, this.value)" placeholder="${t('perUnit')}">` : '';
             tableHTML += `
                 <tr>
                     <td class="line-number">${index + 1}</td>
+                    <td>
+                        <input type="text" class="line-name-input" value="${line.name || ''}" onchange="updateLineName(${p}, ${index}, this.value)" placeholder="${t('lineNamePlaceholder')} ${index + 1}">
+                    </td>
                     <td>
                         <select onchange="updateLineOutput(${p}, ${index}, this.value)">
                             <option value="min" ${ol === 'min' ? 'selected' : ''}>${getOutputOptionText('min', data)}</option>
                             <option value="avg" ${ol === 'avg' ? 'selected' : ''}>${getOutputOptionText('avg', data)}</option>
                             <option value="max" ${ol === 'max' ? 'selected' : ''}>${getOutputOptionText('max', data)}</option>
+                            <option value="custom" ${ol === 'custom' ? 'selected' : ''}>${t('optionCustom')}</option>
                         </select>
+                        ${customOutputHTML}
                     </td>
                     <td>
                         <select onchange="updateLineMargin(${p}, ${index}, this.value)">
                             <option value="min" ${ml === 'min' ? 'selected' : ''}>${getMarginOptionText('min', data)}</option>
                             <option value="avg" ${ml === 'avg' ? 'selected' : ''}>${getMarginOptionText('avg', data)}</option>
                             <option value="max" ${ml === 'max' ? 'selected' : ''}>${getMarginOptionText('max', data)}</option>
+                            <option value="custom" ${ml === 'custom' ? 'selected' : ''}>${t('optionCustom')}</option>
                         </select>
+                        ${customMarginHTML}
                     </td>
                     <td>
                         <select onchange="updateLineShifts(${p}, ${index}, this.value)">
@@ -691,7 +717,7 @@ function renderPlantContent() {
 }
 
 function addLine(plantNum) {
-    plantData[plantNum].lines.push({ shifts: 3, outputLevel: 'avg', marginLevel: 'avg' });
+    plantData[plantNum].lines.push({ shifts: 3, outputLevel: 'avg', marginLevel: 'avg', name: '', customOutput: null, customMargin: null });
     renderPlantContent();
     calculate();
 }
@@ -709,15 +735,35 @@ function updateLineShifts(plantNum, lineIndex, shifts) {
     calculate();
 }
 
+function updateLineName(plantNum, lineIndex, value) {
+    plantData[plantNum].lines[lineIndex].name = value;
+}
+
 function updateLineOutput(plantNum, lineIndex, level) {
     plantData[plantNum].lines[lineIndex].outputLevel = level;
     const sector = document.getElementById('sector').value;
     if (sector && sectorData[sector]) updateComputedValue(sectorData[sector]);
+    renderPlantContent();
     calculate();
 }
 
 function updateLineMargin(plantNum, lineIndex, level) {
     plantData[plantNum].lines[lineIndex].marginLevel = level;
+    const sector = document.getElementById('sector').value;
+    if (sector && sectorData[sector]) updateComputedValue(sectorData[sector]);
+    renderPlantContent();
+    calculate();
+}
+
+function updateLineCustomOutput(plantNum, lineIndex, value) {
+    plantData[plantNum].lines[lineIndex].customOutput = parseFloat(value) || 0;
+    const sector = document.getElementById('sector').value;
+    if (sector && sectorData[sector]) updateComputedValue(sectorData[sector]);
+    calculate();
+}
+
+function updateLineCustomMargin(plantNum, lineIndex, value) {
+    plantData[plantNum].lines[lineIndex].customMargin = parseFloat(value) || 0;
     const sector = document.getElementById('sector').value;
     if (sector && sectorData[sector]) updateComputedValue(sectorData[sector]);
     calculate();
@@ -731,6 +777,8 @@ function calculate() {
     const situation = document.getElementById('currentSituation').value;
     const fixedFee = parseFloat(document.getElementById('fixedFee').value) || 0;
     const variableCost = parseFloat(document.getElementById('variableCost').value) || 0;
+    const internalCost = parseFloat(document.getElementById('internalCost').value) || 0;
+    const totalFixedCost = fixedFee + internalCost;
 
     const placeholderCard = document.getElementById('placeholderCard');
     const scenarioCard = document.getElementById('scenarioCard');
@@ -775,8 +823,8 @@ function calculate() {
         for (let p = 1; p <= numPlants; p++) {
             for (const line of plantData[p].lines) {
                 const hours = workHours[line.shifts.toString()];
-                const lineOutput = data.outputPerHour[line.outputLevel || 'avg'];
-                const lineMargin = data.marginPerUnit[line.marginLevel || 'avg'];
+                const lineOutput = line.outputLevel === 'custom' ? (line.customOutput || 0) : data.outputPerHour[line.outputLevel || 'avg'];
+                const lineMargin = line.marginLevel === 'custom' ? (line.customMargin || 0) : data.marginPerUnit[line.marginLevel || 'avg'];
                 const lineAddedValue = lineOutput * lineMargin;
                 const annual = lineAddedValue * oeeIncrease * hours;
                 totalAnnual += annual;
@@ -829,9 +877,9 @@ function calculate() {
 
     // Break-even using selected scenario
     const annualBenefit = results[selectedScenario].annual;
-    const yearData = calculateBreakEven(annualBenefit, fixedFee, variableCost);
+    const yearData = calculateBreakEven(annualBenefit, totalFixedCost, variableCost);
     renderGraph(yearData);
-    displayBreakEven(yearData, fixedFee, variableCost);
+    displayBreakEven(yearData, totalFixedCost, variableCost);
 }
 
 // ==========================================
@@ -1141,6 +1189,8 @@ function exportPDF() {
     const oeeData = situation === 'noOEE' ? data.oeeNothingToT4A : data.oeeBlueToT4A;
     const fixedFee = parseFloat(document.getElementById('fixedFee').value) || 0;
     const variableCost = parseFloat(document.getElementById('variableCost').value) || 0;
+    const internalCost = parseFloat(document.getElementById('internalCost').value) || 0;
+    const totalFixedCost = fixedFee + internalCost;
 
     // Calculate all scenarios (per-line output/margin)
     const scenarios = ['conservative', 'expected', 'optimistic'];
@@ -1158,8 +1208,8 @@ function exportPDF() {
         for (let p = 1; p <= numPlants; p++) {
             for (const line of plantData[p].lines) {
                 const hours = workHours[line.shifts.toString()];
-                const lineOutput = data.outputPerHour[line.outputLevel || 'avg'];
-                const lineMargin = data.marginPerUnit[line.marginLevel || 'avg'];
+                const lineOutput = line.outputLevel === 'custom' ? (line.customOutput || 0) : data.outputPerHour[line.outputLevel || 'avg'];
+                const lineMargin = line.marginLevel === 'custom' ? (line.customMargin || 0) : data.marginPerUnit[line.marginLevel || 'avg'];
                 const lineAddedValue = lineOutput * lineMargin;
                 totalAnnual += lineAddedValue * oeeData[scenario] * hours;
                 if (scenario === 'conservative') totalAddedValue += lineAddedValue;
@@ -1175,20 +1225,20 @@ function exportPDF() {
 
     const avgAddedValue = totalLines > 0 ? totalAddedValue / totalLines : 0;
     const selectedAnnual = results[selectedScenario].annual;
-    const totalCost3Years = fixedFee + (variableCost * 3);
+    const totalCost3Years = totalFixedCost + (variableCost * 3);
     const netBenefit = results[selectedScenario].threeYear - totalCost3Years;
     const roi = totalCost3Years > 0 ? ((results[selectedScenario].threeYear / totalCost3Years) * 100).toFixed(0) : '\u221E';
 
     // Break-even in months (using selected scenario)
     let breakEvenMonths = 0;
     let cumulativeBenefit = 0;
-    let cumulativeCost = fixedFee;
+    let cumulativeCost = totalFixedCost;
     for (let year = 1; year <= 20; year++) {
         cumulativeBenefit += selectedAnnual;
         cumulativeCost += variableCost;
         if (cumulativeBenefit >= cumulativeCost) {
             if (year === 1) {
-                const prevGap = fixedFee;
+                const prevGap = totalFixedCost;
                 const gapChange = selectedAnnual - variableCost;
                 const fraction = prevGap / gapChange;
                 breakEvenMonths = Math.ceil(fraction * 12);
@@ -1205,7 +1255,7 @@ function exportPDF() {
     }
 
     const situationLabel = situation === 'noOEE' ? t('situationLabelNoOEE') : t('situationLabelBlue');
-    const outputLabels = { min: t('outputLabelLow'), avg: t('outputLabelAvg'), max: t('outputLabelHigh') };
+    const outputLabels = { min: t('outputLabelLow'), avg: t('outputLabelAvg'), max: t('outputLabelHigh'), custom: t('optionCustom') };
     const scenarioLabels = { conservative: t('conservative'), expected: t('expected'), optimistic: t('optimistic') };
     const dateLocale = currentLang === 'nl' ? 'nl-NL' : 'en-GB';
 
@@ -1378,6 +1428,10 @@ body { font-family: 'Segoe UI', Arial, sans-serif; color: #1e293b; line-height: 
                 <span class="label">${t('pdfFixedCosts')}</span>
                 <span class="value">${formatCurrency(fixedFee)}</span>
             </div>
+            ${internalCost > 0 ? `<div class="financials-row">
+                <span class="label">${t('pdfInternalCosts')}</span>
+                <span class="value">${formatCurrency(internalCost)}</span>
+            </div>` : ''}
             <div class="financials-row">
                 <span class="label">${t('pdfVariableCosts')}</span>
                 <span class="value">${formatCurrency(variableCost)}</span>
@@ -1399,7 +1453,12 @@ body { font-family: 'Segoe UI', Arial, sans-serif; color: #1e293b; line-height: 
             ${Array.from({length: numPlants}, (_, i) => i + 1).map(p => `
                 <div class="plant-card">
                     <div class="plant-name">Plant ${p}</div>
-                    <div class="plant-lines">${plantData[p].lines.map((l, j) => `${t('pdfLine')} ${j+1}: ${l.shifts} ${l.shifts > 1 ? t('shifts') : t('shift')} | ${t('thOutput')}: ${outputLabels[l.outputLevel || 'avg']} | ${t('thMargin')}: ${outputLabels[l.marginLevel || 'avg']}`).join('<br>')}</div>
+                    <div class="plant-lines">${plantData[p].lines.map((l, j) => {
+                        const lineName = l.name || (t('pdfLine') + ' ' + (j+1));
+                        const outputText = l.outputLevel === 'custom' ? t('optionCustom') + ' (' + formatOutputValue(l.customOutput || 0) + ')' : outputLabels[l.outputLevel || 'avg'];
+                        const marginText = l.marginLevel === 'custom' ? t('optionCustom') + ' (' + formatMarginValue(l.customMargin || 0) + ')' : outputLabels[l.marginLevel || 'avg'];
+                        return `${lineName}: ${l.shifts} ${l.shifts > 1 ? t('shifts') : t('shift')} | ${t('thOutput')}: ${outputText} | ${t('thMargin')}: ${marginText}`;
+                    }).join('<br>')}</div>
                 </div>
             `).join('')}
         </div>

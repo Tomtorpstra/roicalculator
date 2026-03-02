@@ -129,11 +129,17 @@
                         </div>
                     </div>
 
-                    <div class="form-row">
+                    <div class="form-row form-row-3">
                         <div class="form-group">
                             <label for="fixedFee" data-i18n="fixedFeeLabel">Vaste Kosten (Eenmalig)</label>
                             <div class="currency-input">
                                 <input type="number" id="fixedFee" min="0" value="15000" onchange="calculate()" oninput="calculate()" data-i18n-placeholder="fixedFeePlaceholder" placeholder="Bijv. 15.000">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="internalCost" class="th-tooltip"><span data-i18n="internalCostLabel">Interne Kosten (Eenmalig)</span> <span style="font-size:0.7rem; opacity:0.6;">&#9432;</span><div class="tooltip-text"><span class="tooltip-title" data-i18n="internalCostTooltipTitle">Interne kosten zijn:</span> <span data-i18n="internalCostTooltipBody">implementatie-uren, trainingsuren, IT hardware, IT software.</span></div></label>
+                            <div class="currency-input">
+                                <input type="number" id="internalCost" min="0" value="0" onchange="calculate()" oninput="calculate()" data-i18n-placeholder="internalCostPlaceholder" placeholder="Bijv. 5.000">
                             </div>
                         </div>
                         <div class="form-group">
