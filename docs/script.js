@@ -267,47 +267,8 @@ function applyTranslations() {
 }
 
 // ==========================================
-// SECTOR DATA (fallback + live from Google Sheet)
+// SECTOR DATA (fallback, updated via sector-data.json from GitHub Action)
 // ==========================================
-const SHEET_BASE_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vToExpMiKjR34JFPuCWCVLSug1mS3bZF3tFh6Ad5GfD1Ma7HVGL0FVgI3B42_PdMNOZVTpi9VnKFghR/pub';
-const DATA_SHEET_URL = SHEET_BASE_URL + '?gid=404846792&single=true&output=csv';
-const OEE_SHEET_URL = SHEET_BASE_URL + '?gid=1249842246&single=true&output=csv';
-
-// Map CSV sector names → JS keys (Data sheet)
-const DATA_SHEET_NAME_MAP = {
-    'farmaceutische': 'farmaceutische',
-    'food': 'food',
-    'bottlers': 'bottlers',
-    'textiel': 'textiel',
-    'hout': 'hout',
-    'papier': 'papier',
-    'chemie': 'chemie',
-    'kunststof': 'kunststof',
-    'metaal': 'metaal',
-    'machinebouw': 'machinebouw',
-    'auto&transport': 'autoentransport',
-    'electronica': 'electronica',
-    'olie & raffinaderij': 'olieenrafinaderij'
-};
-
-// Map CSV sector names → JS keys (OEE overzicht, different spelling)
-const OEE_SHEET_NAME_MAP = {
-    'farmaseutisch': 'farmaceutische',
-    'food': 'food',
-    'bottlers': 'bottlers',
-    'textiel': 'textiel',
-    'hout': 'hout',
-    'papier': 'papier',
-    'chemie': 'chemie',
-    'kunststof': 'kunststof',
-    'metaal': 'metaal',
-    'machine bouw': 'machinebouw',
-    'auto en transport': 'autoentransport',
-    'electronica': 'electronica',
-    'olie en rafinaderij': 'olieenrafinaderij'
-};
-
-// Fallback data used when Google Sheet is unavailable
 const sectorData = {
     "farmaceutische": {
         name: "Farmaceutische",
@@ -416,123 +377,19 @@ const sectorData = {
 };
 
 // ==========================================
-// GOOGLE SHEET SYNC
+// SECTOR DATA SYNC (from sector-data.json, updated by GitHub Action)
 // ==========================================
-function parseCSV(text) {
-    const rows = [];
-    let current = '';
-    let inQuotes = false;
-    let row = [];
-
-    for (let i = 0; i < text.length; i++) {
-        const ch = text[i];
-        if (inQuotes) {
-            if (ch === '"' && text[i + 1] === '"') {
-                current += '"';
-                i++;
-            } else if (ch === '"') {
-                inQuotes = false;
-            } else {
-                current += ch;
-            }
-        } else {
-            if (ch === '"') {
-                inQuotes = true;
-            } else if (ch === ',') {
-                row.push(current);
-                current = '';
-            } else if (ch === '\n' || (ch === '\r' && text[i + 1] === '\n')) {
-                row.push(current);
-                current = '';
-                rows.push(row);
-                row = [];
-                if (ch === '\r') i++;
-            } else {
-                current += ch;
-            }
-        }
-    }
-    if (current || row.length > 0) {
-        row.push(current);
-        rows.push(row);
-    }
-    return rows;
-}
-
-function parseEuro(str) {
-    if (!str) return NaN;
-    const cleaned = str.replace(/[€\s]/g, '').replace(/,/g, '');
-    return parseFloat(cleaned);
-}
-
-function parsePercent(str) {
-    if (!str) return NaN;
-    return parseFloat(str.replace('%', '')) / 100;
-}
-
 async function loadSectorData() {
     try {
-        const [dataResp, oeeResp] = await Promise.all([
-            fetch(DATA_SHEET_URL),
-            fetch(OEE_SHEET_URL)
-        ]);
-
-        if (!dataResp.ok || !oeeResp.ok) {
-            console.warn('Google Sheet fetch failed, using fallback data');
-            return;
+        const resp = await fetch('sector-data.json');
+        if (!resp.ok) return;
+        const data = await resp.json();
+        for (const [key, values] of Object.entries(data)) {
+            if (sectorData[key]) Object.assign(sectorData[key], values);
         }
-
-        const [dataText, oeeText] = await Promise.all([
-            dataResp.text(),
-            oeeResp.text()
-        ]);
-
-        // Parse Data sheet (output, margin, OEE improvements)
-        const dataRows = parseCSV(dataText);
-        let updated = 0;
-        for (const cols of dataRows) {
-            if (cols.length < 21) continue;
-            const rawName = (cols[2] || '').trim();
-            if (!rawName) continue;
-            const key = DATA_SHEET_NAME_MAP[rawName.toLowerCase()];
-            if (!key || !sectorData[key]) continue;
-
-            const outputMin = parseInt(cols[3]);
-            const outputAvg = parseInt(cols[4]);
-            const outputMax = parseInt(cols[5]);
-            const marginMin = parseEuro(cols[6]);
-            const marginAvg = parseEuro(cols[7]);
-            const marginMax = parseEuro(cols[8]);
-            const blueC = parsePercent(cols[15]);
-            const blueE = parsePercent(cols[16]);
-            const blueO = parsePercent(cols[17]);
-            const nothC = parsePercent(cols[18]);
-            const nothE = parsePercent(cols[19]);
-            const nothO = parsePercent(cols[20]);
-
-            if (!isNaN(outputMin)) sectorData[key].outputPerHour = { min: outputMin, avg: outputAvg, max: outputMax };
-            if (!isNaN(marginMin)) sectorData[key].marginPerUnit = { min: marginMin, avg: marginAvg, max: marginMax };
-            if (!isNaN(blueC)) sectorData[key].oeeBlueToT4A = { conservative: blueC, expected: blueE, optimistic: blueO };
-            if (!isNaN(nothC)) sectorData[key].oeeNothingToT4A = { conservative: nothC, expected: nothE, optimistic: nothO };
-            updated++;
-        }
-
-        // Parse OEE overzicht (oeeStart per sector)
-        const oeeRows = parseCSV(oeeText);
-        for (const cols of oeeRows) {
-            if (cols.length < 4) continue;
-            const rawName = (cols[1] || '').trim();
-            if (!rawName) continue;
-            const key = OEE_SHEET_NAME_MAP[rawName.toLowerCase()];
-            if (!key || !sectorData[key]) continue;
-
-            const oeeStart = parsePercent(cols[3]);
-            if (!isNaN(oeeStart)) sectorData[key].oeeStart = oeeStart;
-        }
-
-        console.log('Loaded sector data from Google Sheet (' + updated + ' sectors updated)');
+        console.log('Loaded sector data from sector-data.json');
     } catch (err) {
-        console.warn('Google Sheet sync failed, using fallback data:', err.message);
+        console.warn('Failed to load sector-data.json, using fallback:', err.message);
     }
 }
 

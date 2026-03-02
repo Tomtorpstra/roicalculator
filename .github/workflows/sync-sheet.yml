@@ -1,0 +1,173 @@
+name: Sync Google Sheet Data
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'  # Every 6 hours
+  workflow_dispatch: # Manual trigger
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch and parse Google Sheet
+        run: |
+          DATA_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vToExpMiKjR34JFPuCWCVLSug1mS3bZF3tFh6Ad5GfD1Ma7HVGL0FVgI3B42_PdMNOZVTpi9VnKFghR/pub?gid=404846792&single=true&output=csv"
+          OEE_URL="https://docs.google.com/spreadsheets/d/e/2PACX-1vToExpMiKjR34JFPuCWCVLSug1mS3bZF3tFh6Ad5GfD1Ma7HVGL0FVgI3B42_PdMNOZVTpi9VnKFghR/pub?gid=1249842246&single=true&output=csv"
+
+          curl -sL "$DATA_URL" -o /tmp/data.csv
+          curl -sL "$OEE_URL" -o /tmp/oee.csv
+
+          python3 << 'PYEOF'
+          import csv, json, re, sys
+
+          def parse_euro(s):
+              if not s or not s.strip():
+                  return None
+              cleaned = re.sub(r'[€\s]', '', s).replace(',', '')
+              try:
+                  return float(cleaned)
+              except ValueError:
+                  return None
+
+          def parse_percent(s):
+              if not s or not s.strip():
+                  return None
+              try:
+                  return float(s.replace('%', '')) / 100
+              except ValueError:
+                  return None
+
+          DATA_MAP = {
+              'farmaceutische': 'farmaceutische',
+              'food': 'food',
+              'bottlers': 'bottlers',
+              'textiel': 'textiel',
+              'hout': 'hout',
+              'papier': 'papier',
+              'chemie': 'chemie',
+              'kunststof': 'kunststof',
+              'metaal': 'metaal',
+              'machinebouw': 'machinebouw',
+              'auto&transport': 'autoentransport',
+              'electronica': 'electronica',
+              'olie & raffinaderij': 'olieenrafinaderij',
+          }
+
+          OEE_MAP = {
+              'farmaseutisch': 'farmaceutische',
+              'food': 'food',
+              'bottlers': 'bottlers',
+              'textiel': 'textiel',
+              'hout': 'hout',
+              'papier': 'papier',
+              'chemie': 'chemie',
+              'kunststof': 'kunststof',
+              'metaal': 'metaal',
+              'machine bouw': 'machinebouw',
+              'auto en transport': 'autoentransport',
+              'electronica': 'electronica',
+              'olie en rafinaderij': 'olieenrafinaderij',
+          }
+
+          NAMES = {
+              'farmaceutische': 'Farmaceutische',
+              'food': 'Food',
+              'bottlers': 'Bottlers',
+              'textiel': 'Textiel',
+              'hout': 'Hout',
+              'papier': 'Papier',
+              'chemie': 'Chemie',
+              'kunststof': 'Kunststof',
+              'metaal': 'Metaal',
+              'machinebouw': 'Machinebouw',
+              'autoentransport': 'Auto & Transport',
+              'electronica': 'Electronica',
+              'olieenrafinaderij': 'Olie & Raffinaderij',
+          }
+
+          # Default oeeStart values
+          OEE_DEFAULTS = {
+              'farmaceutische': 0.65, 'food': 0.55, 'bottlers': 0.60,
+              'textiel': 0.60, 'hout': 0.60, 'papier': 0.70,
+              'chemie': 0.70, 'kunststof': 0.60, 'metaal': 0.60,
+              'machinebouw': 0.55, 'autoentransport': 0.70,
+              'electronica': 0.60, 'olieenrafinaderij': 0.80,
+          }
+
+          result = {}
+
+          # Parse Data sheet
+          with open('/tmp/data.csv', newline='', encoding='utf-8') as f:
+              reader = csv.reader(f)
+              for cols in reader:
+                  if len(cols) < 21:
+                      continue
+                  raw_name = cols[2].strip()
+                  if not raw_name:
+                      continue
+                  key = DATA_MAP.get(raw_name.lower())
+                  if not key:
+                      continue
+
+                  output_min = int(cols[3]) if cols[3].strip() else None
+                  output_avg = int(cols[4]) if cols[4].strip() else None
+                  output_max = int(cols[5]) if cols[5].strip() else None
+                  margin_min = parse_euro(cols[6])
+                  margin_avg = parse_euro(cols[7])
+                  margin_max = parse_euro(cols[8])
+                  blue_c = parse_percent(cols[15])
+                  blue_e = parse_percent(cols[16])
+                  blue_o = parse_percent(cols[17])
+                  noth_c = parse_percent(cols[18])
+                  noth_e = parse_percent(cols[19])
+                  noth_o = parse_percent(cols[20])
+
+                  if output_min is not None and margin_min is not None and blue_c is not None:
+                      result[key] = {
+                          'name': NAMES.get(key, raw_name),
+                          'oeeStart': OEE_DEFAULTS.get(key, 0.60),
+                          'outputPerHour': {'min': output_min, 'avg': output_avg, 'max': output_max},
+                          'marginPerUnit': {'min': margin_min, 'avg': margin_avg, 'max': margin_max},
+                          'oeeBlueToT4A': {'conservative': blue_c, 'expected': blue_e, 'optimistic': blue_o},
+                          'oeeNothingToT4A': {'conservative': noth_c, 'expected': noth_e, 'optimistic': noth_o},
+                      }
+
+          # Parse OEE overzicht for oeeStart
+          with open('/tmp/oee.csv', newline='', encoding='utf-8') as f:
+              reader = csv.reader(f)
+              for cols in reader:
+                  if len(cols) < 4:
+                      continue
+                  raw_name = cols[1].strip()
+                  if not raw_name:
+                      continue
+                  key = OEE_MAP.get(raw_name.lower())
+                  if key and key in result:
+                      oee = parse_percent(cols[3])
+                      if oee is not None:
+                          result[key]['oeeStart'] = oee
+
+          if len(result) < 13:
+              print(f'WARNING: Only parsed {len(result)} sectors, expected 13', file=sys.stderr)
+              sys.exit(1)
+
+          with open('docs/sector-data.json', 'w') as f:
+              json.dump(result, f, indent=2)
+
+          print(f'Successfully wrote {len(result)} sectors to docs/sector-data.json')
+          PYEOF
+
+      - name: Commit if changed
+        run: |
+          cd docs
+          git diff --quiet sector-data.json 2>/dev/null && echo "No changes" && exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add sector-data.json
+          git commit -m "Auto-sync sector data from Google Sheet"
+          git push

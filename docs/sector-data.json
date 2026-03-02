@@ -1,0 +1,314 @@
+{
+  "farmaceutische": {
+    "name": "Farmaceutische",
+    "oeeStart": 0.65,
+    "outputPerHour": {
+      "min": 1000,
+      "avg": 2000,
+      "max": 5000
+    },
+    "marginPerUnit": {
+      "min": 0.05,
+      "avg": 0.1,
+      "max": 0.25
+    },
+    "oeeBlueToT4A": {
+      "conservative": 0.02,
+      "expected": 0.04,
+      "optimistic": 0.07
+    },
+    "oeeNothingToT4A": {
+      "conservative": 0.04,
+      "expected": 0.09,
+      "optimistic": 0.16
+    }
+  },
+  "food": {
+    "name": "Food",
+    "oeeStart": 0.55,
+    "outputPerHour": {
+      "min": 5000,
+      "avg": 15000,
+      "max": 25000
+    },
+    "marginPerUnit": {
+      "min": 0.01,
+      "avg": 0.02,
+      "max": 0.04
+    },
+    "oeeBlueToT4A": {
+      "conservative": 0.03,
+      "expected": 0.06,
+      "optimistic": 0.11
+    },
+    "oeeNothingToT4A": {
+      "conservative": 0.06,
+      "expected": 0.14,
+      "optimistic": 0.25
+    }
+  },
+  "bottlers": {
+    "name": "Bottlers",
+    "oeeStart": 0.6,
+    "outputPerHour": {
+      "min": 10000,
+      "avg": 35000,
+      "max": 60000
+    },
+    "marginPerUnit": {
+      "min": 0.005,
+      "avg": 0.02,
+      "max": 0.04
+    },
+    "oeeBlueToT4A": {
+      "conservative": 0.02,
+      "expected": 0.05,
+      "optimistic": 0.09
+    },
+    "oeeNothingToT4A": {
+      "conservative": 0.05,
+      "expected": 0.12,
+      "optimistic": 0.22
+    }
+  },
+  "textiel": {
+    "name": "Textiel",
+    "oeeStart": 0.6,
+    "outputPerHour": {
+      "min": 100,
+      "avg": 400,
+      "max": 800
+    },
+    "marginPerUnit": {
+      "min": 0.05,
+      "avg": 0.12,
+      "max": 0.25
+    },
+    "oeeBlueToT4A": {
+      "conservative": 0.02,
+      "expected": 0.04,
+      "optimistic": 0.07
+    },
+    "oeeNothingToT4A": {
+      "conservative": 0.04,
+      "expected": 0.09,
+      "optimistic": 0.18
+    }
+  },
+  "hout": {
+    "name": "Hout",
+    "oeeStart": 0.6,
+    "outputPerHour": {
+      "min": 50,
+      "avg": 120,
+      "max": 400
+    },
+    "marginPerUnit": {
+      "min": 0.15,
+      "avg": 0.4,
+      "max": 0.9
+    },
+    "oeeBlueToT4A": {
+      "conservative": 0.02,
+      "expected": 0.05,
+      "optimistic": 0.09
+    },
+    "oeeNothingToT4A": {
+      "conservative": 0.04,
+      "expected": 0.11,
+      "optimistic": 0.2
+    }
+  },
+  "papier": {
+    "name": "Papier",
+    "oeeStart": 0.7,
+    "outputPerHour": {
+      "min": 2,
+      "avg": 4,
+      "max": 15
+    },
+    "marginPerUnit": {
+      "min": 10.0,
+      "avg": 25.0,
+      "max": 45.0
+    },
+    "oeeBlueToT4A": {
+      "conservative": 0.01,
+      "expected": 0.03,
+      "optimistic": 0.05
+    },
+    "oeeNothingToT4A": {
+      "conservative": 0.03,
+      "expected": 0.07,
+      "optimistic": 0.12
+    }
+  },
+  "chemie": {
+    "name": "Chemie",
+    "oeeStart": 0.7,
+    "outputPerHour": {
+      "min": 1,
+      "avg": 2,
+      "max": 10
+    },
+    "marginPerUnit": {
+      "min": 25.0,
+      "avg": 60.0,
+      "max": 120.0
+    },
+    "oeeBlueToT4A": {
+      "conservative": 0.01,
+      "expected": 0.02,
+      "optimistic": 0.04
+    },
+    "oeeNothingToT4A": {
+      "conservative": 0.03,
+      "expected": 0.06,
+      "optimistic": 0.11
+    }
+  },
+  "kunststof": {
+    "name": "Kunststof",
+    "oeeStart": 0.6,
+    "outputPerHour": {
+      "min": 3000,
+      "avg": 10000,
+      "max": 20000
+    },
+    "marginPerUnit": {
+      "min": 0.01,
+      "avg": 0.03,
+      "max": 0.06
+    },
+    "oeeBlueToT4A": {
+      "conservative": 0.03,
+      "expected": 0.06,
+      "optimistic": 0.1
+    },
+    "oeeNothingToT4A": {
+      "conservative": 0.06,
+      "expected": 0.13,
+      "optimistic": 0.24
+    }
+  },
+  "metaal": {
+    "name": "Metaal",
+    "oeeStart": 0.6,
+    "outputPerHour": {
+      "min": 50,
+      "avg": 150,
+      "max": 500
+    },
+    "marginPerUnit": {
+      "min": 0.4,
+      "avg": 0.8,
+      "max": 2.0
+    },
+    "oeeBlueToT4A": {
+      "conservative": 0.02,
+      "expected": 0.05,
+      "optimistic": 0.09
+    },
+    "oeeNothingToT4A": {
+      "conservative": 0.04,
+      "expected": 0.1,
+      "optimistic": 0.19
+    }
+  },
+  "machinebouw": {
+    "name": "Machinebouw",
+    "oeeStart": 0.55,
+    "outputPerHour": {
+      "min": 2,
+      "avg": 10,
+      "max": 40
+    },
+    "marginPerUnit": {
+      "min": 5.0,
+      "avg": 12.0,
+      "max": 30.0
+    },
+    "oeeBlueToT4A": {
+      "conservative": 0.01,
+      "expected": 0.03,
+      "optimistic": 0.06
+    },
+    "oeeNothingToT4A": {
+      "conservative": 0.03,
+      "expected": 0.07,
+      "optimistic": 0.14
+    }
+  },
+  "autoentransport": {
+    "name": "Auto & Transport",
+    "oeeStart": 0.7,
+    "outputPerHour": {
+      "min": 30,
+      "avg": 180,
+      "max": 400
+    },
+    "marginPerUnit": {
+      "min": 0.3,
+      "avg": 0.7,
+      "max": 1.5
+    },
+    "oeeBlueToT4A": {
+      "conservative": 0.02,
+      "expected": 0.04,
+      "optimistic": 0.08
+    },
+    "oeeNothingToT4A": {
+      "conservative": 0.04,
+      "expected": 0.09,
+      "optimistic": 0.17
+    }
+  },
+  "electronica": {
+    "name": "Electronica",
+    "oeeStart": 0.6,
+    "outputPerHour": {
+      "min": 500,
+      "avg": 1900,
+      "max": 8000
+    },
+    "marginPerUnit": {
+      "min": 0.05,
+      "avg": 0.15,
+      "max": 0.4
+    },
+    "oeeBlueToT4A": {
+      "conservative": 0.02,
+      "expected": 0.05,
+      "optimistic": 0.09
+    },
+    "oeeNothingToT4A": {
+      "conservative": 0.05,
+      "expected": 0.11,
+      "optimistic": 0.21
+    }
+  },
+  "olieenrafinaderij": {
+    "name": "Olie & Raffinaderij",
+    "oeeStart": 0.8,
+    "outputPerHour": {
+      "min": 10,
+      "avg": 50,
+      "max": 200
+    },
+    "marginPerUnit": {
+      "min": 3.0,
+      "avg": 8.0,
+      "max": 15.0
+    },
+    "oeeBlueToT4A": {
+      "conservative": 0.005,
+      "expected": 0.02,
+      "optimistic": 0.04
+    },
+    "oeeNothingToT4A": {
+      "conservative": 0.02,
+      "expected": 0.05,
+      "optimistic": 0.09
+    }
+  }
+}
