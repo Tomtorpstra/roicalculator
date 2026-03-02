@@ -66,6 +66,58 @@
             font-size: 0.95rem;
         }
 
+        /* Header Right Controls */
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Language Switcher */
+        .lang-switcher {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .lang-switcher select {
+            appearance: none;
+            -webkit-appearance: none;
+            background: #fff;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 8px 32px 8px 12px;
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #374151;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .lang-switcher select:hover {
+            border-color: #00AAFF;
+        }
+
+        .lang-switcher select:focus {
+            outline: none;
+            border-color: #00AAFF;
+        }
+
+        .lang-switcher::after {
+            content: '';
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-top: 5px solid #64748b;
+            pointer-events: none;
+        }
+
         /* Buttons */
         .btn {
             display: inline-flex;
@@ -541,9 +593,15 @@
             border: 2px solid #e5e7eb;
             background: #fff;
             transition: all 0.3s;
+            cursor: pointer;
         }
 
-        .scenario-card.expected {
+        .scenario-card:hover {
+            border-color: #93c5fd;
+            background: #f8fafc;
+        }
+
+        .scenario-card.selected {
             border-color: #00AAFF;
             background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
             transform: scale(1.03);
@@ -559,7 +617,7 @@
             margin-bottom: 10px;
         }
 
-        .scenario-card.expected .scenario-label {
+        .scenario-card.selected .scenario-label {
             color: #00AAFF;
         }
 
@@ -582,7 +640,7 @@
             color: #0f172a;
         }
 
-        .scenario-card.expected .scenario-annual {
+        .scenario-card.selected .scenario-annual {
             color: #0284c7;
             font-size: 1.7rem;
         }
@@ -600,7 +658,7 @@
             width: 60%;
         }
 
-        .scenario-card.expected .scenario-divider {
+        .scenario-card.selected .scenario-divider {
             background: #bae6fd;
         }
 
@@ -610,7 +668,7 @@
             color: #374151;
         }
 
-        .scenario-card.expected .scenario-three-year {
+        .scenario-card.selected .scenario-three-year {
             color: #0369a1;
         }
 
@@ -872,6 +930,11 @@
                 font-size: 1.6rem;
             }
 
+            .header-right {
+                width: 100%;
+                justify-content: space-between;
+            }
+
             .form-row {
                 grid-template-columns: 1fr;
             }
@@ -884,7 +947,7 @@
                 grid-template-columns: 1fr;
             }
 
-            .scenario-card.expected {
+            .scenario-card.selected {
                 transform: none;
             }
 
@@ -907,13 +970,21 @@
                 <img src="logo.png" alt="Decide4Action" class="logo">
                 <div class="header-title">
                     <h1>OEE <span>ROI Calculator</span></h1>
-                    <p class="subtitle">Bereken uw potentiele besparing met T4A/P4A OEE-optimalisatie</p>
+                    <p class="subtitle" data-i18n="subtitle">Bereken uw potentiele besparing met T4A/P4A OEE-optimalisatie</p>
                 </div>
             </div>
-            <button class="btn btn-export" onclick="exportPDF()" id="exportBtn" style="display: none;">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                Export PDF
-            </button>
+            <div class="header-right">
+                <div class="lang-switcher">
+                    <select id="langSelect" onchange="setLanguage(this.value)">
+                        <option value="nl">NL</option>
+                        <option value="en">EN</option>
+                    </select>
+                </div>
+                <button class="btn btn-export" onclick="exportPDF()" id="exportBtn" style="display: none;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    <span data-i18n="exportPdf">Export PDF</span>
+                </button>
+            </div>
         </header>
 
         <div class="main-layout">
@@ -925,22 +996,22 @@
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
                         </div>
                         <div>
-                            <h2>Uw Huidige Situatie</h2>
-                            <p class="card-subtitle">Selecteer uw sector en huidige OEE status</p>
+                            <h2 data-i18n="cardCurrentTitle">Uw Huidige Situatie</h2>
+                            <p class="card-subtitle" data-i18n="cardCurrentSubtitle">Selecteer uw sector en huidige OEE status</p>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="companyName">Bedrijfsnaam</label>
-                        <input type="text" id="companyName" placeholder="Vul uw bedrijfsnaam in">
+                        <label for="companyName" data-i18n="companyNameLabel">Bedrijfsnaam</label>
+                        <input type="text" id="companyName" data-i18n-placeholder="companyNamePlaceholder" placeholder="Vul uw bedrijfsnaam in">
                     </div>
 
                     <div class="form-group">
-                        <label for="sector">Sector / Industrie</label>
+                        <label for="sector" data-i18n="sectorLabel">Sector / Industrie</label>
                         <div class="select-wrapper" id="sectorWrapper">
-                            <input type="text" class="select-search" id="sectorSearch" placeholder="Zoek sector...">
+                            <input type="text" class="select-search" id="sectorSearch" data-i18n-placeholder="sectorSearchPlaceholder" placeholder="Zoek sector...">
                             <select id="sector" onchange="onSectorChange()">
-                                <option value="">-- Selecteer uw sector --</option>
+                                <option value="" data-i18n="sectorDefault">-- Selecteer uw sector --</option>
                                 <option value="farmaceutische">Farmaceutische</option>
                                 <option value="food">Food</option>
                                 <option value="bottlers">Bottlers</option>
@@ -953,23 +1024,23 @@
                                 <option value="machinebouw">Machinebouw</option>
                                 <option value="autoentransport">Auto & Transport</option>
                                 <option value="electronica">Electronica</option>
-                                <option value="olieenrafinaderij">Olie & Raffinaderij</option>
+                                <option value="olieenrafinaderij" data-i18n="sectorOil">Olie & Raffinaderij</option>
                             </select>
                             <div class="select-dropdown" id="sectorDropdown"></div>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="currentSituation">Huidige OEE Situatie</label>
+                        <label for="currentSituation" data-i18n="currentSituationLabel">Huidige OEE Situatie</label>
                         <select id="currentSituation" onchange="calculate()">
-                            <option value="">-- Selecteer uw huidige situatie --</option>
-                            <option value="noOEE">Nieuwe klant - Geen OEE registratie (naar T4A/P4A)</option>
-                            <option value="blueUpgrade">OEE Blue upgrade (naar T4A/P4A)</option>
+                            <option value="" data-i18n="situationDefault">-- Selecteer uw huidige situatie --</option>
+                            <option value="noOEE" data-i18n="situationNoOEE">Nieuwe klant - Geen OEE registratie (naar T4A/P4A)</option>
+                            <option value="blueUpgrade" data-i18n="situationBlue">OEE Blue upgrade (naar T4A/P4A)</option>
                         </select>
                     </div>
 
                     <div class="form-group">
-                        <label for="numPlants">Aantal Plants</label>
+                        <label for="numPlants" data-i18n="numPlantsLabel">Aantal Plants</label>
                         <div class="slider-input">
                             <input type="range" id="numPlantsSlider" min="1" max="10" value="1" oninput="syncPlantSlider(this.value)">
                             <input type="number" id="numPlants" min="1" max="10" value="1" onchange="updatePlantTabs()" oninput="updatePlantTabs()">
@@ -984,59 +1055,59 @@
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
                         </div>
                         <div>
-                            <h2>Productie Parameters</h2>
-                            <p class="card-subtitle">Selecteer uw output en marge op basis van sector benchmarks</p>
+                            <h2 data-i18n="cardProductionTitle">Productie Parameters</h2>
+                            <p class="card-subtitle" data-i18n="cardProductionSubtitle">Stel standaard output en marge in voor alle lijnen</p>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label>Maximal output per uur <span class="benchmark-note">(sector benchmark)</span></label>
+                        <label><span data-i18n="outputLabel">Maximal output per uur</span> <span class="benchmark-note" data-i18n="benchmarkNote">(sector benchmark)</span></label>
                         <div class="option-group" id="outputOptions">
                             <div class="option-btn" data-level="min" onclick="selectOutput('min')">
-                                <div class="option-label">Laag</div>
+                                <div class="option-label" data-i18n="optionLow">Laag</div>
                                 <div class="option-value" id="outputMin">-</div>
-                                <div class="option-sub">eenheden/uur</div>
+                                <div class="option-sub" data-i18n="unitsPerHour">eenheden/uur</div>
                             </div>
                             <div class="option-btn active" data-level="avg" onclick="selectOutput('avg')">
-                                <div class="option-label">Gemiddeld</div>
+                                <div class="option-label" data-i18n="optionAvg">Gemiddeld</div>
                                 <div class="option-value" id="outputAvg">-</div>
-                                <div class="option-sub">eenheden/uur</div>
+                                <div class="option-sub" data-i18n="unitsPerHour">eenheden/uur</div>
                             </div>
                             <div class="option-btn" data-level="max" onclick="selectOutput('max')">
-                                <div class="option-label">Hoog</div>
+                                <div class="option-label" data-i18n="optionHigh">Hoog</div>
                                 <div class="option-value" id="outputMax">-</div>
-                                <div class="option-sub">eenheden/uur</div>
+                                <div class="option-sub" data-i18n="unitsPerHour">eenheden/uur</div>
                             </div>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label>Marge per eenheid <span class="benchmark-note">(sector benchmark)</span></label>
+                        <label><span data-i18n="marginLabel">Marge per eenheid</span> <span class="benchmark-note" data-i18n="benchmarkNote">(sector benchmark)</span></label>
                         <div class="option-group" id="marginOptions">
                             <div class="option-btn" data-level="min" onclick="selectMargin('min')">
-                                <div class="option-label">Laag</div>
+                                <div class="option-label" data-i18n="optionLow">Laag</div>
                                 <div class="option-value" id="marginMin">-</div>
-                                <div class="option-sub">per eenheid</div>
+                                <div class="option-sub" data-i18n="perUnit">per eenheid</div>
                             </div>
                             <div class="option-btn active" data-level="avg" onclick="selectMargin('avg')">
-                                <div class="option-label">Gemiddeld</div>
+                                <div class="option-label" data-i18n="optionAvg">Gemiddeld</div>
                                 <div class="option-value" id="marginAvg">-</div>
-                                <div class="option-sub">per eenheid</div>
+                                <div class="option-sub" data-i18n="perUnit">per eenheid</div>
                             </div>
                             <div class="option-btn" data-level="max" onclick="selectMargin('max')">
-                                <div class="option-label">Hoog</div>
+                                <div class="option-label" data-i18n="optionHigh">Hoog</div>
                                 <div class="option-value" id="marginMax">-</div>
-                                <div class="option-sub">per eenheid</div>
+                                <div class="option-sub" data-i18n="perUnit">per eenheid</div>
                             </div>
                         </div>
                     </div>
 
                     <div class="computed-value">
-                        <span class="computed-label">Toegevoegde waarde per uur:</span>
+                        <span class="computed-label" data-i18n="addedValueLabel">Toegevoegde waarde per uur:</span>
                         <span class="computed-number" id="addedValueCalc">-</span>
                     </div>
 
-                    <p class="info-text">Waarden zijn industrie-typische benchmarkbereiken, gebaseerd op productielijn capaciteiten en gemiddelde contributiemarges in vergelijkbare productieomgevingen.</p>
+                    <p class="info-text" data-i18n="benchmarkInfoText">Waarden zijn industrie-typische benchmarkbereiken, gebaseerd op productielijn capaciteiten en gemiddelde contributiemarges in vergelijkbare productieomgevingen.</p>
                 </div>
 
                 <div class="card" id="plantsCard">
@@ -1045,8 +1116,8 @@
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
                         </div>
                         <div>
-                            <h2>Plants & Lijnen Configuratie</h2>
-                            <p class="card-subtitle">Configureer lijnen per plant met individuele ploegen</p>
+                            <h2 data-i18n="cardPlantsTitle">Plants & Lijnen Configuratie</h2>
+                            <p class="card-subtitle" data-i18n="cardPlantsSubtitle">Configureer lijnen per plant met individuele ploegen</p>
                         </div>
                     </div>
 
@@ -1060,26 +1131,26 @@
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
                         </div>
                         <div>
-                            <h2>Project Kosten</h2>
-                            <p class="card-subtitle">Eenmalige en jaarlijkse kosten voor ROI berekening</p>
+                            <h2 data-i18n="cardCostsTitle">Project kosten uit offerte</h2>
+                            <p class="card-subtitle" data-i18n="cardCostsSubtitle">Eenmalige en jaarlijkse kosten voor ROI berekening</p>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="fixedFee">Vaste Kosten (Eenmalig)</label>
+                            <label for="fixedFee" data-i18n="fixedFeeLabel">Vaste Kosten (Eenmalig)</label>
                             <div class="currency-input">
-                                <input type="number" id="fixedFee" min="0" value="15000" onchange="calculate()" oninput="calculate()" placeholder="Bijv. 15.000">
+                                <input type="number" id="fixedFee" min="0" value="15000" onchange="calculate()" oninput="calculate()" data-i18n-placeholder="fixedFeePlaceholder" placeholder="Bijv. 15.000">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="variableCost">Variabele Kosten (Per Jaar)</label>
+                            <label for="variableCost" data-i18n="variableCostLabel">Onderhoudskosten (per jaar)</label>
                             <div class="currency-input">
-                                <input type="number" id="variableCost" min="0" value="3000" onchange="calculate()" oninput="calculate()" placeholder="Bijv. 3.000">
+                                <input type="number" id="variableCost" min="0" value="3000" onchange="calculate()" oninput="calculate()" data-i18n-placeholder="variableCostPlaceholder" placeholder="Bijv. 3.000">
                             </div>
                         </div>
                     </div>
-                    <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 8px;">Standaard waarden zijn geschatte gemiddelden. Pas aan naar uw situatie.</p>
+                    <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 8px;" data-i18n="costsInfoText">Standaard waarden zijn geschatte gemiddelden. Pas aan naar uw situatie.</p>
                 </div>
             </div>
 
@@ -1089,8 +1160,8 @@
                 <div class="card" id="placeholderCard">
                     <div class="results-placeholder">
                         <div class="results-placeholder-icon">📊</div>
-                        <h3>Vul uw gegevens in</h3>
-                        <p>Selecteer uw sector, productie parameters en OEE situatie om uw besparingspotentieel te zien</p>
+                        <h3 data-i18n="placeholderTitle">Vul uw gegevens in</h3>
+                        <p data-i18n="placeholderText">Selecteer uw sector, productie parameters en OEE situatie om uw besparingspotentieel te zien</p>
                     </div>
                 </div>
 
@@ -1101,46 +1172,46 @@
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
                         </div>
                         <div>
-                            <h2>Besparingspotentieel</h2>
-                            <p class="card-subtitle"><span id="totalLinesDisplay">0</span> lijnen over <span id="totalPlantsDisplay">0</span> plants</p>
+                            <h2 data-i18n="cardSavingsTitle">Besparingspotentieel</h2>
+                            <p class="card-subtitle" id="savingsSubtitle"><span id="totalLinesDisplay">0</span> <span data-i18n="linesAcross">lijnen over</span> <span id="totalPlantsDisplay">0</span> plants</p>
                         </div>
                     </div>
 
                     <div class="scenario-grid">
-                        <div class="scenario-card conservative">
-                            <div class="scenario-label">Conservatief</div>
+                        <div class="scenario-card" data-scenario="conservative" onclick="selectScenario('conservative')">
+                            <div class="scenario-label" data-i18n="conservative">Conservatief</div>
                             <div class="scenario-annual" id="conservativeAnnual">-</div>
-                            <div class="scenario-annual-label">per jaar</div>
+                            <div class="scenario-annual-label" data-i18n="perYear">per jaar</div>
                             <div class="scenario-divider"></div>
                             <div class="scenario-three-year" id="conservativeThreeYear">-</div>
-                            <div class="scenario-three-year-label">over 3 jaar</div>
+                            <div class="scenario-three-year-label" data-i18n="overThreeYears">over 3 jaar</div>
                             <div class="scenario-divider"></div>
                             <div class="scenario-oee" id="conservativeOEE">-</div>
-                            <div class="scenario-oee-label">OEE verbetering</div>
+                            <div class="scenario-oee-label" data-i18n="oeeImprovement">OEE verbetering</div>
                         </div>
 
-                        <div class="scenario-card expected">
-                            <div class="scenario-badge">Verwacht</div>
+                        <div class="scenario-card selected" data-scenario="expected" onclick="selectScenario('expected')">
+                            <div class="scenario-badge" data-i18n="expected">Verwacht</div>
                             <div class="scenario-annual" id="expectedAnnual">-</div>
-                            <div class="scenario-annual-label">per jaar</div>
+                            <div class="scenario-annual-label" data-i18n="perYear">per jaar</div>
                             <div class="scenario-divider"></div>
                             <div class="scenario-three-year" id="expectedThreeYear">-</div>
-                            <div class="scenario-three-year-label">over 3 jaar</div>
+                            <div class="scenario-three-year-label" data-i18n="overThreeYears">over 3 jaar</div>
                             <div class="scenario-divider"></div>
                             <div class="scenario-oee" id="expectedOEE">-</div>
-                            <div class="scenario-oee-label">OEE verbetering</div>
+                            <div class="scenario-oee-label" data-i18n="oeeImprovement">OEE verbetering</div>
                         </div>
 
-                        <div class="scenario-card optimistic">
-                            <div class="scenario-label">Optimistisch</div>
+                        <div class="scenario-card" data-scenario="optimistic" onclick="selectScenario('optimistic')">
+                            <div class="scenario-label" data-i18n="optimistic">Optimistisch</div>
                             <div class="scenario-annual" id="optimisticAnnual">-</div>
-                            <div class="scenario-annual-label">per jaar</div>
+                            <div class="scenario-annual-label" data-i18n="perYear">per jaar</div>
                             <div class="scenario-divider"></div>
                             <div class="scenario-three-year" id="optimisticThreeYear">-</div>
-                            <div class="scenario-three-year-label">over 3 jaar</div>
+                            <div class="scenario-three-year-label" data-i18n="overThreeYears">over 3 jaar</div>
                             <div class="scenario-divider"></div>
                             <div class="scenario-oee" id="optimisticOEE">-</div>
-                            <div class="scenario-oee-label">OEE verbetering</div>
+                            <div class="scenario-oee-label" data-i18n="oeeImprovement">OEE verbetering</div>
                         </div>
                     </div>
                 </div>
@@ -1152,7 +1223,7 @@
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
                         </div>
                         <div>
-                            <h2>Sector & Productie Gegevens</h2>
+                            <h2 data-i18n="cardSectorTitle">Sector & Productie Gegevens</h2>
                             <p class="card-subtitle" id="sectorNameDisplay">-</p>
                         </div>
                     </div>
@@ -1160,29 +1231,29 @@
                     <div class="sector-info-grid">
                         <div class="sector-info-item">
                             <div class="sector-info-value" id="addedValueDisplay">-</div>
-                            <div class="sector-info-label">Waarde / Uur</div>
+                            <div class="sector-info-label" data-i18n="valuePerHour">Waarde / Uur</div>
                         </div>
                         <div class="sector-info-item">
                             <div class="sector-info-value" id="oeeStartDisplay">-</div>
-                            <div class="sector-info-label">Start OEE</div>
+                            <div class="sector-info-label" data-i18n="startOee">Start OEE</div>
                         </div>
                         <div class="sector-info-item">
                             <div class="sector-info-value" id="oeeImprovementDisplay">-</div>
-                            <div class="sector-info-label">Verwachte Verbetering</div>
+                            <div class="sector-info-label" data-i18n="expectedImprovement">Verwachte Verbetering</div>
                         </div>
                     </div>
 
                     <div class="value-bar-container">
-                        <div class="value-bar-title">OEE Potentieel Vergelijking</div>
+                        <div class="value-bar-title" data-i18n="oeePotentialComparison">OEE Potentieel Vergelijking</div>
                         <div class="value-bar-wrapper">
                             <div class="value-bar-item">
-                                <span class="value-bar-label">Huidige</span>
+                                <span class="value-bar-label" data-i18n="current">Huidige</span>
                                 <div class="value-bar-track">
                                     <div class="value-bar-fill current" id="currentBar" style="width: 65%;">65%</div>
                                 </div>
                             </div>
                             <div class="value-bar-item">
-                                <span class="value-bar-label">Met T4A/P4A</span>
+                                <span class="value-bar-label" data-i18n="withT4A">Met T4A/P4A</span>
                                 <div class="value-bar-track">
                                     <div class="value-bar-fill potential" id="potentialBar" style="width: 85%;">85%</div>
                                     <span class="value-bar-gap" id="gapLabel">+20%</span>
@@ -1201,7 +1272,7 @@
                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
                                 </div>
                                 <div>
-                                    <h2>Break-even Analyse</h2>
+                                    <h2 data-i18n="cardBreakEvenTitle">Break-even Analyse</h2>
                                 </div>
                             </div>
                         </div>
@@ -1218,11 +1289,11 @@
                     <div class="legend">
                         <div class="legend-item">
                             <div class="legend-color benefit"></div>
-                            <span>Cumulatief Voordeel</span>
+                            <span data-i18n="cumulativeBenefit">Cumulatief Voordeel</span>
                         </div>
                         <div class="legend-item">
                             <div class="legend-color cost"></div>
-                            <span>Cumulatieve Kosten</span>
+                            <span data-i18n="cumulativeCosts">Cumulatieve Kosten</span>
                         </div>
                     </div>
                     <div class="break-even-note">Gebaseerd op het verwachte scenario</div>
@@ -1231,11 +1302,279 @@
         </div>
 
         <footer>
-            <p>D4A Besparing ROI Berekening | Data gebaseerd op Eurostat SBS & NACE Rev.2 (2022-2023)</p>
+            <p data-i18n="footer">D4A Besparing ROI Berekening | Data gebaseerd op Eurostat SBS & NACE Rev.2 (2022-2023)</p>
         </footer>
     </div>
 
     <script>
+        // ==========================================
+        // TRANSLATIONS
+        // ==========================================
+        const translations = {
+            nl: {
+                pageTitle: 'OEE ROI Calculator - D4A Besparing Berekening',
+                subtitle: 'Bereken uw potentiele besparing met T4A/P4A OEE-optimalisatie',
+                exportPdf: 'Export PDF',
+                cardCurrentTitle: 'Uw Huidige Situatie',
+                cardCurrentSubtitle: 'Selecteer uw sector en huidige OEE status',
+                companyNameLabel: 'Bedrijfsnaam',
+                companyNamePlaceholder: 'Vul uw bedrijfsnaam in',
+                sectorLabel: 'Sector / Industrie',
+                sectorDefault: '-- Selecteer uw sector --',
+                sectorSearchPlaceholder: 'Zoek sector...',
+                sectorOil: 'Olie & Raffinaderij',
+                currentSituationLabel: 'Huidige OEE Situatie',
+                situationDefault: '-- Selecteer uw huidige situatie --',
+                situationNoOEE: 'Nieuwe klant - Geen OEE registratie (naar T4A/P4A)',
+                situationBlue: 'OEE Blue upgrade (naar T4A/P4A)',
+                numPlantsLabel: 'Aantal Plants',
+                cardProductionTitle: 'Productie Parameters',
+                cardProductionSubtitle: 'Stel standaard output en marge in voor alle lijnen',
+                outputLabel: 'Maximal output per uur',
+                benchmarkNote: '(sector benchmark)',
+                optionLow: 'Laag',
+                optionAvg: 'Gemiddeld',
+                optionHigh: 'Hoog',
+                unitsPerHour: 'eenheden/uur',
+                marginLabel: 'Marge per eenheid',
+                perUnit: 'per eenheid',
+                addedValueLabel: 'Toegevoegde waarde per uur:',
+                perHourSuffix: '/uur',
+                benchmarkInfoText: 'Waarden zijn industrie-typische benchmarkbereiken, gebaseerd op productielijn capaciteiten en gemiddelde contributiemarges in vergelijkbare productieomgevingen.',
+                cardPlantsTitle: 'Plants & Lijnen Configuratie',
+                cardPlantsSubtitle: 'Configureer lijnen per plant met individuele ploegen',
+                thLine: 'Lijn',
+                thShiftRegime: 'Ploegen Regime',
+                thOutput: 'Output',
+                thMargin: 'Marge',
+                thAction: 'Actie',
+                shift: 'ploeg',
+                shifts: 'ploegen',
+                removeBtn: 'Verwijderen',
+                addLineBtn: '+ Lijn Toevoegen',
+                cardCostsTitle: 'Project kosten uit offerte',
+                cardCostsSubtitle: 'Eenmalige en jaarlijkse kosten voor ROI berekening',
+                fixedFeeLabel: 'Vaste Kosten (Eenmalig)',
+                fixedFeePlaceholder: 'Bijv. 15.000',
+                variableCostLabel: 'Onderhoudskosten (per jaar)',
+                variableCostPlaceholder: 'Bijv. 3.000',
+                costsInfoText: 'Standaard waarden zijn geschatte gemiddelden. Pas aan naar uw situatie.',
+                placeholderTitle: 'Vul uw gegevens in',
+                placeholderText: 'Selecteer uw sector, productie parameters en OEE situatie om uw besparingspotentieel te zien',
+                cardSavingsTitle: 'Besparingspotentieel',
+                linesAcross: 'lijnen over',
+                conservative: 'Conservatief',
+                expected: 'Verwacht',
+                optimistic: 'Optimistisch',
+                perYear: 'per jaar',
+                overThreeYears: 'over 3 jaar',
+                oeeImprovement: 'OEE verbetering',
+                cardSectorTitle: 'Sector & Productie Gegevens',
+                valuePerHour: 'Waarde / Uur',
+                startOee: 'Start OEE',
+                expectedImprovement: 'Verwachte Verbetering',
+                oeePotentialComparison: 'OEE Potentieel Vergelijking',
+                current: 'Huidige',
+                withT4A: 'Met T4A/P4A',
+                cardBreakEvenTitle: 'Break-even Analyse',
+                cumulativeBenefit: 'Cumulatief Voordeel',
+                cumulativeCosts: 'Cumulatieve Kosten',
+                breakEvenNotePrefix: 'Gebaseerd op het',
+                breakEvenNoteSuffix: 'scenario',
+                months: 'maanden',
+                overMonths: '> 240 maanden',
+                yearLabel: 'Jaar',
+                footer: 'D4A Besparing ROI Berekening | Data gebaseerd op Eurostat SBS & NACE Rev.2 (2022-2023)',
+                alertFillIn: 'Vul eerst alle gegevens in voordat u exporteert.',
+                companyDefault: 'Bedrijf',
+                pdfTitle: 'ROI Rapport',
+                pdfExpectedSavings: 'Verwachte Besparing (per jaar)',
+                pdfMonthsBreakEven: 'Maanden Break-even',
+                pdfRoi3Year: 'ROI (3 jaar)',
+                pdfNetBenefit3Year: 'Netto Voordeel (3 jaar)',
+                pdfScenarioAnalysis: 'Scenario Analyse',
+                pdfPerYear: 'Per Jaar',
+                pdfOver3Years: 'Over 3 Jaar',
+                pdfOeeImprovement: 'OEE Verbetering',
+                pdfCompanyDetails: 'Bedrijfsgegevens',
+                pdfCompany: 'Bedrijf',
+                pdfSector: 'Sector',
+                pdfOeeSituation: 'OEE Situatie',
+                pdfMaxOutput: 'Maximal output per uur',
+                pdfMarginPerUnit: 'Marge per eenheid',
+                pdfValuePerHour: 'Waarde per uur',
+                pdfNumPlants: 'Aantal Plants',
+                pdfTotalLines: 'Totaal Lijnen',
+                pdfOeeImprovementSection: 'OEE Verbetering',
+                pdfCurrentOee: 'Huidige OEE',
+                pdfExpectedImprov: 'Verwachte verbetering',
+                pdfPotentialOee: 'Potentieel OEE',
+                pdfInvestment: 'Investering',
+                pdfFixedCosts: 'Vaste kosten (eenmalig)',
+                pdfVariableCosts: 'Onderhoudskosten (per jaar)',
+                pdfTotalCosts3yr: 'Totale kosten (3 jaar)',
+                pdfNetBenefitExpected: 'Netto Voordeel (3 jaar, verwacht)',
+                pdfPlantsLines: 'Plants & Lijnen',
+                pdfLine: 'Lijn',
+                pdfFooterData: 'Data gebaseerd op Eurostat SBS & NACE Rev.2 (2022-2023)',
+                situationLabelNoOEE: 'Nieuwe klant - Geen OEE',
+                situationLabelBlue: 'OEE Blue upgrade',
+                outputLabelLow: 'Laag',
+                outputLabelAvg: 'Gemiddeld',
+                outputLabelHigh: 'Hoog'
+            },
+            en: {
+                pageTitle: 'OEE ROI Calculator - D4A Savings Calculation',
+                subtitle: 'Calculate your potential savings with T4A/P4A OEE optimization',
+                exportPdf: 'Export PDF',
+                cardCurrentTitle: 'Your Current Situation',
+                cardCurrentSubtitle: 'Select your sector and current OEE status',
+                companyNameLabel: 'Company Name',
+                companyNamePlaceholder: 'Enter your company name',
+                sectorLabel: 'Sector / Industry',
+                sectorDefault: '-- Select your sector --',
+                sectorSearchPlaceholder: 'Search sector...',
+                sectorOil: 'Oil & Refinery',
+                currentSituationLabel: 'Current OEE Situation',
+                situationDefault: '-- Select your current situation --',
+                situationNoOEE: 'New client - No OEE registration (to T4A/P4A)',
+                situationBlue: 'OEE Blue upgrade (to T4A/P4A)',
+                numPlantsLabel: 'Number of Plants',
+                cardProductionTitle: 'Production Parameters',
+                cardProductionSubtitle: 'Set default output and margin for all lines',
+                outputLabel: 'Maximum output per hour',
+                benchmarkNote: '(sector benchmark)',
+                optionLow: 'Low',
+                optionAvg: 'Average',
+                optionHigh: 'High',
+                unitsPerHour: 'units/hour',
+                marginLabel: 'Margin per unit',
+                perUnit: 'per unit',
+                addedValueLabel: 'Added value per hour:',
+                perHourSuffix: '/hour',
+                benchmarkInfoText: 'Values are industry-typical benchmark ranges, based on production line capacities and average contribution margins in comparable production environments.',
+                cardPlantsTitle: 'Plants & Lines Configuration',
+                cardPlantsSubtitle: 'Configure lines per plant with individual shifts',
+                thLine: 'Line',
+                thShiftRegime: 'Shift Regime',
+                thOutput: 'Output',
+                thMargin: 'Margin',
+                thAction: 'Action',
+                shift: 'shift',
+                shifts: 'shifts',
+                removeBtn: 'Remove',
+                addLineBtn: '+ Add Line',
+                cardCostsTitle: 'Project costs from quotation',
+                cardCostsSubtitle: 'One-time and annual costs for ROI calculation',
+                fixedFeeLabel: 'Fixed Costs (One-time)',
+                fixedFeePlaceholder: 'E.g. 15,000',
+                variableCostLabel: 'Maintenance Costs (per year)',
+                variableCostPlaceholder: 'E.g. 3,000',
+                costsInfoText: 'Default values are estimated averages. Adjust to your situation.',
+                placeholderTitle: 'Enter your details',
+                placeholderText: 'Select your sector, production parameters and OEE situation to see your savings potential',
+                cardSavingsTitle: 'Savings Potential',
+                linesAcross: 'lines across',
+                conservative: 'Conservative',
+                expected: 'Expected',
+                optimistic: 'Optimistic',
+                perYear: 'per year',
+                overThreeYears: 'over 3 years',
+                oeeImprovement: 'OEE improvement',
+                cardSectorTitle: 'Sector & Production Data',
+                valuePerHour: 'Value / Hour',
+                startOee: 'Starting OEE',
+                expectedImprovement: 'Expected Improvement',
+                oeePotentialComparison: 'OEE Potential Comparison',
+                current: 'Current',
+                withT4A: 'With T4A/P4A',
+                cardBreakEvenTitle: 'Break-even Analysis',
+                cumulativeBenefit: 'Cumulative Benefit',
+                cumulativeCosts: 'Cumulative Costs',
+                breakEvenNotePrefix: 'Based on the',
+                breakEvenNoteSuffix: 'scenario',
+                months: 'months',
+                overMonths: '> 240 months',
+                yearLabel: 'Year',
+                footer: 'D4A Savings ROI Calculation | Data based on Eurostat SBS & NACE Rev.2 (2022-2023)',
+                alertFillIn: 'Please fill in all details before exporting.',
+                companyDefault: 'Company',
+                pdfTitle: 'ROI Report',
+                pdfExpectedSavings: 'Expected Savings (per year)',
+                pdfMonthsBreakEven: 'Months Break-even',
+                pdfRoi3Year: 'ROI (3 years)',
+                pdfNetBenefit3Year: 'Net Benefit (3 years)',
+                pdfScenarioAnalysis: 'Scenario Analysis',
+                pdfPerYear: 'Per Year',
+                pdfOver3Years: 'Over 3 Years',
+                pdfOeeImprovement: 'OEE Improvement',
+                pdfCompanyDetails: 'Company Details',
+                pdfCompany: 'Company',
+                pdfSector: 'Sector',
+                pdfOeeSituation: 'OEE Situation',
+                pdfMaxOutput: 'Maximum output per hour',
+                pdfMarginPerUnit: 'Margin per unit',
+                pdfValuePerHour: 'Value per hour',
+                pdfNumPlants: 'Number of Plants',
+                pdfTotalLines: 'Total Lines',
+                pdfOeeImprovementSection: 'OEE Improvement',
+                pdfCurrentOee: 'Current OEE',
+                pdfExpectedImprov: 'Expected improvement',
+                pdfPotentialOee: 'Potential OEE',
+                pdfInvestment: 'Investment',
+                pdfFixedCosts: 'Fixed costs (one-time)',
+                pdfVariableCosts: 'Maintenance costs (per year)',
+                pdfTotalCosts3yr: 'Total costs (3 years)',
+                pdfNetBenefitExpected: 'Net Benefit (3 years, expected)',
+                pdfPlantsLines: 'Plants & Lines',
+                pdfLine: 'Line',
+                pdfFooterData: 'Data based on Eurostat SBS & NACE Rev.2 (2022-2023)',
+                situationLabelNoOEE: 'New client - No OEE',
+                situationLabelBlue: 'OEE Blue upgrade',
+                outputLabelLow: 'Low',
+                outputLabelAvg: 'Average',
+                outputLabelHigh: 'High'
+            }
+        };
+
+        let currentLang = 'nl';
+
+        function t(key) {
+            return translations[currentLang][key] || translations['nl'][key] || key;
+        }
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.documentElement.lang = lang;
+            document.title = t('pageTitle');
+            applyTranslations();
+            renderPlantContent();
+            initSearchableSelect();
+            // Re-calculate to update dynamic text
+            const sector = document.getElementById('sector').value;
+            if (sector && sectorData[sector]) {
+                updateComputedValue(sectorData[sector]);
+            }
+            calculate();
+        }
+
+        function applyTranslations() {
+            // Update all elements with data-i18n attribute (textContent)
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[currentLang][key] !== undefined) {
+                    el.textContent = translations[currentLang][key];
+                }
+            });
+            // Update all elements with data-i18n-placeholder attribute
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (translations[currentLang][key] !== undefined) {
+                    el.placeholder = translations[currentLang][key];
+                }
+            });
+        }
+
         // ==========================================
         // DATA from Excel "Data sheet"
         // ==========================================
@@ -1351,11 +1690,12 @@
         // ==========================================
         // STATE
         // ==========================================
-        let plantData = { 1: { lines: [{ shifts: 3 }] } };
+        let plantData = { 1: { lines: [{ shifts: 3, outputLevel: 'avg', marginLevel: 'avg' }] } };
         let numPlants = 1;
         let activePlant = 1;
         let selectedOutput = 'avg';
         let selectedMargin = 'avg';
+        let selectedScenario = 'expected';
 
         // ==========================================
         // FORMATTING
@@ -1401,7 +1741,10 @@
                 `<div class="select-option" data-value="${opt.value}">${opt.text}</div>`
             ).join('');
 
-            select.addEventListener('click', (e) => {
+            // Remove old listeners by cloning
+            const newSelect = select.cloneNode(true);
+            select.parentNode.replaceChild(newSelect, select);
+            newSelect.addEventListener('click', (e) => {
                 e.preventDefault();
                 wrapper.classList.add('open', 'searching');
                 search.value = '';
@@ -1409,19 +1752,24 @@
                 filterOptions('');
             });
 
-            search.addEventListener('input', (e) => {
+            const newSearch = search.cloneNode(true);
+            search.parentNode.replaceChild(newSearch, search);
+            newSearch.addEventListener('input', (e) => {
                 filterOptions(e.target.value);
             });
 
-            search.addEventListener('blur', () => {
+            newSearch.addEventListener('blur', () => {
                 setTimeout(() => {
                     wrapper.classList.remove('open', 'searching');
                 }, 150);
             });
 
-            dropdown.addEventListener('click', (e) => {
+            // Remove old dropdown listeners by cloning
+            const newDropdown = dropdown.cloneNode(true);
+            dropdown.parentNode.replaceChild(newDropdown, dropdown);
+            newDropdown.addEventListener('click', (e) => {
                 if (e.target.classList.contains('select-option')) {
-                    select.value = e.target.dataset.value;
+                    document.getElementById('sector').value = e.target.dataset.value;
                     wrapper.classList.remove('open', 'searching');
                     onSectorChange();
                 }
@@ -1429,7 +1777,7 @@
 
             function filterOptions(query) {
                 const q = query.toLowerCase();
-                dropdown.querySelectorAll('.select-option').forEach(opt => {
+                newDropdown.querySelectorAll('.select-option').forEach(opt => {
                     const match = opt.textContent.toLowerCase().includes(q);
                     opt.classList.toggle('hidden', !match);
                 });
@@ -1453,7 +1801,16 @@
             // Reset selections to avg
             selectedOutput = 'avg';
             selectedMargin = 'avg';
+            for (let p = 1; p <= numPlants; p++) {
+                if (plantData[p]) {
+                    for (const line of plantData[p].lines) {
+                        line.outputLevel = 'avg';
+                        line.marginLevel = 'avg';
+                    }
+                }
+            }
             updateOptionButtonStates();
+            renderPlantContent();
             calculate();
         }
 
@@ -1477,7 +1834,7 @@
             const output = data.outputPerHour[selectedOutput];
             const margin = data.marginPerUnit[selectedMargin];
             const addedValue = output * margin;
-            document.getElementById('addedValueCalc').textContent = formatCurrency(addedValue) + ' /uur';
+            document.getElementById('addedValueCalc').textContent = formatCurrency(addedValue) + ' ' + t('perHourSuffix');
         }
 
         // ==========================================
@@ -1485,7 +1842,14 @@
         // ==========================================
         function selectOutput(level) {
             selectedOutput = level;
+            // Update all lines to this output level
+            for (let p = 1; p <= numPlants; p++) {
+                for (const line of plantData[p].lines) {
+                    line.outputLevel = level;
+                }
+            }
             updateOptionButtonStates();
+            renderPlantContent();
             const sector = document.getElementById('sector').value;
             if (sector && sectorData[sector]) {
                 updateComputedValue(sectorData[sector]);
@@ -1495,11 +1859,28 @@
 
         function selectMargin(level) {
             selectedMargin = level;
+            // Update all lines to this margin level
+            for (let p = 1; p <= numPlants; p++) {
+                for (const line of plantData[p].lines) {
+                    line.marginLevel = level;
+                }
+            }
             updateOptionButtonStates();
+            renderPlantContent();
             const sector = document.getElementById('sector').value;
             if (sector && sectorData[sector]) {
                 updateComputedValue(sectorData[sector]);
             }
+            calculate();
+        }
+
+        function selectScenario(scenario) {
+            selectedScenario = scenario;
+            document.querySelectorAll('.scenario-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            const selectedCard = document.querySelector(`.scenario-card[data-scenario="${scenario}"]`);
+            if (selectedCard) selectedCard.classList.add('selected');
             calculate();
         }
 
@@ -1529,7 +1910,7 @@
 
             for (let p = 1; p <= numPlants; p++) {
                 if (!plantData[p]) {
-                    plantData[p] = { lines: [{ shifts: 3 }] };
+                    plantData[p] = { lines: [{ shifts: 3, outputLevel: 'avg', marginLevel: 'avg' }] };
                 }
             }
 
@@ -1578,29 +1959,48 @@
                     <table class="lines-table">
                         <thead>
                             <tr>
-                                <th>Lijn</th>
-                                <th>Ploegen Regime</th>
-                                <th>Actie</th>
+                                <th>${t('thLine')}</th>
+                                <th>${t('thOutput')}</th>
+                                <th>${t('thMargin')}</th>
+                                <th>${t('thShiftRegime')}</th>
+                                <th>${t('thAction')}</th>
                             </tr>
                         </thead>
                         <tbody>
                 `;
 
                 plantData[p].lines.forEach((line, index) => {
+                    const shiftWord = (s) => s === 1 ? t('shift') : t('shifts');
+                    const ol = line.outputLevel || 'avg';
+                    const ml = line.marginLevel || 'avg';
                     tableHTML += `
                         <tr>
                             <td class="line-number">${index + 1}</td>
                             <td>
-                                <select onchange="updateLineShifts(${p}, ${index}, this.value)">
-                                    <option value="1" ${line.shifts === 1 ? 'selected' : ''}>1 ploeg</option>
-                                    <option value="2" ${line.shifts === 2 ? 'selected' : ''}>2 ploegen</option>
-                                    <option value="3" ${line.shifts === 3 ? 'selected' : ''}>3 ploegen</option>
-                                    <option value="4" ${line.shifts === 4 ? 'selected' : ''}>4 ploegen</option>
-                                    <option value="5" ${line.shifts === 5 ? 'selected' : ''}>5 ploegen</option>
+                                <select onchange="updateLineOutput(${p}, ${index}, this.value)">
+                                    <option value="min" ${ol === 'min' ? 'selected' : ''}>${t('optionLow')}</option>
+                                    <option value="avg" ${ol === 'avg' ? 'selected' : ''}>${t('optionAvg')}</option>
+                                    <option value="max" ${ol === 'max' ? 'selected' : ''}>${t('optionHigh')}</option>
                                 </select>
                             </td>
                             <td>
-                                <button class="btn btn-remove" onclick="removeLine(${p}, ${index})" ${plantData[p].lines.length <= 1 ? 'disabled' : ''}>Verwijderen</button>
+                                <select onchange="updateLineMargin(${p}, ${index}, this.value)">
+                                    <option value="min" ${ml === 'min' ? 'selected' : ''}>${t('optionLow')}</option>
+                                    <option value="avg" ${ml === 'avg' ? 'selected' : ''}>${t('optionAvg')}</option>
+                                    <option value="max" ${ml === 'max' ? 'selected' : ''}>${t('optionHigh')}</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select onchange="updateLineShifts(${p}, ${index}, this.value)">
+                                    <option value="1" ${line.shifts === 1 ? 'selected' : ''}>1 ${shiftWord(1)}</option>
+                                    <option value="2" ${line.shifts === 2 ? 'selected' : ''}>2 ${shiftWord(2)}</option>
+                                    <option value="3" ${line.shifts === 3 ? 'selected' : ''}>3 ${shiftWord(3)}</option>
+                                    <option value="4" ${line.shifts === 4 ? 'selected' : ''}>4 ${shiftWord(4)}</option>
+                                    <option value="5" ${line.shifts === 5 ? 'selected' : ''}>5 ${shiftWord(5)}</option>
+                                </select>
+                            </td>
+                            <td>
+                                <button class="btn btn-remove" onclick="removeLine(${p}, ${index})" ${plantData[p].lines.length <= 1 ? 'disabled' : ''}>${t('removeBtn')}</button>
                             </td>
                         </tr>
                     `;
@@ -1609,7 +2009,7 @@
                 tableHTML += `
                         </tbody>
                     </table>
-                    <button class="btn btn-primary" onclick="addLine(${p})">+ Lijn Toevoegen</button>
+                    <button class="btn btn-primary" onclick="addLine(${p})">${t('addLineBtn')}</button>
                 `;
 
                 content.innerHTML = tableHTML;
@@ -1618,7 +2018,7 @@
         }
 
         function addLine(plantNum) {
-            plantData[plantNum].lines.push({ shifts: 3 });
+            plantData[plantNum].lines.push({ shifts: 3, outputLevel: selectedOutput, marginLevel: selectedMargin });
             renderPlantContent();
             calculate();
         }
@@ -1633,6 +2033,16 @@
 
         function updateLineShifts(plantNum, lineIndex, shifts) {
             plantData[plantNum].lines[lineIndex].shifts = parseInt(shifts);
+            calculate();
+        }
+
+        function updateLineOutput(plantNum, lineIndex, level) {
+            plantData[plantNum].lines[lineIndex].outputLevel = level;
+            calculate();
+        }
+
+        function updateLineMargin(plantNum, lineIndex, level) {
+            plantData[plantNum].lines[lineIndex].marginLevel = level;
             calculate();
         }
 
@@ -1667,18 +2077,16 @@
             exportBtn.style.display = 'inline-flex';
 
             const data = sectorData[sector];
-            const output = data.outputPerHour[selectedOutput];
-            const margin = data.marginPerUnit[selectedMargin];
-            const addedValuePerHour = output * margin;
 
             // Get OEE increases based on situation
             const oeeData = situation === 'noOEE' ? data.oeeNothingToT4A : data.oeeBlueToT4A;
 
-            // Calculate for each scenario
+            // Calculate for each scenario (per-line output/margin)
             const scenarios = ['conservative', 'expected', 'optimistic'];
             const results = {};
 
             let totalLines = 0;
+            let totalAddedValue = 0;
             for (let p = 1; p <= numPlants; p++) {
                 totalLines += plantData[p].lines.length;
             }
@@ -1690,8 +2098,12 @@
                 for (let p = 1; p <= numPlants; p++) {
                     for (const line of plantData[p].lines) {
                         const hours = workHours[line.shifts.toString()];
-                        const annual = addedValuePerHour * oeeIncrease * hours;
+                        const lineOutput = data.outputPerHour[line.outputLevel || 'avg'];
+                        const lineMargin = data.marginPerUnit[line.marginLevel || 'avg'];
+                        const lineAddedValue = lineOutput * lineMargin;
+                        const annual = lineAddedValue * oeeIncrease * hours;
                         totalAnnual += annual;
+                        if (scenario === 'conservative') totalAddedValue += lineAddedValue;
                     }
                 }
 
@@ -1701,6 +2113,8 @@
                     oeeIncrease: oeeIncrease
                 };
             }
+
+            const avgAddedValue = totalLines > 0 ? totalAddedValue / totalLines : 0;
 
             // Update scenario cards
             document.getElementById('totalLinesDisplay').textContent = totalLines;
@@ -1714,13 +2128,13 @@
 
             // Update sector info card
             document.getElementById('sectorNameDisplay').textContent = data.name;
-            document.getElementById('addedValueDisplay').textContent = formatCurrency(addedValuePerHour) + '/uur';
+            document.getElementById('addedValueDisplay').textContent = formatCurrency(avgAddedValue) + t('perHourSuffix');
             document.getElementById('oeeStartDisplay').textContent = formatPercentage(data.oeeStart);
-            document.getElementById('oeeImprovementDisplay').textContent = '+' + formatPercentage(oeeData.expected);
+            document.getElementById('oeeImprovementDisplay').textContent = '+' + formatPercentage(oeeData[selectedScenario]);
 
-            // Update value bars
+            // Update value bars using selected scenario
             const currentOEE = data.oeeStart * 100;
-            const potentialOEE = Math.min(95, (data.oeeStart + oeeData.expected) * 100);
+            const potentialOEE = Math.min(95, (data.oeeStart + oeeData[selectedScenario]) * 100);
             const gap = potentialOEE - currentOEE;
 
             document.getElementById('currentBar').style.width = currentOEE + '%';
@@ -1729,8 +2143,15 @@
             document.getElementById('potentialBar').textContent = potentialOEE.toFixed(0) + '%';
             document.getElementById('gapLabel').textContent = '+' + gap.toFixed(1) + '%';
 
-            // Break-even using Expected scenario
-            const annualBenefit = results.expected.annual;
+            // Update break-even note with selected scenario name
+            const scenarioLabels = { conservative: t('conservative'), expected: t('expected'), optimistic: t('optimistic') };
+            const breakEvenNoteEl = document.querySelector('.break-even-note');
+            if (breakEvenNoteEl) {
+                breakEvenNoteEl.textContent = t('breakEvenNotePrefix') + ' ' + scenarioLabels[selectedScenario].toLowerCase() + ' ' + t('breakEvenNoteSuffix');
+            }
+
+            // Break-even using selected scenario
+            const annualBenefit = results[selectedScenario].annual;
             const yearData = calculateBreakEven(annualBenefit, fixedFee, variableCost);
             renderGraph(yearData);
             displayBreakEven(yearData, fixedFee, variableCost);
@@ -1740,16 +2161,19 @@
         // BREAK-EVEN
         // ==========================================
         function calculateBreakEven(annualBenefit, fixedFee, variableCost) {
-            let cumulativeBenefit = 0;
-            let cumulativeCost = 0;
+            const MIN_YEARS = 5;
             let yearData = [];
-            let year = 0;
+
+            // Year 0: upfront investment, no benefit yet
+            yearData.push({ year: 0, cumulativeBenefit: 0, cumulativeCost: fixedFee });
+
+            let cumulativeBenefit = 0;
+            let cumulativeCost = fixedFee;
             let breakEvenReached = false;
 
-            while (year < 20) {
-                year++;
+            for (let year = 1; year <= 20; year++) {
                 cumulativeBenefit += annualBenefit;
-                cumulativeCost += (year === 1) ? (fixedFee + variableCost) : variableCost;
+                cumulativeCost += variableCost;
 
                 yearData.push({
                     year: year,
@@ -1761,15 +2185,63 @@
                     breakEvenReached = true;
                 }
 
-                if (breakEvenReached && year >= yearData.find(d => d.cumulativeBenefit >= d.cumulativeCost).year + 2) {
-                    break;
-                }
-                if (fixedFee === 0 && variableCost === 0 && year >= 5) {
-                    break;
+                if (year >= MIN_YEARS) {
+                    if (breakEvenReached) {
+                        const beYear = yearData.find(d => d.year > 0 && d.cumulativeBenefit >= d.cumulativeCost).year;
+                        if (year >= beYear + 2) break;
+                    }
+                    if (fixedFee === 0 && variableCost === 0) break;
                 }
             }
 
             return yearData;
+        }
+
+        // S-curve: generates smooth monthly points using sigmoid redistribution
+        function generateSCurvePoints(yearData) {
+            if (yearData.length < 2) return yearData;
+
+            const maxYear = yearData[yearData.length - 1].year;
+            const totalBenefit = yearData[yearData.length - 1].cumulativeBenefit;
+
+            if (totalBenefit <= 0 || maxYear <= 0) return yearData;
+
+            const points = [];
+            const steps = maxYear * 12; // monthly resolution
+
+            // Sigmoid parameters
+            const k = 6;
+            const x0 = 0.35;
+            const sigmoid = (val) => 1 / (1 + Math.exp(-k * (val - x0)));
+            const sigStart = sigmoid(0);
+            const sigEnd = sigmoid(1);
+            const normalizedSigmoid = (val) => (sigmoid(val) - sigStart) / (sigEnd - sigStart);
+
+            for (let step = 0; step <= steps; step++) {
+                const tNorm = step / steps;
+                const yearFrac = tNorm * maxYear;
+
+                // S-curve benefit
+                const benefitAtPoint = totalBenefit * normalizedSigmoid(tNorm);
+
+                // Linear cost interpolation from yearData
+                let costAtPoint = 0;
+                for (let i = 0; i < yearData.length - 1; i++) {
+                    if (yearFrac >= yearData[i].year && yearFrac <= yearData[i + 1].year) {
+                        const span = yearData[i + 1].year - yearData[i].year;
+                        const frac = span > 0 ? (yearFrac - yearData[i].year) / span : 0;
+                        costAtPoint = yearData[i].cumulativeCost + frac * (yearData[i + 1].cumulativeCost - yearData[i].cumulativeCost);
+                        break;
+                    }
+                }
+                if (yearFrac >= yearData[yearData.length - 1].year) {
+                    costAtPoint = yearData[yearData.length - 1].cumulativeCost;
+                }
+
+                points.push({ year: yearFrac, cumulativeBenefit: benefitAtPoint, cumulativeCost: costAtPoint });
+            }
+
+            return points;
         }
 
         function renderGraph(yearData) {
@@ -1826,10 +2298,13 @@
 
                 ctx.fillStyle = '#64748b';
                 ctx.textAlign = 'center';
-                ctx.fillText('Jaar ' + year, x, height - padding.bottom + 20);
+                ctx.fillText(t('yearLabel') + ' ' + year, x, height - padding.bottom + 20);
             }
 
-            // Cost line
+            // Generate S-curve points for benefit line
+            const sCurvePoints = generateSCurvePoints(yearData);
+
+            // Cost line (linear, from yearData including year 0)
             ctx.beginPath();
             ctx.strokeStyle = '#ef4444';
             ctx.lineWidth = 3;
@@ -1838,79 +2313,70 @@
             yearData.forEach((d, i) => {
                 const x = xScale(d.year);
                 const y = yScale(d.cumulativeCost);
-                if (i === 0) {
-                    ctx.moveTo(xScale(0), yScale(0));
-                    ctx.lineTo(x, y);
-                } else {
-                    ctx.lineTo(x, y);
-                }
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
             });
             ctx.stroke();
 
-            // Benefit line
+            // Benefit line (S-curve, smooth)
             ctx.beginPath();
             ctx.strokeStyle = '#10b981';
             ctx.lineWidth = 3;
-            yearData.forEach((d, i) => {
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            sCurvePoints.forEach((d, i) => {
                 const x = xScale(d.year);
                 const y = yScale(d.cumulativeBenefit);
-                if (i === 0) {
-                    ctx.moveTo(xScale(0), yScale(0));
-                    ctx.lineTo(x, y);
-                } else {
-                    ctx.lineTo(x, y);
-                }
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
             });
             ctx.stroke();
 
-            // Break-even marker
-            for (let i = 0; i < yearData.length; i++) {
-                if (yearData[i].cumulativeBenefit >= yearData[i].cumulativeCost) {
-                    let breakEvenX, breakEvenY;
-                    if (i === 0) {
-                        breakEvenX = xScale(yearData[i].year);
-                        breakEvenY = yScale(yearData[i].cumulativeBenefit);
-                    } else {
-                        const prevD = yearData[i - 1];
-                        const currD = yearData[i];
-                        const benefitDiff = currD.cumulativeBenefit - prevD.cumulativeBenefit;
-                        const costDiff = currD.cumulativeCost - prevD.cumulativeCost;
-                        const prevGap = prevD.cumulativeCost - prevD.cumulativeBenefit;
-                        const gapChangeRate = benefitDiff - costDiff;
+            // Break-even marker (where S-curve benefit crosses cost)
+            for (let i = 1; i < sCurvePoints.length; i++) {
+                if (sCurvePoints[i].cumulativeBenefit >= sCurvePoints[i].cumulativeCost) {
+                    const prev = sCurvePoints[i - 1];
+                    const curr = sCurvePoints[i];
+                    const benefitDiff = curr.cumulativeBenefit - prev.cumulativeBenefit;
+                    const costDiff = curr.cumulativeCost - prev.cumulativeCost;
+                    const prevGap = prev.cumulativeCost - prev.cumulativeBenefit;
+                    const gapChange = benefitDiff - costDiff;
 
-                        if (gapChangeRate !== 0) {
-                            const fraction = prevGap / gapChangeRate;
-                            const exactYear = prevD.year + fraction;
-                            const exactValue = prevD.cumulativeBenefit + benefitDiff * fraction;
-                            breakEvenX = xScale(exactYear);
-                            breakEvenY = yScale(exactValue);
-                        } else {
-                            breakEvenX = xScale(currD.year);
-                            breakEvenY = yScale(currD.cumulativeBenefit);
-                        }
+                    let beYear, beValue;
+                    if (gapChange > 0) {
+                        const frac = prevGap / gapChange;
+                        const stepSize = curr.year - prev.year;
+                        beYear = prev.year + frac * stepSize;
+                        beValue = prev.cumulativeBenefit + benefitDiff * frac;
+                    } else {
+                        beYear = curr.year;
+                        beValue = curr.cumulativeBenefit;
                     }
 
                     ctx.beginPath();
                     ctx.fillStyle = '#fbbf24';
-                    ctx.arc(breakEvenX, breakEvenY, 10, 0, Math.PI * 2);
+                    ctx.arc(xScale(beYear), yScale(beValue), 10, 0, Math.PI * 2);
                     ctx.fill();
-
                     ctx.beginPath();
                     ctx.fillStyle = '#ffffff';
-                    ctx.arc(breakEvenX, breakEvenY, 5, 0, Math.PI * 2);
+                    ctx.arc(xScale(beYear), yScale(beValue), 5, 0, Math.PI * 2);
                     ctx.fill();
-
                     break;
                 }
             }
 
-            // Data points
+            // Data point dots at integer years
             yearData.forEach((d) => {
+                if (d.year === 0) return;
                 const x = xScale(d.year);
+
+                // Find S-curve benefit at this year
+                const sCurveAtYear = sCurvePoints.find(p => Math.abs(p.year - d.year) < 0.01);
+                const benefitY = sCurveAtYear ? sCurveAtYear.cumulativeBenefit : d.cumulativeBenefit;
 
                 ctx.beginPath();
                 ctx.fillStyle = '#10b981';
-                ctx.arc(x, yScale(d.cumulativeBenefit), 5, 0, Math.PI * 2);
+                ctx.arc(x, yScale(benefitY), 5, 0, Math.PI * 2);
                 ctx.fill();
 
                 ctx.beginPath();
@@ -1926,44 +2392,35 @@
 
             badge.classList.remove('warning', 'error');
 
-            for (let i = 0; i < yearData.length; i++) {
+            // Skip year 0 (index 0) - start from year 1
+            for (let i = 1; i < yearData.length; i++) {
                 if (yearData[i].cumulativeBenefit >= yearData[i].cumulativeCost) {
-                    let totalMonths;
-                    if (i === 0) {
-                        const annualBenefit = yearData[0].cumulativeBenefit;
-                        const year1Cost = yearData[0].cumulativeCost;
-                        if (annualBenefit > 0) {
-                            totalMonths = Math.ceil((year1Cost / annualBenefit) * 12);
-                        } else {
-                            totalMonths = 12;
-                        }
-                    } else {
-                        const prevD = yearData[i - 1];
-                        const currD = yearData[i];
-                        const benefitDiff = currD.cumulativeBenefit - prevD.cumulativeBenefit;
-                        const costDiff = currD.cumulativeCost - prevD.cumulativeCost;
-                        const prevGap = prevD.cumulativeCost - prevD.cumulativeBenefit;
-                        const gapChangeRate = benefitDiff - costDiff;
+                    const prevD = yearData[i - 1];
+                    const currD = yearData[i];
+                    const benefitDiff = currD.cumulativeBenefit - prevD.cumulativeBenefit;
+                    const costDiff = currD.cumulativeCost - prevD.cumulativeCost;
+                    const prevGap = prevD.cumulativeCost - prevD.cumulativeBenefit;
+                    const gapChangeRate = benefitDiff - costDiff;
 
-                        if (gapChangeRate !== 0) {
-                            const fraction = prevGap / gapChangeRate;
-                            totalMonths = Math.ceil((prevD.year + fraction) * 12);
-                        } else {
-                            totalMonths = currD.year * 12;
-                        }
+                    let totalMonths;
+                    if (gapChangeRate !== 0) {
+                        const fraction = prevGap / gapChangeRate;
+                        totalMonths = Math.ceil((prevD.year + fraction) * 12);
+                    } else {
+                        totalMonths = currD.year * 12;
                     }
 
                     if (totalMonths <= 0) totalMonths = 1;
-                    breakEvenYear.textContent = totalMonths + ' maanden';
+                    breakEvenYear.textContent = totalMonths + ' ' + t('months');
                     return;
                 }
             }
 
             if (yearData.length > 0 && yearData[yearData.length - 1].cumulativeCost > yearData[yearData.length - 1].cumulativeBenefit) {
-                breakEvenYear.textContent = '> 240 maanden';
+                breakEvenYear.textContent = t('overMonths');
                 badge.classList.add('error');
             } else if (fixedFee === 0 && variableCost === 0) {
-                breakEvenYear.textContent = '0 maanden';
+                breakEvenYear.textContent = '0 ' + t('months');
             }
         }
 
@@ -1971,41 +2428,44 @@
         // PDF EXPORT
         // ==========================================
         function exportPDF() {
-            const companyName = document.getElementById('companyName').value || 'Bedrijf';
+            const companyName = document.getElementById('companyName').value || t('companyDefault');
             const sector = document.getElementById('sector').value;
             const situation = document.getElementById('currentSituation').value;
 
             if (!sector || !situation) {
-                alert('Vul eerst alle gegevens in voordat u exporteert.');
+                alert(t('alertFillIn'));
                 return;
             }
 
             const data = sectorData[sector];
-            const output = data.outputPerHour[selectedOutput];
-            const margin = data.marginPerUnit[selectedMargin];
-            const addedValuePerHour = output * margin;
             const oeeData = situation === 'noOEE' ? data.oeeNothingToT4A : data.oeeBlueToT4A;
             const fixedFee = parseFloat(document.getElementById('fixedFee').value) || 0;
             const variableCost = parseFloat(document.getElementById('variableCost').value) || 0;
 
-            // Calculate all scenarios
+            // Calculate all scenarios (per-line output/margin)
             const scenarios = ['conservative', 'expected', 'optimistic'];
             const results = {};
             let totalLines = 0;
+            let totalAddedValue = 0;
+
+            for (let p = 1; p <= numPlants; p++) {
+                totalLines += plantData[p].lines.length;
+            }
 
             for (const scenario of scenarios) {
                 let totalAnnual = 0;
-                let lineCount = 0;
 
                 for (let p = 1; p <= numPlants; p++) {
                     for (const line of plantData[p].lines) {
                         const hours = workHours[line.shifts.toString()];
-                        totalAnnual += addedValuePerHour * oeeData[scenario] * hours;
-                        lineCount++;
+                        const lineOutput = data.outputPerHour[line.outputLevel || 'avg'];
+                        const lineMargin = data.marginPerUnit[line.marginLevel || 'avg'];
+                        const lineAddedValue = lineOutput * lineMargin;
+                        totalAnnual += lineAddedValue * oeeData[scenario] * hours;
+                        if (scenario === 'conservative') totalAddedValue += lineAddedValue;
                     }
                 }
 
-                totalLines = lineCount;
                 results[scenario] = {
                     annual: totalAnnual,
                     threeYear: totalAnnual * 3,
@@ -2013,26 +2473,30 @@
                 };
             }
 
-            const expectedAnnual = results.expected.annual;
+            const avgAddedValue = totalLines > 0 ? totalAddedValue / totalLines : 0;
+            const selectedAnnual = results[selectedScenario].annual;
             const totalCost3Years = fixedFee + (variableCost * 3);
-            const netBenefit = results.expected.threeYear - totalCost3Years;
-            const roi = totalCost3Years > 0 ? ((results.expected.threeYear / totalCost3Years) * 100).toFixed(0) : '\u221E';
+            const netBenefit = results[selectedScenario].threeYear - totalCost3Years;
+            const roi = totalCost3Years > 0 ? ((results[selectedScenario].threeYear / totalCost3Years) * 100).toFixed(0) : '\u221E';
 
-            // Break-even in months
+            // Break-even in months (using selected scenario)
             let breakEvenMonths = 0;
             let cumulativeBenefit = 0;
-            let cumulativeCost = 0;
+            let cumulativeCost = fixedFee;
             for (let year = 1; year <= 20; year++) {
-                cumulativeBenefit += expectedAnnual;
-                cumulativeCost += (year === 1) ? (fixedFee + variableCost) : variableCost;
+                cumulativeBenefit += selectedAnnual;
+                cumulativeCost += variableCost;
                 if (cumulativeBenefit >= cumulativeCost) {
                     if (year === 1) {
-                        breakEvenMonths = Math.ceil((cumulativeCost / expectedAnnual) * 12);
+                        const prevGap = fixedFee;
+                        const gapChange = selectedAnnual - variableCost;
+                        const fraction = prevGap / gapChange;
+                        breakEvenMonths = Math.ceil(fraction * 12);
                     } else {
-                        const prevBenefit = cumulativeBenefit - expectedAnnual;
+                        const prevBenefit = cumulativeBenefit - selectedAnnual;
                         const prevCost = cumulativeCost - variableCost;
                         const prevGap = prevCost - prevBenefit;
-                        const gapChange = expectedAnnual - variableCost;
+                        const gapChange = selectedAnnual - variableCost;
                         const fraction = prevGap / gapChange;
                         breakEvenMonths = Math.ceil(((year - 1) + fraction) * 12);
                     }
@@ -2040,15 +2504,17 @@
                 }
             }
 
-            const situationLabel = situation === 'noOEE' ? 'Nieuwe klant - Geen OEE' : 'OEE Blue upgrade';
-            const outputLabels = { min: 'Laag', avg: 'Gemiddeld', max: 'Hoog' };
+            const situationLabel = situation === 'noOEE' ? t('situationLabelNoOEE') : t('situationLabelBlue');
+            const outputLabels = { min: t('outputLabelLow'), avg: t('outputLabelAvg'), max: t('outputLabelHigh') };
+            const scenarioLabels = { conservative: t('conservative'), expected: t('expected'), optimistic: t('optimistic') };
+            const dateLocale = currentLang === 'nl' ? 'nl-NL' : 'en-GB';
 
             const printContent = `
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>ROI Rapport - ${companyName}</title>
+    <title>${t('pdfTitle')} - ${companyName}</title>
     <style>
         @page { margin: 15mm; size: A4; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -2115,65 +2581,65 @@
 <body>
     <div class="header">
         <div class="header-left">
-            <h1>OEE <span>ROI Rapport</span></h1>
+            <h1>OEE <span>${t('pdfTitle')}</span></h1>
             <div class="company">${companyName}</div>
         </div>
         <div class="header-right">
             <div class="brand">Decide4Action</div>
-            ${new Date().toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' })}
+            ${new Date().toLocaleDateString(dateLocale, { day: 'numeric', month: 'long', year: 'numeric' })}
         </div>
     </div>
 
     <div class="exec-summary">
         <div class="main-value">
-            <div class="label">Verwachte Besparing (per jaar)</div>
-            <div class="number">${formatCurrency(expectedAnnual)}</div>
+            <div class="label">${scenarioLabels[selectedScenario]} - ${t('pdfExpectedSavings')}</div>
+            <div class="number">${formatCurrency(selectedAnnual)}</div>
         </div>
         <div class="metrics">
             <div class="metric green">
                 <div class="value">${breakEvenMonths > 0 ? breakEvenMonths : '0'}</div>
-                <div class="label">Maanden Break-even</div>
+                <div class="label">${t('pdfMonthsBreakEven')}</div>
             </div>
             <div class="metric cyan">
                 <div class="value">${roi}%</div>
-                <div class="label">ROI (3 jaar)</div>
+                <div class="label">${t('pdfRoi3Year')}</div>
             </div>
             <div class="metric green">
                 <div class="value">${formatCurrency(netBenefit)}</div>
-                <div class="label">Netto Voordeel (3 jaar)</div>
+                <div class="label">${t('pdfNetBenefit3Year')}</div>
             </div>
         </div>
     </div>
 
     <div class="section">
-        <div class="section-title">Scenario Analyse</div>
+        <div class="section-title">${t('pdfScenarioAnalysis')}</div>
         <table class="scenario-table">
             <thead>
                 <tr>
                     <th></th>
-                    <th>Conservatief</th>
-                    <th class="expected">Verwacht</th>
-                    <th>Optimistisch</th>
+                    <th${selectedScenario === 'conservative' ? ' class="expected"' : ''}>${t('conservative')}</th>
+                    <th${selectedScenario === 'expected' ? ' class="expected"' : ''}>${t('expected')}</th>
+                    <th${selectedScenario === 'optimistic' ? ' class="expected"' : ''}>${t('optimistic')}</th>
                 </tr>
             </thead>
             <tbody>
                 <tr class="value-row">
-                    <td class="row-label">Per Jaar</td>
-                    <td>${formatCurrency(results.conservative.annual)}</td>
-                    <td class="expected">${formatCurrency(results.expected.annual)}</td>
-                    <td>${formatCurrency(results.optimistic.annual)}</td>
+                    <td class="row-label">${t('pdfPerYear')}</td>
+                    <td${selectedScenario === 'conservative' ? ' class="expected"' : ''}>${formatCurrency(results.conservative.annual)}</td>
+                    <td${selectedScenario === 'expected' ? ' class="expected"' : ''}>${formatCurrency(results.expected.annual)}</td>
+                    <td${selectedScenario === 'optimistic' ? ' class="expected"' : ''}>${formatCurrency(results.optimistic.annual)}</td>
                 </tr>
                 <tr class="value-row">
-                    <td class="row-label">Over 3 Jaar</td>
-                    <td>${formatCurrency(results.conservative.threeYear)}</td>
-                    <td class="expected">${formatCurrency(results.expected.threeYear)}</td>
-                    <td>${formatCurrency(results.optimistic.threeYear)}</td>
+                    <td class="row-label">${t('pdfOver3Years')}</td>
+                    <td${selectedScenario === 'conservative' ? ' class="expected"' : ''}>${formatCurrency(results.conservative.threeYear)}</td>
+                    <td${selectedScenario === 'expected' ? ' class="expected"' : ''}>${formatCurrency(results.expected.threeYear)}</td>
+                    <td${selectedScenario === 'optimistic' ? ' class="expected"' : ''}>${formatCurrency(results.optimistic.threeYear)}</td>
                 </tr>
                 <tr>
-                    <td class="row-label">OEE Verbetering</td>
-                    <td>+${formatPercentage(results.conservative.oeeIncrease)}</td>
-                    <td class="expected">+${formatPercentage(results.expected.oeeIncrease)}</td>
-                    <td>+${formatPercentage(results.optimistic.oeeIncrease)}</td>
+                    <td class="row-label">${t('pdfOeeImprovement')}</td>
+                    <td${selectedScenario === 'conservative' ? ' class="expected"' : ''}>+${formatPercentage(results.conservative.oeeIncrease)}</td>
+                    <td${selectedScenario === 'expected' ? ' class="expected"' : ''}>+${formatPercentage(results.expected.oeeIncrease)}</td>
+                    <td${selectedScenario === 'optimistic' ? ' class="expected"' : ''}>+${formatPercentage(results.optimistic.oeeIncrease)}</td>
                 </tr>
             </tbody>
         </table>
@@ -2182,59 +2648,58 @@
     <div class="content-grid">
         <div>
             <div class="section">
-                <div class="section-title">Bedrijfsgegevens</div>
+                <div class="section-title">${t('pdfCompanyDetails')}</div>
                 <table class="info-table">
-                    <tr><td class="label">Bedrijf</td><td class="value">${companyName}</td></tr>
-                    <tr><td class="label">Sector</td><td class="value">${data.name}</td></tr>
-                    <tr><td class="label">OEE Situatie</td><td class="value">${situationLabel}</td></tr>
-                    <tr><td class="label">Maximal output per uur</td><td class="value">${formatOutputValue(output)} (${outputLabels[selectedOutput]})</td></tr>
-                    <tr><td class="label">Marge per eenheid</td><td class="value">${formatMarginValue(margin)} (${outputLabels[selectedMargin]})</td></tr>
-                    <tr><td class="label">Waarde per uur</td><td class="value">${formatCurrency(addedValuePerHour)}</td></tr>
-                    <tr><td class="label">Aantal Plants</td><td class="value">${numPlants}</td></tr>
-                    <tr><td class="label">Totaal Lijnen</td><td class="value">${totalLines}</td></tr>
+                    <tr><td class="label">${t('pdfCompany')}</td><td class="value">${companyName}</td></tr>
+                    <tr><td class="label">${t('pdfSector')}</td><td class="value">${data.name}</td></tr>
+                    <tr><td class="label">${t('pdfOeeSituation')}</td><td class="value">${situationLabel}</td></tr>
+                    <tr><td class="label">${t('pdfValuePerHour')}</td><td class="value">${formatCurrency(avgAddedValue)}</td></tr>
+                    <tr><td class="label">${t('breakEvenNotePrefix')} scenario</td><td class="value">${scenarioLabels[selectedScenario]}</td></tr>
+                    <tr><td class="label">${t('pdfNumPlants')}</td><td class="value">${numPlants}</td></tr>
+                    <tr><td class="label">${t('pdfTotalLines')}</td><td class="value">${totalLines}</td></tr>
                 </table>
             </div>
 
             <div class="section">
-                <div class="section-title">OEE Verbetering</div>
+                <div class="section-title">${t('pdfOeeImprovementSection')}</div>
                 <table class="info-table">
-                    <tr><td class="label">Huidige OEE</td><td class="value">${(data.oeeStart * 100).toFixed(0)}%</td></tr>
-                    <tr><td class="label">Verwachte verbetering</td><td class="value">+${formatPercentage(oeeData.expected)}</td></tr>
-                    <tr><td class="label">Potentieel OEE</td><td class="value">${Math.min(95, (data.oeeStart + oeeData.expected) * 100).toFixed(0)}%</td></tr>
+                    <tr><td class="label">${t('pdfCurrentOee')}</td><td class="value">${(data.oeeStart * 100).toFixed(0)}%</td></tr>
+                    <tr><td class="label">${t('pdfExpectedImprov')}</td><td class="value">+${formatPercentage(oeeData[selectedScenario])}</td></tr>
+                    <tr><td class="label">${t('pdfPotentialOee')}</td><td class="value">${Math.min(95, (data.oeeStart + oeeData[selectedScenario]) * 100).toFixed(0)}%</td></tr>
                 </table>
             </div>
         </div>
 
         <div>
             <div class="section">
-                <div class="section-title">Investering</div>
+                <div class="section-title">${t('pdfInvestment')}</div>
                 <div class="financials">
                     <div class="financials-row">
-                        <span class="label">Vaste kosten (eenmalig)</span>
+                        <span class="label">${t('pdfFixedCosts')}</span>
                         <span class="value">${formatCurrency(fixedFee)}</span>
                     </div>
                     <div class="financials-row">
-                        <span class="label">Variabele kosten (per jaar)</span>
+                        <span class="label">${t('pdfVariableCosts')}</span>
                         <span class="value">${formatCurrency(variableCost)}</span>
                     </div>
                     <div class="financials-row">
-                        <span class="label">Totale kosten (3 jaar)</span>
+                        <span class="label">${t('pdfTotalCosts3yr')}</span>
                         <span class="value">${formatCurrency(totalCost3Years)}</span>
                     </div>
                     <div class="financials-row total">
-                        <span class="label">Netto Voordeel (3 jaar, verwacht)</span>
+                        <span class="label">${t('pdfNetBenefitExpected')} (${scenarioLabels[selectedScenario]})</span>
                         <span class="value">${formatCurrency(netBenefit)}</span>
                     </div>
                 </div>
             </div>
 
             <div class="section">
-                <div class="section-title">Plants & Lijnen</div>
+                <div class="section-title">${t('pdfPlantsLines')}</div>
                 <div class="plant-grid">
                     ${Array.from({length: numPlants}, (_, i) => i + 1).map(p => `
                         <div class="plant-card">
                             <div class="plant-name">Plant ${p}</div>
-                            <div class="plant-lines">${plantData[p].lines.map((l, j) => `Lijn ${j+1}: ${l.shifts} ploeg${l.shifts > 1 ? 'en' : ''}`).join(' | ')}</div>
+                            <div class="plant-lines">${plantData[p].lines.map((l, j) => `${t('pdfLine')} ${j+1}: ${l.shifts} ${l.shifts > 1 ? t('shifts') : t('shift')} | ${t('thOutput')}: ${outputLabels[l.outputLevel || 'avg']} | ${t('thMargin')}: ${outputLabels[l.marginLevel || 'avg']}`).join('<br>')}</div>
                         </div>
                     `).join('')}
                 </div>
@@ -2244,7 +2709,7 @@
 
     <div class="footer">
         <div class="footer-brand">Decide4Action OEE ROI Calculator</div>
-        <div>Data gebaseerd op Eurostat SBS & NACE Rev.2 (2022-2023)</div>
+        <div>${t('pdfFooterData')}</div>
     </div>
 </body>
 </html>`;
