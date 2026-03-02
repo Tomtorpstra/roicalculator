@@ -463,59 +463,22 @@
         }
 
         /* Option Group (Min/Avg/Max buttons) */
-        .option-group {
-            display: flex;
-            gap: 8px;
-        }
-
-        .option-btn {
-            flex: 1;
-            padding: 14px 10px;
-            border: 2px solid #e5e7eb;
-            border-radius: 10px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            background: #fff;
-        }
-
-        .option-btn:hover {
-            border-color: #93c5fd;
-            background: #f8fafc;
-        }
-
-        .option-btn.active {
-            border-color: #00AAFF;
+        /* Set All Row */
+        .set-all-row td {
             background: #f0f9ff;
+            font-weight: 600;
+            border-bottom: 2px solid #00AAFF !important;
         }
 
-        .option-btn .option-label {
-            font-size: 0.7rem;
-            font-weight: 600;
-            color: #94a3b8;
+        .set-all-row .line-number {
+            color: #0284c7;
+            font-size: 0.8rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        .option-btn.active .option-label {
-            color: #00AAFF;
-        }
-
-        .option-btn .option-value {
-            font-size: 1.05rem;
-            font-weight: 700;
-            color: #0f172a;
-            margin-top: 4px;
-        }
-
-        .option-btn.active .option-value {
-            color: #00AAFF;
-        }
-
-        .option-btn .option-sub {
-            font-size: 0.7rem;
-            color: #94a3b8;
-            margin-top: 2px;
+        .lines-table select {
+            min-width: 150px;
         }
 
         /* Computed Value Display */
@@ -939,10 +902,6 @@
                 grid-template-columns: 1fr;
             }
 
-            .option-group {
-                flex-direction: column;
-            }
-
             .scenario-grid {
                 grid-template-columns: 1fr;
             }
@@ -1060,59 +1019,16 @@
                         </div>
                     </div>
 
-                    <div id="productionSection" style="display: none;">
-                        <div class="form-group">
-                            <label><span data-i18n="outputLabel">Maximal output per uur</span> <span class="benchmark-note" data-i18n="benchmarkNote">(sector benchmark)</span></label>
-                            <div class="option-group" id="outputOptions">
-                                <div class="option-btn" data-level="min" onclick="selectOutput('min')">
-                                    <div class="option-label" data-i18n="optionLow">Laag</div>
-                                    <div class="option-value" id="outputMin">-</div>
-                                    <div class="option-sub" data-i18n="unitsPerHour">eenheden/uur</div>
-                                </div>
-                                <div class="option-btn active" data-level="avg" onclick="selectOutput('avg')">
-                                    <div class="option-label" data-i18n="optionAvg">Gemiddeld</div>
-                                    <div class="option-value" id="outputAvg">-</div>
-                                    <div class="option-sub" data-i18n="unitsPerHour">eenheden/uur</div>
-                                </div>
-                                <div class="option-btn" data-level="max" onclick="selectOutput('max')">
-                                    <div class="option-label" data-i18n="optionHigh">Hoog</div>
-                                    <div class="option-value" id="outputMax">-</div>
-                                    <div class="option-sub" data-i18n="unitsPerHour">eenheden/uur</div>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="plant-tabs" id="plantTabs"></div>
+                    <div id="plantContents"></div>
 
-                        <div class="form-group">
-                            <label><span data-i18n="marginLabel">Marge per eenheid</span> <span class="benchmark-note" data-i18n="benchmarkNote">(sector benchmark)</span></label>
-                            <div class="option-group" id="marginOptions">
-                                <div class="option-btn" data-level="min" onclick="selectMargin('min')">
-                                    <div class="option-label" data-i18n="optionLow">Laag</div>
-                                    <div class="option-value" id="marginMin">-</div>
-                                    <div class="option-sub" data-i18n="perUnit">per eenheid</div>
-                                </div>
-                                <div class="option-btn active" data-level="avg" onclick="selectMargin('avg')">
-                                    <div class="option-label" data-i18n="optionAvg">Gemiddeld</div>
-                                    <div class="option-value" id="marginAvg">-</div>
-                                    <div class="option-sub" data-i18n="perUnit">per eenheid</div>
-                                </div>
-                                <div class="option-btn" data-level="max" onclick="selectMargin('max')">
-                                    <div class="option-label" data-i18n="optionHigh">Hoog</div>
-                                    <div class="option-value" id="marginMax">-</div>
-                                    <div class="option-sub" data-i18n="perUnit">per eenheid</div>
-                                </div>
-                            </div>
-                        </div>
-
+                    <div id="productionSummary" style="display: none;">
                         <div class="computed-value">
                             <span class="computed-label" data-i18n="addedValueLabel">Toegevoegde waarde per uur:</span>
                             <span class="computed-number" id="addedValueCalc">-</span>
                         </div>
-
                         <p class="info-text" data-i18n="benchmarkInfoText">Waarden zijn industrie-typische benchmarkbereiken, gebaseerd op productielijn capaciteiten en gemiddelde contributiemarges in vergelijkbare productieomgevingen.</p>
                     </div>
-
-                    <div class="plant-tabs" id="plantTabs"></div>
-                    <div id="plantContents"></div>
                 </div>
 
                 <div class="card">
@@ -1318,8 +1234,6 @@
                 situationNoOEE: 'Nieuwe klant - Geen OEE registratie (naar T4A/P4A)',
                 situationBlue: 'OEE Blue upgrade (naar T4A/P4A)',
                 numPlantsLabel: 'Aantal Plants',
-                cardProductionTitle: 'Productie Parameters',
-                cardProductionSubtitle: 'Stel standaard output en marge in voor alle lijnen',
                 outputLabel: 'Maximal output per uur',
                 benchmarkNote: '(sector benchmark)',
                 optionLow: 'Laag',
@@ -1338,6 +1252,7 @@
                 thOutput: 'Output',
                 thMargin: 'Marge',
                 thAction: 'Actie',
+                setAllLabel: 'Alle',
                 shift: 'ploeg',
                 shifts: 'ploegen',
                 removeBtn: 'Verwijderen',
@@ -1430,8 +1345,6 @@
                 situationNoOEE: 'New client - No OEE registration (to T4A/P4A)',
                 situationBlue: 'OEE Blue upgrade (to T4A/P4A)',
                 numPlantsLabel: 'Number of Plants',
-                cardProductionTitle: 'Production Parameters',
-                cardProductionSubtitle: 'Set default output and margin for all lines',
                 outputLabel: 'Maximum output per hour',
                 benchmarkNote: '(sector benchmark)',
                 optionLow: 'Low',
@@ -1450,6 +1363,7 @@
                 thOutput: 'Output',
                 thMargin: 'Margin',
                 thAction: 'Action',
+                setAllLabel: 'All',
                 shift: 'shift',
                 shifts: 'shifts',
                 removeBtn: 'Remove',
@@ -1779,13 +1693,13 @@
         // ==========================================
         function onSectorChange() {
             const sector = document.getElementById('sector').value;
-            const productionSection = document.getElementById('productionSection');
+            const productionSummary = document.getElementById('productionSummary');
 
             if (sector && sectorData[sector]) {
-                productionSection.style.display = 'block';
-                updateProductionOptions(sectorData[sector]);
+                productionSummary.style.display = 'block';
+                updateComputedValue(sectorData[sector]);
             } else {
-                productionSection.style.display = 'none';
+                productionSummary.style.display = 'none';
             }
 
             // Reset selections to avg
@@ -1799,32 +1713,26 @@
                     }
                 }
             }
-            updateOptionButtonStates();
             renderPlantContent();
             calculate();
         }
 
-        function updateProductionOptions(data) {
-            // Output per hour values
-            document.getElementById('outputMin').textContent = formatOutputValue(data.outputPerHour.min);
-            document.getElementById('outputAvg').textContent = formatOutputValue(data.outputPerHour.avg);
-            document.getElementById('outputMax').textContent = formatOutputValue(data.outputPerHour.max);
-
-            // Margin per unit values
-            document.getElementById('marginMin').textContent = formatMarginValue(data.marginPerUnit.min);
-            document.getElementById('marginAvg').textContent = formatMarginValue(data.marginPerUnit.avg);
-            document.getElementById('marginMax').textContent = formatMarginValue(data.marginPerUnit.max);
-
-            // Update computed value
-            updateComputedValue(data);
-        }
-
         function updateComputedValue(data) {
             if (!data) return;
-            const output = data.outputPerHour[selectedOutput];
-            const margin = data.marginPerUnit[selectedMargin];
-            const addedValue = output * margin;
-            document.getElementById('addedValueCalc').textContent = formatCurrency(addedValue) + ' ' + t('perHourSuffix');
+            let totalAddedValue = 0;
+            let lineCount = 0;
+            for (let p = 1; p <= numPlants; p++) {
+                if (plantData[p]) {
+                    for (const line of plantData[p].lines) {
+                        const output = data.outputPerHour[line.outputLevel || 'avg'];
+                        const margin = data.marginPerUnit[line.marginLevel || 'avg'];
+                        totalAddedValue += output * margin;
+                        lineCount++;
+                    }
+                }
+            }
+            const avgAddedValue = lineCount > 0 ? totalAddedValue / lineCount : 0;
+            document.getElementById('addedValueCalc').textContent = formatCurrency(avgAddedValue) + ' ' + t('perHourSuffix');
         }
 
         // ==========================================
@@ -1832,13 +1740,11 @@
         // ==========================================
         function selectOutput(level) {
             selectedOutput = level;
-            // Update all lines to this output level
             for (let p = 1; p <= numPlants; p++) {
                 for (const line of plantData[p].lines) {
                     line.outputLevel = level;
                 }
             }
-            updateOptionButtonStates();
             renderPlantContent();
             const sector = document.getElementById('sector').value;
             if (sector && sectorData[sector]) {
@@ -1849,13 +1755,11 @@
 
         function selectMargin(level) {
             selectedMargin = level;
-            // Update all lines to this margin level
             for (let p = 1; p <= numPlants; p++) {
                 for (const line of plantData[p].lines) {
                     line.marginLevel = level;
                 }
             }
-            updateOptionButtonStates();
             renderPlantContent();
             const sector = document.getElementById('sector').value;
             if (sector && sectorData[sector]) {
@@ -1872,17 +1776,6 @@
             const selectedCard = document.querySelector(`.scenario-card[data-scenario="${scenario}"]`);
             if (selectedCard) selectedCard.classList.add('selected');
             calculate();
-        }
-
-        function updateOptionButtonStates() {
-            // Output buttons
-            document.querySelectorAll('#outputOptions .option-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.level === selectedOutput);
-            });
-            // Margin buttons
-            document.querySelectorAll('#marginOptions .option-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.level === selectedMargin);
-            });
         }
 
         // ==========================================
@@ -1936,9 +1829,28 @@
             renderPlantContent();
         }
 
+        function getOutputOptionText(level, data) {
+            const labels = { min: t('optionLow'), avg: t('optionAvg'), max: t('optionHigh') };
+            if (data) {
+                return labels[level] + ' (' + formatOutputValue(data.outputPerHour[level]) + ')';
+            }
+            return labels[level];
+        }
+
+        function getMarginOptionText(level, data) {
+            const labels = { min: t('optionLow'), avg: t('optionAvg'), max: t('optionHigh') };
+            if (data) {
+                return labels[level] + ' (' + formatMarginValue(data.marginPerUnit[level]) + ')';
+            }
+            return labels[level];
+        }
+
         function renderPlantContent() {
             const container = document.getElementById('plantContents');
             container.innerHTML = '';
+
+            const sector = document.getElementById('sector').value;
+            const data = (sector && sectorData[sector]) ? sectorData[sector] : null;
 
             for (let p = 1; p <= numPlants; p++) {
                 const content = document.createElement('div');
@@ -1957,6 +1869,25 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <tr class="set-all-row">
+                                <td class="line-number">${t('setAllLabel')}</td>
+                                <td>
+                                    <select onchange="selectOutput(this.value)">
+                                        <option value="min" ${selectedOutput === 'min' ? 'selected' : ''}>${getOutputOptionText('min', data)}</option>
+                                        <option value="avg" ${selectedOutput === 'avg' ? 'selected' : ''}>${getOutputOptionText('avg', data)}</option>
+                                        <option value="max" ${selectedOutput === 'max' ? 'selected' : ''}>${getOutputOptionText('max', data)}</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select onchange="selectMargin(this.value)">
+                                        <option value="min" ${selectedMargin === 'min' ? 'selected' : ''}>${getMarginOptionText('min', data)}</option>
+                                        <option value="avg" ${selectedMargin === 'avg' ? 'selected' : ''}>${getMarginOptionText('avg', data)}</option>
+                                        <option value="max" ${selectedMargin === 'max' ? 'selected' : ''}>${getMarginOptionText('max', data)}</option>
+                                    </select>
+                                </td>
+                                <td>&mdash;</td>
+                                <td>&mdash;</td>
+                            </tr>
                 `;
 
                 plantData[p].lines.forEach((line, index) => {
@@ -1968,16 +1899,16 @@
                             <td class="line-number">${index + 1}</td>
                             <td>
                                 <select onchange="updateLineOutput(${p}, ${index}, this.value)">
-                                    <option value="min" ${ol === 'min' ? 'selected' : ''}>${t('optionLow')}</option>
-                                    <option value="avg" ${ol === 'avg' ? 'selected' : ''}>${t('optionAvg')}</option>
-                                    <option value="max" ${ol === 'max' ? 'selected' : ''}>${t('optionHigh')}</option>
+                                    <option value="min" ${ol === 'min' ? 'selected' : ''}>${getOutputOptionText('min', data)}</option>
+                                    <option value="avg" ${ol === 'avg' ? 'selected' : ''}>${getOutputOptionText('avg', data)}</option>
+                                    <option value="max" ${ol === 'max' ? 'selected' : ''}>${getOutputOptionText('max', data)}</option>
                                 </select>
                             </td>
                             <td>
                                 <select onchange="updateLineMargin(${p}, ${index}, this.value)">
-                                    <option value="min" ${ml === 'min' ? 'selected' : ''}>${t('optionLow')}</option>
-                                    <option value="avg" ${ml === 'avg' ? 'selected' : ''}>${t('optionAvg')}</option>
-                                    <option value="max" ${ml === 'max' ? 'selected' : ''}>${t('optionHigh')}</option>
+                                    <option value="min" ${ml === 'min' ? 'selected' : ''}>${getMarginOptionText('min', data)}</option>
+                                    <option value="avg" ${ml === 'avg' ? 'selected' : ''}>${getMarginOptionText('avg', data)}</option>
+                                    <option value="max" ${ml === 'max' ? 'selected' : ''}>${getMarginOptionText('max', data)}</option>
                                 </select>
                             </td>
                             <td>
@@ -2028,11 +1959,15 @@
 
         function updateLineOutput(plantNum, lineIndex, level) {
             plantData[plantNum].lines[lineIndex].outputLevel = level;
+            const sector = document.getElementById('sector').value;
+            if (sector && sectorData[sector]) updateComputedValue(sectorData[sector]);
             calculate();
         }
 
         function updateLineMargin(plantNum, lineIndex, level) {
             plantData[plantNum].lines[lineIndex].marginLevel = level;
+            const sector = document.getElementById('sector').value;
+            if (sector && sectorData[sector]) updateComputedValue(sectorData[sector]);
             calculate();
         }
 
