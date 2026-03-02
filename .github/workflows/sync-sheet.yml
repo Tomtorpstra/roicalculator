@@ -170,4 +170,5 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add sector-data.json
           git commit -m "Auto-sync sector data from Google Sheet"
+          git pull --rebase
           git push
