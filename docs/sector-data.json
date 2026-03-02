@@ -3,7 +3,7 @@
     "name": "Farmaceutische",
     "oeeStart": 0.65,
     "outputPerHour": {
-      "min": 1000,
+      "min": 1500,
       "avg": 2000,
       "max": 5000
     },
