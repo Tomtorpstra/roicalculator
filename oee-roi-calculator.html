@@ -455,16 +455,12 @@
             font-family: inherit;
             font-size: 0.85rem;
             width: 100%;
+            min-width: 150px;
         }
 
         .line-number {
             font-weight: 700;
             color: #00AAFF;
-        }
-
-        /* Option Group (Min/Avg/Max buttons) */
-        .lines-table select {
-            min-width: 150px;
         }
 
         /* Computed Value Display */
@@ -1238,7 +1234,6 @@
                 thOutput: 'Output',
                 thMargin: 'Marge',
                 thAction: 'Actie',
-                setAllLabel: 'Alle',
                 shift: 'ploeg',
                 shifts: 'ploegen',
                 removeBtn: 'Verwijderen',
@@ -1349,7 +1344,6 @@
                 thOutput: 'Output',
                 thMargin: 'Margin',
                 thAction: 'Action',
-                setAllLabel: 'All',
                 shift: 'shift',
                 shifts: 'shifts',
                 removeBtn: 'Remove',
@@ -1583,8 +1577,6 @@
         let plantData = { 1: { lines: [{ shifts: 3, outputLevel: 'avg', marginLevel: 'avg' }] } };
         let numPlants = 1;
         let activePlant = 1;
-        let selectedOutput = 'avg';
-        let selectedMargin = 'avg';
         let selectedScenario = 'expected';
 
         // ==========================================
@@ -1688,9 +1680,7 @@
                 productionSummary.style.display = 'none';
             }
 
-            // Reset selections to avg
-            selectedOutput = 'avg';
-            selectedMargin = 'avg';
+            // Reset all lines to average when sector changes
             for (let p = 1; p <= numPlants; p++) {
                 if (plantData[p]) {
                     for (const line of plantData[p].lines) {
@@ -1722,38 +1712,8 @@
         }
 
         // ==========================================
-        // OPTION BUTTON SELECTION
+        // SCENARIO SELECTION
         // ==========================================
-        function selectOutput(level) {
-            selectedOutput = level;
-            for (let p = 1; p <= numPlants; p++) {
-                for (const line of plantData[p].lines) {
-                    line.outputLevel = level;
-                }
-            }
-            renderPlantContent();
-            const sector = document.getElementById('sector').value;
-            if (sector && sectorData[sector]) {
-                updateComputedValue(sectorData[sector]);
-            }
-            calculate();
-        }
-
-        function selectMargin(level) {
-            selectedMargin = level;
-            for (let p = 1; p <= numPlants; p++) {
-                for (const line of plantData[p].lines) {
-                    line.marginLevel = level;
-                }
-            }
-            renderPlantContent();
-            const sector = document.getElementById('sector').value;
-            if (sector && sectorData[sector]) {
-                updateComputedValue(sectorData[sector]);
-            }
-            calculate();
-        }
-
         function selectScenario(scenario) {
             selectedScenario = scenario;
             document.querySelectorAll('.scenario-card').forEach(card => {
@@ -1906,7 +1866,7 @@
         }
 
         function addLine(plantNum) {
-            plantData[plantNum].lines.push({ shifts: 3, outputLevel: selectedOutput, marginLevel: selectedMargin });
+            plantData[plantNum].lines.push({ shifts: 3, outputLevel: 'avg', marginLevel: 'avg' });
             renderPlantContent();
             calculate();
         }
@@ -2216,8 +2176,8 @@
                 ctx.fillText(t('yearLabel') + ' ' + year, x, height - padding.bottom + 20);
             }
 
-            // Generate S-curve points for benefit line
-            const sCurvePoints = generateRealisticCurvePoints(yearData);
+            // Generate realistic OEE curve points for benefit line
+            const realisticPoints = generateRealisticCurvePoints(yearData);
 
             // Cost line (linear, from yearData including year 0)
             ctx.beginPath();
@@ -2233,13 +2193,13 @@
             });
             ctx.stroke();
 
-            // Benefit line (S-curve, smooth)
+            // Benefit line (realistic OEE curve)
             ctx.beginPath();
             ctx.strokeStyle = '#10b981';
             ctx.lineWidth = 3;
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
-            sCurvePoints.forEach((d, i) => {
+            realisticPoints.forEach((d, i) => {
                 const x = xScale(d.year);
                 const y = yScale(d.cumulativeBenefit);
                 if (i === 0) ctx.moveTo(x, y);
@@ -2247,11 +2207,11 @@
             });
             ctx.stroke();
 
-            // Break-even marker (where S-curve benefit crosses cost)
-            for (let i = 1; i < sCurvePoints.length; i++) {
-                if (sCurvePoints[i].cumulativeBenefit >= sCurvePoints[i].cumulativeCost) {
-                    const prev = sCurvePoints[i - 1];
-                    const curr = sCurvePoints[i];
+            // Break-even marker (where realistic benefit crosses cost)
+            for (let i = 1; i < realisticPoints.length; i++) {
+                if (realisticPoints[i].cumulativeBenefit >= realisticPoints[i].cumulativeCost) {
+                    const prev = realisticPoints[i - 1];
+                    const curr = realisticPoints[i];
                     const benefitDiff = curr.cumulativeBenefit - prev.cumulativeBenefit;
                     const costDiff = curr.cumulativeCost - prev.cumulativeCost;
                     const prevGap = prev.cumulativeCost - prev.cumulativeBenefit;
@@ -2285,9 +2245,9 @@
                 if (d.year === 0) return;
                 const x = xScale(d.year);
 
-                // Find S-curve benefit at this year
-                const sCurveAtYear = sCurvePoints.find(p => Math.abs(p.year - d.year) < 0.01);
-                const benefitY = sCurveAtYear ? sCurveAtYear.cumulativeBenefit : d.cumulativeBenefit;
+                // Find realistic curve benefit at this year
+                const pointAtYear = realisticPoints.find(p => Math.abs(p.year - d.year) < 0.01);
+                const benefitY = pointAtYear ? pointAtYear.cumulativeBenefit : d.cumulativeBenefit;
 
                 ctx.beginPath();
                 ctx.fillStyle = '#10b981';
