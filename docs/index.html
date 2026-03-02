@@ -2122,8 +2122,8 @@
             return yearData;
         }
 
-        // S-curve: generates smooth monthly points using sigmoid redistribution
-        function generateSCurvePoints(yearData) {
+        // Realistic OEE curve: implementation dip, quick wins, plateau, bumpy climb, diminishing returns
+        function generateRealisticCurvePoints(yearData) {
             if (yearData.length < 2) return yearData;
 
             const maxYear = yearData[yearData.length - 1].year;
@@ -2131,39 +2131,62 @@
 
             if (totalBenefit <= 0 || maxYear <= 0) return yearData;
 
-            const points = [];
-            const steps = maxYear * 12; // monthly resolution
+            const totalMonths = maxYear * 12;
 
-            // Sigmoid parameters
-            const k = 6;
-            const x0 = 0.35;
-            const sigmoid = (val) => 1 / (1 + Math.exp(-k * (val - x0)));
-            const sigStart = sigmoid(0);
-            const sigEnd = sigmoid(1);
-            const normalizedSigmoid = (val) => (sigmoid(val) - sigStart) / (sigEnd - sigStart);
+            // Phase-based growth rate multiplier for each month
+            const getPhaseMultiplier = (month) => {
+                if (month <= 3) return 0.15;             // Implementation dip: learning curve, installs
+                if (month <= 6) return 2.2;              // Quick wins: low-hanging fruit, sudden OEE jump
+                if (month <= 12) return 0.7;             // Plateau: stabilizing new baseline
+                const year = month / 12;
+                if (year <= 3) return 1.1;               // Steady growth: tackling harder issues
+                return Math.max(0.5, 1.1 - (year - 3) * 0.15); // Diminishing returns
+            };
 
-            for (let step = 0; step <= steps; step++) {
-                const tNorm = step / steps;
-                const yearFrac = tNorm * maxYear;
+            // Deterministic bumps using overlapping sine waves (consistent on re-render)
+            const getBump = (month) => {
+                if (month <= 6) return 0; // No bumps during implementation + quick wins
+                return Math.sin(month * 2.7) * 0.3
+                     + Math.sin(month * 1.3) * 0.2
+                     + Math.sin(month * 4.1) * 0.1;
+            };
 
-                // S-curve benefit
-                const benefitAtPoint = totalBenefit * normalizedSigmoid(tNorm);
+            // Generate raw monthly growth rates
+            const rawRates = [];
+            for (let m = 1; m <= totalMonths; m++) {
+                const rate = getPhaseMultiplier(m) * (1 + getBump(m));
+                rawRates.push(Math.max(0.05, rate)); // ensure always positive
+            }
 
-                // Linear cost interpolation from yearData
-                let costAtPoint = 0;
+            // Normalize so cumulative sum exactly equals totalBenefit
+            const rawSum = rawRates.reduce((a, b) => a + b, 0);
+            const monthlyBenefits = rawRates.map(r => (r / rawSum) * totalBenefit);
+
+            // Cost interpolation helper
+            const getCostAtYear = (yearFrac) => {
                 for (let i = 0; i < yearData.length - 1; i++) {
                     if (yearFrac >= yearData[i].year && yearFrac <= yearData[i + 1].year) {
                         const span = yearData[i + 1].year - yearData[i].year;
                         const frac = span > 0 ? (yearFrac - yearData[i].year) / span : 0;
-                        costAtPoint = yearData[i].cumulativeCost + frac * (yearData[i + 1].cumulativeCost - yearData[i].cumulativeCost);
-                        break;
+                        return yearData[i].cumulativeCost + frac * (yearData[i + 1].cumulativeCost - yearData[i].cumulativeCost);
                     }
                 }
-                if (yearFrac >= yearData[yearData.length - 1].year) {
-                    costAtPoint = yearData[yearData.length - 1].cumulativeCost;
-                }
+                return yearData[yearData.length - 1].cumulativeCost;
+            };
 
-                points.push({ year: yearFrac, cumulativeBenefit: benefitAtPoint, cumulativeCost: costAtPoint });
+            // Build cumulative points at monthly resolution
+            const points = [];
+            points.push({ year: 0, cumulativeBenefit: 0, cumulativeCost: yearData[0].cumulativeCost });
+
+            let cumulBenefit = 0;
+            for (let m = 1; m <= totalMonths; m++) {
+                cumulBenefit += monthlyBenefits[m - 1];
+                const yearFrac = m / 12;
+                points.push({
+                    year: yearFrac,
+                    cumulativeBenefit: cumulBenefit,
+                    cumulativeCost: getCostAtYear(yearFrac)
+                });
             }
 
             return points;
@@ -2227,7 +2250,7 @@
             }
 
             // Generate S-curve points for benefit line
-            const sCurvePoints = generateSCurvePoints(yearData);
+            const sCurvePoints = generateRealisticCurvePoints(yearData);
 
             // Cost line (linear, from yearData including year 0)
             ctx.beginPath();
