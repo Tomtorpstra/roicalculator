@@ -839,6 +839,56 @@
             font-style: italic;
         }
 
+        /* Tooltip */
+        .th-tooltip {
+            position: relative;
+            cursor: help;
+            border-bottom: 1px dashed #94a3b8;
+        }
+
+        .th-tooltip .tooltip-text {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            width: 320px;
+            background: #0f172a;
+            color: #f1f5f9;
+            font-size: 0.78rem;
+            font-weight: 400;
+            text-transform: none;
+            letter-spacing: normal;
+            line-height: 1.6;
+            padding: 14px 16px;
+            border-radius: 10px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+            z-index: 100;
+            transition: opacity 0.2s, visibility 0.2s;
+            pointer-events: none;
+        }
+
+        .th-tooltip .tooltip-text::before {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 20px;
+            border: 6px solid transparent;
+            border-bottom-color: #0f172a;
+        }
+
+        .th-tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .tooltip-title {
+            font-weight: 700;
+            color: #00AAFF;
+            display: block;
+            margin-bottom: 6px;
+        }
+
         /* Footer */
         footer {
             text-align: center;
@@ -1233,6 +1283,8 @@
                 thShiftRegime: 'Ploegen Regime',
                 thOutput: 'Output',
                 thMargin: 'Marge',
+                marginTooltipTitle: 'Margin/Unit is: contributiemarge per extra geproduceerd product',
+                marginTooltipBody: '= verkoopprijs (netto) \u2212 variabele kosten per product. Deze waardes zijn bedoeld als startpunt, D4A kan deze waardes aanpassen op basis van uw behoefte. D4A berekent de marge per eenheid als netto verkoopprijs minus variabele kosten per product. Dat is de bijdrage van \u00e9\u00e9n extra geproduceerd stuk. De ranges in onze tabel zijn benchmark-ordegroottes; voor de definitieve businesscase vervangen we die door jullie werkelijke prijs- en kostdata.',
                 thAction: 'Actie',
                 shift: 'ploeg',
                 shifts: 'ploegen',
@@ -1343,6 +1395,8 @@
                 thShiftRegime: 'Shift Regime',
                 thOutput: 'Output',
                 thMargin: 'Margin',
+                marginTooltipTitle: 'Margin per Unit: the contribution margin per additional unit produced',
+                marginTooltipBody: '= net selling price \u2212 variable cost per product. These values are intended as a starting point. D4A can adjust them based on your specific situation and requirements. D4A calculates the margin per unit as the net selling price minus the variable cost per product. This represents the economic contribution of one additional unit produced. The ranges shown in our table are industry benchmark order-of-magnitude estimates. For the final business case, we will replace them with your actual pricing and cost data.',
                 thAction: 'Action',
                 shift: 'shift',
                 shifts: 'shifts',
@@ -1809,7 +1863,7 @@
                             <tr>
                                 <th>${t('thLine')}</th>
                                 <th>${t('thOutput')}</th>
-                                <th>${t('thMargin')}</th>
+                                <th class="th-tooltip">${t('thMargin')} <span style="font-size:0.7rem; opacity:0.6;">&#9432;</span><div class="tooltip-text"><span class="tooltip-title">${t('marginTooltipTitle')}</span>${t('marginTooltipBody')}</div></th>
                                 <th>${t('thShiftRegime')}</th>
                                 <th>${t('thAction')}</th>
                             </tr>
