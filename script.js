@@ -41,6 +41,11 @@ const translations = {
         marginTooltipTitle: 'Margin/Unit is: contributiemarge per extra geproduceerd product',
         marginTooltipBody: '= verkoopprijs (netto) \u2212 variabele kosten per product. Deze waardes zijn bedoeld als startpunt, D4A kan deze waardes aanpassen op basis van uw behoefte. D4A berekent de marge per eenheid als netto verkoopprijs minus variabele kosten per product. Dat is de bijdrage van \u00e9\u00e9n extra geproduceerd stuk. De ranges in onze tabel zijn benchmark-ordegroottes; voor de definitieve businesscase vervangen we die door jullie werkelijke prijs- en kostdata.',
         thAddedValue: 'Waarde/uur',
+        thModel: 'Model',
+        modelDemand: 'Vraag',
+        modelCost: 'Kosten',
+        modelTooltipTitle: 'Berekeningsmodel',
+        modelTooltipBody: 'Vraag: onbeperkte vraag \u2014 extra OEE levert extra omzet op. Kosten: gelijk volume \u2014 OEE-verbetering verlaagt kosten (scrap, energie, storingen).',
         thLineName: 'Naam',
         thAction: 'Actie',
         lineNamePlaceholder: 'Lijn',
@@ -164,6 +169,11 @@ const translations = {
         marginTooltipTitle: 'Margin per Unit: the contribution margin per additional unit produced',
         marginTooltipBody: '= net selling price \u2212 variable cost per product. These values are intended as a starting point. D4A can adjust them based on your specific situation and requirements. D4A calculates the margin per unit as the net selling price minus the variable cost per product. This represents the economic contribution of one additional unit produced. The ranges shown in our table are industry benchmark order-of-magnitude estimates. For the final business case, we will replace them with your actual pricing and cost data.',
         thAddedValue: 'Value/hr',
+        thModel: 'Model',
+        modelDemand: 'Demand',
+        modelCost: 'Cost',
+        modelTooltipTitle: 'Calculation model',
+        modelTooltipBody: 'Demand: unlimited demand \u2014 extra OEE generates extra revenue. Cost: fixed volume \u2014 OEE improvement reduces costs (scrap, energy, downtime).',
         thLineName: 'Name',
         thAction: 'Action',
         lineNamePlaceholder: 'Line',
@@ -415,7 +425,7 @@ const workHours = { "1": 2000, "2": 4000, "3": 6000, "4": 8000, "5": 8760 };
 // ==========================================
 // STATE
 // ==========================================
-let plantData = { 1: { lines: [{ shifts: 3, outputLevel: 'avg', marginLevel: 'avg', name: '', customOutput: null, customMargin: null }] } };
+let plantData = { 1: { lines: [{ shifts: 3, outputLevel: 'avg', marginLevel: 'avg', name: '', customOutput: null, customMargin: null, calcModel: 'demand' }] } };
 let numPlants = 1;
 let activePlant = 1;
 let selectedScenario = 'expected';
@@ -556,7 +566,7 @@ function updatePlantTabs() {
 
     for (let p = 1; p <= numPlants; p++) {
         if (!plantData[p]) {
-            plantData[p] = { lines: [{ shifts: 3, outputLevel: 'avg', marginLevel: 'avg' }] };
+            plantData[p] = { lines: [{ shifts: 3, outputLevel: 'avg', marginLevel: 'avg', calcModel: 'demand' }] };
         }
     }
 
@@ -629,6 +639,7 @@ function renderPlantContent() {
                         <th class="th-tooltip">${t('thOutput')} <span style="font-size:0.7rem; opacity:0.6;">&#9432;</span><div class="tooltip-text"><span class="tooltip-title">${t('outputTooltipTitle')}</span>${t('outputTooltipBody')}</div></th>
                         <th class="th-tooltip">${t('thMargin')} <span style="font-size:0.7rem; opacity:0.6;">&#9432;</span><div class="tooltip-text"><span class="tooltip-title">${t('marginTooltipTitle')}</span>${t('marginTooltipBody')}</div></th>
                         <th>${t('thAddedValue')}</th>
+                        <th class="th-tooltip">${t('thModel')} <span style="font-size:0.7rem; opacity:0.6;">&#9432;</span><div class="tooltip-text"><span class="tooltip-title">${t('modelTooltipTitle')}</span>${t('modelTooltipBody')}</div></th>
                         <th>${t('thShiftRegime')}</th>
                         <th>${t('thAction')}</th>
                     </tr>
@@ -671,6 +682,12 @@ function renderPlantContent() {
                     </td>
                     <td class="added-value-cell">${formatCurrency(lineAddedValue)}</td>
                     <td>
+                        <select onchange="updateLineModel(${p}, ${index}, this.value)">
+                            <option value="demand" ${(line.calcModel || 'demand') === 'demand' ? 'selected' : ''}>${t('modelDemand')}</option>
+                            <option value="cost" ${line.calcModel === 'cost' ? 'selected' : ''}>${t('modelCost')}</option>
+                        </select>
+                    </td>
+                    <td>
                         <select onchange="updateLineShifts(${p}, ${index}, this.value)">
                             <option value="1" ${line.shifts === 1 ? 'selected' : ''}>1 ${shiftWord(1)}</option>
                             <option value="2" ${line.shifts === 2 ? 'selected' : ''}>2 ${shiftWord(2)}</option>
@@ -698,7 +715,7 @@ function renderPlantContent() {
 }
 
 function addLine(plantNum) {
-    plantData[plantNum].lines.push({ shifts: 3, outputLevel: 'avg', marginLevel: 'avg', name: '', customOutput: null, customMargin: null });
+    plantData[plantNum].lines.push({ shifts: 3, outputLevel: 'avg', marginLevel: 'avg', name: '', customOutput: null, customMargin: null, calcModel: 'demand' });
     renderPlantContent();
     calculate();
 }
@@ -713,6 +730,11 @@ function removeLine(plantNum, lineIndex) {
 
 function updateLineShifts(plantNum, lineIndex, shifts) {
     plantData[plantNum].lines[lineIndex].shifts = parseInt(shifts);
+    calculate();
+}
+
+function updateLineModel(plantNum, lineIndex, value) {
+    plantData[plantNum].lines[lineIndex].calcModel = value;
     calculate();
 }
 
@@ -801,7 +823,10 @@ function calculate() {
                 const lineOutput = line.outputLevel === 'custom' ? (line.customOutput || 0) : data.outputPerHour[line.outputLevel || 'avg'];
                 const lineMargin = line.marginLevel === 'custom' ? (line.customMargin || 0) : data.marginPerUnit[line.marginLevel || 'avg'];
                 const lineAddedValue = lineOutput * lineMargin;
-                const annual = lineAddedValue * oeeIncrease * hours;
+                const costFactor = line.calcModel === 'cost'
+                    ? { conservative: 0.20, expected: 0.30, optimistic: 0.40 }[scenario]
+                    : 1;
+                const annual = lineAddedValue * oeeIncrease * hours * costFactor;
                 totalAnnual += annual;
                 if (scenario === 'conservative') totalAddedValue += lineAddedValue;
             }
@@ -1191,7 +1216,10 @@ function exportPDF() {
                 const lineOutput = line.outputLevel === 'custom' ? (line.customOutput || 0) : data.outputPerHour[line.outputLevel || 'avg'];
                 const lineMargin = line.marginLevel === 'custom' ? (line.customMargin || 0) : data.marginPerUnit[line.marginLevel || 'avg'];
                 const lineAddedValue = lineOutput * lineMargin;
-                totalAnnual += lineAddedValue * oeeData[scenario] * hours;
+                const costFactor = line.calcModel === 'cost'
+                    ? { conservative: 0.20, expected: 0.30, optimistic: 0.40 }[scenario]
+                    : 1;
+                totalAnnual += lineAddedValue * oeeData[scenario] * hours * costFactor;
                 if (scenario === 'conservative') totalAddedValue += lineAddedValue;
             }
         }
@@ -1441,7 +1469,8 @@ body { font-family: 'Segoe UI', Arial, sans-serif; color: #1e293b; line-height: 
                         const lineName = l.name || (t('pdfLine') + ' ' + (j+1));
                         const outputText = l.outputLevel === 'custom' ? t('optionCustom') + ' (' + formatOutputValue(l.customOutput || 0) + ')' : outputLabels[l.outputLevel || 'avg'];
                         const marginText = l.marginLevel === 'custom' ? t('optionCustom') + ' (' + formatMarginValue(l.customMargin || 0) + ')' : outputLabels[l.marginLevel || 'avg'];
-                        return `${lineName}: ${l.shifts} ${l.shifts > 1 ? t('shifts') : t('shift')} | ${t('thOutput')}: ${outputText} | ${t('thMargin')}: ${marginText}`;
+                        const modelText = l.calcModel === 'cost' ? t('modelCost') : t('modelDemand');
+                        return `${lineName}: ${l.shifts} ${l.shifts > 1 ? t('shifts') : t('shift')} | ${t('thOutput')}: ${outputText} | ${t('thMargin')}: ${marginText} | ${t('thModel')}: ${modelText}`;
                     }).join('<br>')}</div>
                 </div>
             `).join('')}
