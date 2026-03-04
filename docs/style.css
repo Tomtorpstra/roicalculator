@@ -442,6 +442,12 @@ body {
     border-bottom: 1px solid #f1f5f9;
 }
 
+.lines-table td.added-value-cell {
+    font-weight: 600;
+    color: #0891b2;
+    white-space: nowrap;
+}
+
 .lines-table select {
     padding: 6px 10px;
     border: 2px solid #e5e7eb;
