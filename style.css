@@ -161,10 +161,9 @@ body {
 
 /* Main Layout */
 .main-layout {
-    display: grid;
-    grid-template-columns: 1fr 1.2fr;
-    gap: 30px;
-    align-items: start;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
 }
 
 /* Cards */
@@ -1185,16 +1184,6 @@ footer {
 }
 
 /* Responsive */
-@media (max-width: 1024px) {
-    .main-layout {
-        grid-template-columns: 1fr;
-    }
-
-    .results-column {
-        order: -1;
-    }
-}
-
 @media (max-width: 640px) {
     .header {
         flex-direction: column;
