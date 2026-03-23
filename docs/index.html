@@ -48,11 +48,6 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="companyName" data-i18n="companyNameLabel">Bedrijfsnaam</label>
-                        <input type="text" id="companyName" data-i18n-placeholder="companyNamePlaceholder" placeholder="Vul uw bedrijfsnaam in">
-                    </div>
-
-                    <div class="form-group">
                         <label for="sector" data-i18n="sectorLabel">Sector / Industrie</label>
                         <div class="select-wrapper" id="sectorWrapper">
                             <input type="text" class="select-search" id="sectorSearch" data-i18n-placeholder="sectorSearchPlaceholder" placeholder="Zoek sector...">
@@ -142,7 +137,6 @@
                             </div>
                         </div>
                     </div>
-                    <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 8px;" data-i18n="costsInfoText">Standaard waarden zijn geschatte gemiddelden. Pas aan naar uw situatie.</p>
                 </div>
             </div>
 
@@ -163,10 +157,17 @@
                         <div class="card-icon green">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
                         </div>
-                        <div>
-                            <h2 data-i18n="cardSavingsTitle">Besparingspotentieel</h2>
+                        <div style="flex:1;">
+                            <h2 id="savingsTitle" class="savings-title-no-tooltip" style="border-bottom:none;">
+                                <span data-i18n="cardSavingsTitle">Besparingspotentieel</span>
+                                <span class="tooltip-text" style="width:360px;" data-i18n="savingPotentialTooltip">Dit besparingspotentieel is gebaseerd op de upgrade van OEE Blue naar T4A/P4A.</span>
+                            </h2>
                             <p class="card-subtitle" id="savingsSubtitle"><span id="totalLinesDisplay">0</span> <span data-i18n="linesAcross">lijnen over</span> <span id="totalPlantsDisplay">0</span> plants</p>
                         </div>
+                        <button class="btn-calc-info" onclick="openCalcModal()" title="Hoe berekenen wij dit?">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                            <span data-i18n="calcInfoBtn">Berekening</span>
+                        </button>
                     </div>
 
                     <div class="scenario-grid">
@@ -208,6 +209,19 @@
                     </div>
                 </div>
 
+                <!-- Calculation Breakdown Card -->
+                <div class="card" id="calcBreakdownCard" style="display: none;">
+                    <div class="card-header">
+                        <div class="card-icon blue">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg>
+                        </div>
+                        <div>
+                            <h2 data-i18n="calcBreakdownTitle">Berekeningsoverzicht</h2>
+                        </div>
+                    </div>
+                    <div id="calcBreakdownContent"></div>
+                </div>
+
                 <!-- Sector & Production Details Card -->
                 <div class="card" id="sectorCard" style="display: none;">
                     <div class="card-header">
@@ -221,9 +235,10 @@
                     </div>
 
                     <div class="sector-info-grid">
-                        <div class="sector-info-item">
+                        <div class="sector-info-item th-tooltip" style="border-bottom:none;">
                             <div class="sector-info-value" id="addedValueDisplay">-</div>
                             <div class="sector-info-label" data-i18n="valuePerHour">Waarde / Uur</div>
+                            <div class="tooltip-text tooltip-above"><span class="tooltip-title" data-i18n="valuePerHourTooltipTitle">Waarde per uur bij 100% OEE</span><span data-i18n="valuePerHourTooltipBody">Dit is de maximale toegevoegde waarde per uur, berekend alsof de lijn op 100% OEE draait (zonder verlies van beschikbaarheid, prestatie en kwaliteit).</span></div>
                         </div>
                         <div class="sector-info-item">
                             <div class="sector-info-value" id="oeeStartDisplay">-</div>
@@ -296,6 +311,46 @@
         <footer>
             <p data-i18n="footer">D4A Besparing ROI Berekening | Data gebaseerd op Eurostat SBS & NACE Rev.2 (2022-2023)</p>
         </footer>
+    </div>
+
+    <!-- Calculation Explanation Modal -->
+    <div class="calc-modal-overlay" id="calcModal" onclick="closeCalcModal(event)">
+        <div class="calc-modal">
+            <div class="calc-modal-header">
+                <h2 data-i18n="calcModalTitle">Hoe berekenen wij het besparingspotentieel?</h2>
+                <button class="calc-modal-close" onclick="closeCalcModal()">&times;</button>
+            </div>
+            <div class="calc-modal-body">
+                <div class="calc-section">
+                    <h3 data-i18n="calcStep1Title">1. Toegevoegde waarde per uur</h3>
+                    <div class="calc-formula" data-i18n="calcStep1Formula">Waarde per uur = Output per uur &times; Marge per eenheid</div>
+                    <p class="calc-desc" data-i18n="calcStep1Desc">De output en marge komen uit uw sector benchmarks of uw eigen ingevoerde waarden.</p>
+                </div>
+                <div class="calc-section">
+                    <h3 data-i18n="calcStep2Title">2. Jaarlijkse besparing (per lijn)</h3>
+                    <div class="calc-formula" data-i18n="calcStep2Formula">Jaarlijks = Waarde/uur &times; Huidige OEE &times; OEE verbetering &times; Werkuren &times; Kostenfactor</div>
+                    <p class="calc-desc" data-i18n="calcStep2Desc">Elk gewonnen uur wordt gewaardeerd tegen de huidige OEE &times; toegevoegde waarde per uur, omdat de lijn op het huidige OEE-niveau produceert. De werkuren worden bepaald door het ploegregime (2.000 tot 8.760 uur/jaar).</p>
+                </div>
+                <div class="calc-section">
+                    <h3 data-i18n="calcStep3Title">3. Berekeningsmodel</h3>
+                    <p class="calc-desc" data-i18n="calcStep3Desc"><strong>Vraagmodel:</strong> Onbeperkte vraag &mdash; extra OEE genereert extra omzet (factor = 1).<br><strong>Kostenmodel:</strong> Vast volume &mdash; OEE verbetering verlaagt kosten. Kostenfactor: conservatief 20%, verwacht 30%, optimistisch 40%.</p>
+                </div>
+                <div class="calc-section">
+                    <h3 data-i18n="calcStep4Title">4. Besparing over 3 jaar</h3>
+                    <p class="calc-desc" data-i18n="calcStep4Desc">De OEE verbetering wordt geleidelijk opgebouwd over 3 jaar:</p>
+                    <div class="calc-ramp">
+                        <div class="calc-ramp-row"><span class="calc-ramp-label" data-i18n="calcYear1">Jaar 1</span><div class="calc-ramp-bar" style="width:33%">1/3</div></div>
+                        <div class="calc-ramp-row"><span class="calc-ramp-label" data-i18n="calcYear2">Jaar 2</span><div class="calc-ramp-bar" style="width:67%">2/3</div></div>
+                        <div class="calc-ramp-row"><span class="calc-ramp-label" data-i18n="calcYear3">Jaar 3</span><div class="calc-ramp-bar" style="width:100%">3/3</div></div>
+                    </div>
+                    <div class="calc-formula" data-i18n="calcStep4Formula">Totaal 3 jaar = Jaarlijks &times; (1/3 + 2/3 + 1) = Jaarlijks &times; 2</div>
+                </div>
+                <div class="calc-section">
+                    <h3 data-i18n="calcStep5Title">5. Scenario's</h3>
+                    <p class="calc-desc" data-i18n="calcStep5Desc">Elk scenario (conservatief, verwacht, optimistisch) gebruikt een andere OEE verbetering percentage, gebaseerd op sectordata en historische resultaten.</p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="script.js"></script>

@@ -46,6 +46,9 @@ const translations = {
         modelCost: 'Kosten',
         modelTooltipTitle: 'Berekeningsmodel',
         modelTooltipBody: 'Vraag: onbeperkte vraag \u2014 extra OEE levert extra omzet op. Kosten: gelijk volume \u2014 OEE-verbetering verlaagt kosten (scrap, energie, storingen).',
+        thCurrentOEE: 'Huidige OEE',
+        currentOEETooltipTitle: 'Huidige OEE',
+        currentOEETooltipBody: 'Het huidige OEE-percentage van deze lijn vóór verbeteringen. Standaard waarde komt uit sector benchmark. Pas aan naar uw werkelijke situatie.',
         thLineName: 'Naam',
         thAction: 'Actie',
         lineNamePlaceholder: 'Lijn',
@@ -64,9 +67,39 @@ const translations = {
         internalCostPlaceholder: 'Bijv. 5.000',
         internalCostTooltipTitle: 'Interne kosten zijn:',
         internalCostTooltipBody: 'implementatie-uren, trainingsuren, IT hardware, IT software.',
-        costsInfoText: 'Standaard waarden zijn geschatte gemiddelden. Pas aan naar uw situatie.',
+        calcInfoBtn: 'Berekening',
+        calcModalTitle: 'Hoe berekenen wij het besparingspotentieel?',
+        calcStep1Title: '1. Toegevoegde waarde per uur',
+        calcStep1Formula: 'Waarde per uur = Output per uur \u00d7 Marge per eenheid',
+        calcStep1Desc: 'De output en marge komen uit uw sector benchmarks of uw eigen ingevoerde waarden.',
+        calcStep2Title: '2. Jaarlijkse besparing (per lijn)',
+        calcStep2Formula: 'Jaarlijks = Waarde/uur \u00d7 Huidige OEE \u00d7 OEE verbetering \u00d7 Werkuren \u00d7 Kostenfactor',
+        calcStep2Desc: 'Elk gewonnen uur wordt gewaardeerd tegen de huidige OEE \u00d7 toegevoegde waarde per uur, omdat de lijn op het huidige OEE-niveau produceert. De werkuren worden bepaald door het ploegregime (2.000 tot 8.760 uur/jaar).',
+        calcStep3Title: '3. Berekeningsmodel',
+        calcStep3Desc: '<strong>Vraagmodel:</strong> Onbeperkte vraag \u2014 extra OEE genereert extra omzet (factor = 1).<br><strong>Kostenmodel:</strong> Vast volume \u2014 OEE verbetering verlaagt kosten. Kostenfactor: conservatief 20%, verwacht 30%, optimistisch 40%.',
+        calcStep4Title: '4. Besparing over 3 jaar',
+        calcStep4Desc: 'De OEE verbetering wordt geleidelijk opgebouwd over 3 jaar:',
+        calcStep4Formula: 'Totaal 3 jaar = Jaarlijks \u00d7 (1/3 + 2/3 + 1) = Jaarlijks \u00d7 2',
+        calcYear1: 'Jaar 1',
+        calcYear2: 'Jaar 2',
+        calcYear3: 'Jaar 3',
+        calcStep5Title: '5. Scenario\u2019s',
+        calcStep5Desc: 'Elk scenario (conservatief, verwacht, optimistisch) gebruikt een andere OEE verbetering percentage, gebaseerd op sectordata en historische resultaten.',
         placeholderTitle: 'Vul uw gegevens in',
         placeholderText: 'Selecteer uw sector, productie parameters en OEE situatie om uw besparingspotentieel te zien',
+        savingPotentialTooltip: 'Dit besparingspotentieel is gebaseerd op de upgrade van OEE Blue naar T4A/P4A. De verbetering weerspiegelt het verschil tussen uw huidige Blue OEE-registratie en het verwachte niveau met T4A/P4A.',
+        valuePerHourTooltipTitle: 'Waarde per uur bij 100% OEE',
+        valuePerHourTooltipBody: 'Dit is de maximale toegevoegde waarde per uur, berekend alsof de lijn op 100% OEE draait (zonder verlies van beschikbaarheid, prestatie en kwaliteit).',
+        calcBreakdownTitle: 'Berekeningsoverzicht',
+        calcBreakdownLine: 'Lijn',
+        calcBreakdownHours: 'Werkuren',
+        calcBreakdownOEEImpr: 'OEE Verbr.',
+        calcBreakdownCurrentOEE: 'Huidige OEE',
+        calcBreakdownValueHr: 'Waarde/uur',
+        calcBreakdownModel: 'Model',
+        calcBreakdownAnnual: 'Jaarlijks',
+        calcBreakdownTotal: 'Totaal per jaar',
+        calcBreakdownFormula: 'Besparing per lijn = Werkuren × OEE verbetering × Huidige OEE × Waarde/uur × Modelfactor',
         cardSavingsTitle: 'Besparingspotentieel',
         linesAcross: 'lijnen over',
         conservative: 'Conservatief',
@@ -174,6 +207,9 @@ const translations = {
         modelCost: 'Cost',
         modelTooltipTitle: 'Calculation model',
         modelTooltipBody: 'Demand: unlimited demand \u2014 extra OEE generates extra revenue. Cost: fixed volume \u2014 OEE improvement reduces costs (scrap, energy, downtime).',
+        thCurrentOEE: 'Current OEE',
+        currentOEETooltipTitle: 'Current OEE',
+        currentOEETooltipBody: 'The current OEE percentage of this line before improvements. Default value comes from sector benchmark. Adjust to your actual situation.',
         thLineName: 'Name',
         thAction: 'Action',
         lineNamePlaceholder: 'Line',
@@ -192,9 +228,39 @@ const translations = {
         internalCostPlaceholder: 'E.g. 5,000',
         internalCostTooltipTitle: 'Internal costs could be:',
         internalCostTooltipBody: 'implementation hours, training hours, IT hardware, IT software.',
-        costsInfoText: 'Default values are estimated averages. Adjust to your situation.',
+        calcInfoBtn: 'Calculation',
+        calcModalTitle: 'How do we calculate the savings potential?',
+        calcStep1Title: '1. Added value per hour',
+        calcStep1Formula: 'Value per hour = Output per hour \u00d7 Margin per unit',
+        calcStep1Desc: 'The output and margin come from your sector benchmarks or your own entered values.',
+        calcStep2Title: '2. Annual savings (per line)',
+        calcStep2Formula: 'Annual = Value/hr \u00d7 Current OEE \u00d7 OEE improvement \u00d7 Work hours \u00d7 Cost factor',
+        calcStep2Desc: 'Each won hour is valued at the current OEE \u00d7 added value per hour, since the line produces at its current OEE level. Work hours are determined by the shift regime (2,000 to 8,760 hrs/year).',
+        calcStep3Title: '3. Calculation model',
+        calcStep3Desc: '<strong>Demand model:</strong> Unlimited demand \u2014 extra OEE generates extra revenue (factor = 1).<br><strong>Cost model:</strong> Fixed volume \u2014 OEE improvement reduces costs. Cost factor: conservative 20%, expected 30%, optimistic 40%.',
+        calcStep4Title: '4. Savings over 3 years',
+        calcStep4Desc: 'The OEE improvement ramps up gradually over 3 years:',
+        calcStep4Formula: 'Total 3 years = Annual \u00d7 (1/3 + 2/3 + 1) = Annual \u00d7 2',
+        calcYear1: 'Year 1',
+        calcYear2: 'Year 2',
+        calcYear3: 'Year 3',
+        calcStep5Title: '5. Scenarios',
+        calcStep5Desc: 'Each scenario (conservative, expected, optimistic) uses a different OEE improvement percentage, based on sector data and historical results.',
         placeholderTitle: 'Enter your details',
         placeholderText: 'Select your sector, production parameters and OEE situation to see your savings potential',
+        savingPotentialTooltip: 'This savings potential is based on upgrading from OEE Blue to T4A/P4A. The improvement reflects the difference between your current Blue OEE registration and the expected level with T4A/P4A.',
+        valuePerHourTooltipTitle: 'Value per hour at 100% OEE',
+        valuePerHourTooltipBody: 'This is the maximum added value per hour, calculated as if the line runs at 100% OEE (without loss of availability, performance and quality).',
+        calcBreakdownTitle: 'Calculation Overview',
+        calcBreakdownLine: 'Line',
+        calcBreakdownHours: 'Work hours',
+        calcBreakdownOEEImpr: 'OEE Impr.',
+        calcBreakdownCurrentOEE: 'Current OEE',
+        calcBreakdownValueHr: 'Value/hr',
+        calcBreakdownModel: 'Model',
+        calcBreakdownAnnual: 'Annual',
+        calcBreakdownTotal: 'Total per year',
+        calcBreakdownFormula: 'Savings per line = Work hours × OEE improvement × Current OEE × Value/hr × Model factor',
         cardSavingsTitle: 'Savings Potential',
         linesAcross: 'lines across',
         conservative: 'Conservative',
@@ -277,11 +343,17 @@ function setLanguage(lang) {
 }
 
 function applyTranslations() {
+    // Keys that need innerHTML (contain HTML tags)
+    const htmlKeys = new Set(['calcStep3Desc']);
     // Update all elements with data-i18n attribute (textContent)
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (translations[currentLang][key] !== undefined) {
-            el.textContent = translations[currentLang][key];
+            if (htmlKeys.has(key)) {
+                el.innerHTML = translations[currentLang][key];
+            } else {
+                el.textContent = translations[currentLang][key];
+            }
         }
     });
     // Update all elements with data-i18n-placeholder attribute
@@ -291,6 +363,19 @@ function applyTranslations() {
             el.placeholder = translations[currentLang][key];
         }
     });
+}
+
+// ==========================================
+// CALCULATION MODAL
+// ==========================================
+function openCalcModal() {
+    document.getElementById('calcModal').classList.add('open');
+}
+
+function closeCalcModal(event) {
+    if (!event || event.target === event.currentTarget) {
+        document.getElementById('calcModal').classList.remove('open');
+    }
 }
 
 // ==========================================
@@ -425,7 +510,7 @@ const workHours = { "1": 2000, "2": 4000, "3": 6000, "4": 8000, "5": 8760 };
 // ==========================================
 // STATE
 // ==========================================
-let plantData = { 1: { lines: [{ shifts: 3, outputLevel: 'avg', marginLevel: 'avg', name: '', customOutput: null, customMargin: null, calcModel: 'demand' }] } };
+let plantData = { 1: { lines: [{ shifts: 3, outputLevel: 'avg', marginLevel: 'avg', name: '', customOutput: null, customMargin: null, calcModel: 'demand', currentOEE: null }] } };
 let numPlants = 1;
 let activePlant = 1;
 let selectedScenario = 'expected';
@@ -530,6 +615,7 @@ function onSectorChange() {
             for (const line of plantData[p].lines) {
                 line.outputLevel = 'avg';
                 line.marginLevel = 'avg';
+                line.currentOEE = null;
             }
         }
     }
@@ -566,7 +652,7 @@ function updatePlantTabs() {
 
     for (let p = 1; p <= numPlants; p++) {
         if (!plantData[p]) {
-            plantData[p] = { lines: [{ shifts: 3, outputLevel: 'avg', marginLevel: 'avg', calcModel: 'demand' }] };
+            plantData[p] = { lines: [{ shifts: 3, outputLevel: 'avg', marginLevel: 'avg', calcModel: 'demand', currentOEE: null }] };
         }
     }
 
@@ -639,6 +725,7 @@ function renderPlantContent() {
                         <th class="th-tooltip">${t('thOutput')} <span style="font-size:0.7rem; opacity:0.6;">&#9432;</span><div class="tooltip-text"><span class="tooltip-title">${t('outputTooltipTitle')}</span>${t('outputTooltipBody')}</div></th>
                         <th class="th-tooltip">${t('thMargin')} <span style="font-size:0.7rem; opacity:0.6;">&#9432;</span><div class="tooltip-text"><span class="tooltip-title">${t('marginTooltipTitle')}</span>${t('marginTooltipBody')}</div></th>
                         <th>${t('thAddedValue')}</th>
+                        <th class="th-tooltip">${t('thCurrentOEE')} <span style="font-size:0.7rem; opacity:0.6;">&#9432;</span><div class="tooltip-text"><span class="tooltip-title">${t('currentOEETooltipTitle')}</span>${t('currentOEETooltipBody')}</div></th>
                         <th class="th-tooltip">${t('thModel')} <span style="font-size:0.7rem; opacity:0.6;">&#9432;</span><div class="tooltip-text"><span class="tooltip-title">${t('modelTooltipTitle')}</span>${t('modelTooltipBody')}</div></th>
                         <th>${t('thShiftRegime')}</th>
                         <th>${t('thAction')}</th>
@@ -682,6 +769,9 @@ function renderPlantContent() {
                     </td>
                     <td class="added-value-cell">${formatCurrency(lineAddedValue)}</td>
                     <td>
+                        <input type="number" class="oee-input" step="1" min="1" max="100" value="${line.currentOEE !== null ? Math.round(line.currentOEE * 100) : (data ? Math.round(data.oeeStart * 100) : '')}" onchange="updateLineOEE(${p}, ${index}, this.value)" oninput="updateLineOEE(${p}, ${index}, this.value)" placeholder="${data ? Math.round(data.oeeStart * 100) + '%' : '%'}">
+                    </td>
+                    <td>
                         <select onchange="updateLineModel(${p}, ${index}, this.value)">
                             <option value="demand" ${(line.calcModel || 'demand') === 'demand' ? 'selected' : ''}>${t('modelDemand')}</option>
                             <option value="cost" ${line.calcModel === 'cost' ? 'selected' : ''}>${t('modelCost')}</option>
@@ -715,7 +805,7 @@ function renderPlantContent() {
 }
 
 function addLine(plantNum) {
-    plantData[plantNum].lines.push({ shifts: 3, outputLevel: 'avg', marginLevel: 'avg', name: '', customOutput: null, customMargin: null, calcModel: 'demand' });
+    plantData[plantNum].lines.push({ shifts: 3, outputLevel: 'avg', marginLevel: 'avg', name: '', customOutput: null, customMargin: null, calcModel: 'demand', currentOEE: null });
     renderPlantContent();
     calculate();
 }
@@ -766,6 +856,12 @@ function updateLineCustomMargin(plantNum, lineIndex, value) {
     calculate();
 }
 
+function updateLineOEE(plantNum, lineIndex, value) {
+    const pct = parseFloat(value);
+    plantData[plantNum].lines[lineIndex].currentOEE = (pct > 0 && pct <= 100) ? pct / 100 : null;
+    calculate();
+}
+
 // ==========================================
 // MAIN CALCULATION
 // ==========================================
@@ -783,11 +879,14 @@ function calculate() {
     const breakEvenCard = document.getElementById('breakEvenCard');
     const exportBtn = document.getElementById('exportBtn');
 
+    const calcBreakdownCard = document.getElementById('calcBreakdownCard');
+
     if (!sector || !situation || !sectorData[sector]) {
         placeholderCard.style.display = 'block';
         scenarioCard.style.display = 'none';
         sectorCard.style.display = 'none';
         breakEvenCard.style.display = 'none';
+        if (calcBreakdownCard) calcBreakdownCard.style.display = 'none';
         exportBtn.style.display = 'none';
         return;
     }
@@ -796,6 +895,7 @@ function calculate() {
     scenarioCard.style.display = 'block';
     sectorCard.style.display = 'block';
     breakEvenCard.style.display = 'block';
+    if (calcBreakdownCard) calcBreakdownCard.style.display = 'block';
     exportBtn.style.display = 'inline-flex';
 
     const data = sectorData[sector];
@@ -803,32 +903,69 @@ function calculate() {
     // Get OEE increases based on situation
     const oeeData = situation === 'noOEE' ? data.oeeNothingToT4A : data.oeeBlueToT4A;
 
-    // Calculate for each scenario (per-line output/margin)
+    // Show/hide saving potential tooltip based on situation
+    const savingsTitle = document.getElementById('savingsTitle');
+    if (savingsTitle) {
+        if (situation === 'blueUpgrade') {
+            savingsTitle.className = 'th-tooltip';
+        } else {
+            savingsTitle.className = 'savings-title-no-tooltip';
+        }
+    }
+
+    // Calculate for each scenario (per-line output/margin, per-line OEE)
     const scenarios = ['conservative', 'expected', 'optimistic'];
     const results = {};
 
     let totalLines = 0;
     let totalAddedValue = 0;
+    let totalWeightedOEE = 0;
     for (let p = 1; p <= numPlants; p++) {
         totalLines += plantData[p].lines.length;
     }
 
+    // Collect breakdown data for the selected scenario
+    const breakdownRows = [];
+
     for (const scenario of scenarios) {
         const oeeIncrease = oeeData[scenario];
         let totalAnnual = 0;
+        let lineCounter = 0;
 
         for (let p = 1; p <= numPlants; p++) {
             for (const line of plantData[p].lines) {
+                lineCounter++;
                 const hours = workHours[line.shifts.toString()];
                 const lineOutput = line.outputLevel === 'custom' ? (line.customOutput || 0) : data.outputPerHour[line.outputLevel || 'avg'];
                 const lineMargin = line.marginLevel === 'custom' ? (line.customMargin || 0) : data.marginPerUnit[line.marginLevel || 'avg'];
                 const lineAddedValue = lineOutput * lineMargin;
+                const lineOEE = line.currentOEE !== null ? line.currentOEE : data.oeeStart;
+                const effectiveValue = lineAddedValue * lineOEE;
                 const costFactor = line.calcModel === 'cost'
                     ? { conservative: 0.20, expected: 0.30, optimistic: 0.40 }[scenario]
                     : 1;
-                const annual = lineAddedValue * oeeIncrease * hours * costFactor;
+                const annual = effectiveValue * oeeIncrease * hours * costFactor;
                 totalAnnual += annual;
-                if (scenario === 'conservative') totalAddedValue += lineAddedValue;
+                if (scenario === 'conservative') {
+                    totalAddedValue += lineAddedValue;
+                    totalWeightedOEE += lineOEE;
+                }
+
+                // Collect breakdown for selected scenario
+                if (scenario === selectedScenario) {
+                    breakdownRows.push({
+                        plantNum: p,
+                        lineIndex: lineCounter,
+                        lineName: line.name || (t('calcBreakdownLine') + ' ' + lineCounter),
+                        hours: hours,
+                        oeeIncrease: oeeIncrease,
+                        currentOEE: lineOEE,
+                        addedValue: lineAddedValue,
+                        model: line.calcModel || 'demand',
+                        costFactor: costFactor,
+                        annual: annual
+                    });
+                }
             }
         }
 
@@ -843,6 +980,7 @@ function calculate() {
     }
 
     const avgAddedValue = totalLines > 0 ? totalAddedValue / totalLines : 0;
+    const avgOEE = totalLines > 0 ? totalWeightedOEE / totalLines : data.oeeStart;
 
     // Update scenario cards
     document.getElementById('totalLinesDisplay').textContent = totalLines;
@@ -857,12 +995,15 @@ function calculate() {
     // Update sector info card
     document.getElementById('sectorNameDisplay').textContent = data.name;
     document.getElementById('addedValueDisplay').textContent = formatCurrency(avgAddedValue) + t('perHourSuffix');
-    document.getElementById('oeeStartDisplay').textContent = formatPercentage(data.oeeStart);
+    document.getElementById('oeeStartDisplay').textContent = formatPercentage(avgOEE);
     document.getElementById('oeeImprovementDisplay').textContent = '+' + formatPercentage(oeeData[selectedScenario]);
 
-    // Update value bars using selected scenario
-    const currentOEE = data.oeeStart * 100;
-    const potentialOEE = Math.min(95, (data.oeeStart + oeeData[selectedScenario]) * 100);
+    // Update calculation breakdown
+    renderCalcBreakdown(breakdownRows, results[selectedScenario].annual);
+
+    // Update value bars using selected scenario (use avg per-line OEE)
+    const currentOEE = avgOEE * 100;
+    const potentialOEE = Math.min(95, (avgOEE + oeeData[selectedScenario]) * 100);
     const gap = potentialOEE - currentOEE;
 
     document.getElementById('currentBar').style.width = currentOEE + '%';
@@ -883,6 +1024,60 @@ function calculate() {
     const yearData = calculateBreakEven(annualBenefit, totalFixedCost, variableCost);
     renderGraph(yearData);
     displayBreakEven(yearData, totalFixedCost, variableCost);
+}
+
+// ==========================================
+// CALCULATION BREAKDOWN
+// ==========================================
+function renderCalcBreakdown(rows, totalAnnual) {
+    const container = document.getElementById('calcBreakdownContent');
+    if (!container) return;
+
+    const modelLabels = { demand: t('modelDemand'), cost: t('modelCost') };
+
+    let html = `
+        <div class="calc-breakdown-formula">${t('calcBreakdownFormula')}</div>
+        <table class="calc-breakdown-table">
+            <thead>
+                <tr>
+                    <th>${t('calcBreakdownLine')}</th>
+                    <th>${t('calcBreakdownHours')}</th>
+                    <th>${t('calcBreakdownOEEImpr')}</th>
+                    <th>${t('calcBreakdownCurrentOEE')}</th>
+                    <th>${t('calcBreakdownValueHr')}</th>
+                    <th>${t('calcBreakdownModel')}</th>
+                    <th>${t('calcBreakdownAnnual')}</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+
+    for (const row of rows) {
+        html += `
+            <tr>
+                <td class="line-number">${row.lineName}</td>
+                <td>${new Intl.NumberFormat('nl-NL').format(row.hours)}</td>
+                <td>${formatPercentage(row.oeeIncrease)}</td>
+                <td>${formatPercentage(row.currentOEE)}</td>
+                <td>${formatCurrency(row.addedValue)}</td>
+                <td>${modelLabels[row.model] || row.model}${row.costFactor < 1 ? ' (' + Math.round(row.costFactor * 100) + '%)' : ''}</td>
+                <td class="annual-value">${formatCurrency(row.annual)}</td>
+            </tr>
+        `;
+    }
+
+    html += `
+            </tbody>
+            <tfoot>
+                <tr class="calc-breakdown-total">
+                    <td colspan="6">${t('calcBreakdownTotal')}</td>
+                    <td class="annual-value">${formatCurrency(totalAnnual)}</td>
+                </tr>
+            </tfoot>
+        </table>
+    `;
+
+    container.innerHTML = html;
 }
 
 // ==========================================
@@ -1216,10 +1411,12 @@ function exportPDF() {
                 const lineOutput = line.outputLevel === 'custom' ? (line.customOutput || 0) : data.outputPerHour[line.outputLevel || 'avg'];
                 const lineMargin = line.marginLevel === 'custom' ? (line.customMargin || 0) : data.marginPerUnit[line.marginLevel || 'avg'];
                 const lineAddedValue = lineOutput * lineMargin;
+                const lineOEE = line.currentOEE !== null ? line.currentOEE : data.oeeStart;
+                const effectiveValue = lineAddedValue * lineOEE;
                 const costFactor = line.calcModel === 'cost'
                     ? { conservative: 0.20, expected: 0.30, optimistic: 0.40 }[scenario]
                     : 1;
-                totalAnnual += lineAddedValue * oeeData[scenario] * hours * costFactor;
+                totalAnnual += effectiveValue * oeeData[scenario] * hours * costFactor;
                 if (scenario === 'conservative') totalAddedValue += lineAddedValue;
             }
         }
