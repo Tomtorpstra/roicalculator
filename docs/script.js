@@ -904,13 +904,9 @@ function calculate() {
     const oeeData = situation === 'noOEE' ? data.oeeNothingToT4A : data.oeeBlueToT4A;
 
     // Show/hide saving potential tooltip based on situation
-    const savingsTitle = document.getElementById('savingsTitle');
-    if (savingsTitle) {
-        if (situation === 'blueUpgrade') {
-            savingsTitle.className = 'th-tooltip';
-        } else {
-            savingsTitle.className = 'savings-title-no-tooltip';
-        }
+    const savingInfo = document.getElementById('savingPotentialInfo');
+    if (savingInfo) {
+        savingInfo.style.display = situation === 'blueUpgrade' ? 'inline' : 'none';
     }
 
     // Calculate for each scenario (per-line output/margin, per-line OEE)

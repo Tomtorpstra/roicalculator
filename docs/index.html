@@ -158,9 +158,12 @@
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
                         </div>
                         <div style="flex:1;">
-                            <h2 id="savingsTitle" class="savings-title-no-tooltip" style="border-bottom:none;">
+                            <h2>
                                 <span data-i18n="cardSavingsTitle">Besparingspotentieel</span>
-                                <span class="tooltip-text" style="width:360px;" data-i18n="savingPotentialTooltip">Dit besparingspotentieel is gebaseerd op de upgrade van OEE Blue naar T4A/P4A</span>
+                                <span id="savingPotentialInfo" class="th-tooltip saving-potential-tooltip" style="display:none; border-bottom:none; margin-left:6px;">
+                                    <span style="font-size:0.7rem; opacity:0.6; cursor:help;">&#9432;</span>
+                                    <span class="tooltip-text" style="width:360px;" data-i18n="savingPotentialTooltip">Dit besparingspotentieel is gebaseerd op de upgrade van OEE Blue naar T4A/P4A</span>
+                                </span>
                             </h2>
                             <p class="card-subtitle" id="savingsSubtitle"><span id="totalLinesDisplay">0</span> <span data-i18n="linesAcross">lijnen over</span> <span id="totalPlantsDisplay">0</span> plants</p>
                         </div>

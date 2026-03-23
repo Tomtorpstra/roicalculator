@@ -1006,13 +1006,9 @@ body {
     border-top-color: #0f172a !important;
 }
 
-/* Savings title: no tooltip when not blue upgrade */
-.savings-title-no-tooltip {
-    position: relative;
-}
-
-.savings-title-no-tooltip .tooltip-text {
-    display: none;
+/* Saving potential tooltip inline icon */
+.saving-potential-tooltip {
+    vertical-align: middle;
 }
 
 .tooltip-title {
