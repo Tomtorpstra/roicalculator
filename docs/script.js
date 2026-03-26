@@ -105,6 +105,7 @@ const translations = {
         conservative: 'Conservatief',
         expected: 'Verwacht',
         optimistic: 'Optimistisch',
+        custom: 'Aangepast',
         perYear: 'per jaar',
         overThreeYears: 'over 3 jaar',
         oeeImprovement: 'OEE verbetering',
@@ -266,6 +267,7 @@ const translations = {
         conservative: 'Conservative',
         expected: 'Expected',
         optimistic: 'Optimistic',
+        custom: 'Custom',
         perYear: 'per year',
         overThreeYears: 'over 3 years',
         oeeImprovement: 'OEE improvement',
@@ -514,6 +516,7 @@ let plantData = { 1: { lines: [{ shifts: 3, outputLevel: 'avg', marginLevel: 'av
 let numPlants = 1;
 let activePlant = 1;
 let selectedScenario = 'expected';
+let customOEEIncrease = 0;
 
 // ==========================================
 // FORMATTING
@@ -635,6 +638,15 @@ function selectScenario(scenario) {
     const selectedCard = document.querySelector(`.scenario-card[data-scenario="${scenario}"]`);
     if (selectedCard) selectedCard.classList.add('selected');
     calculate();
+}
+
+function onCustomOEEChange(value) {
+    customOEEIncrease = parseFloat(value) / 100 || 0;
+    if (selectedScenario !== 'custom') {
+        selectScenario('custom');
+    } else {
+        calculate();
+    }
 }
 
 // ==========================================
@@ -910,7 +922,7 @@ function calculate() {
     }
 
     // Calculate for each scenario (per-line output/margin, per-line OEE)
-    const scenarios = ['conservative', 'expected', 'optimistic'];
+    const scenarios = ['conservative', 'expected', 'optimistic', 'custom'];
     const results = {};
 
     let totalLines = 0;
@@ -924,7 +936,7 @@ function calculate() {
     const breakdownRows = [];
 
     for (const scenario of scenarios) {
-        const oeeIncrease = oeeData[scenario];
+        const oeeIncrease = scenario === 'custom' ? customOEEIncrease : oeeData[scenario];
         let totalAnnual = 0;
         let lineCounter = 0;
 
@@ -938,7 +950,7 @@ function calculate() {
                 const lineOEE = line.currentOEE !== null ? line.currentOEE : data.oeeStart;
                 const effectiveValue = lineAddedValue * lineOEE;
                 const costFactor = line.calcModel === 'cost'
-                    ? { conservative: 0.20, expected: 0.30, optimistic: 0.40 }[scenario]
+                    ? { conservative: 0.20, expected: 0.30, optimistic: 0.40, custom: 0.30 }[scenario]
                     : 1;
                 const annual = effectiveValue * oeeIncrease * hours * costFactor;
                 totalAnnual += annual;
@@ -985,21 +997,24 @@ function calculate() {
     for (const scenario of scenarios) {
         document.getElementById(scenario + 'Annual').textContent = formatCurrency(results[scenario].annual);
         document.getElementById(scenario + 'ThreeYear').textContent = formatCurrency(results[scenario].threeYear);
-        document.getElementById(scenario + 'OEE').textContent = '+' + formatPercentage(results[scenario].oeeIncrease);
+        if (scenario !== 'custom') {
+            document.getElementById(scenario + 'OEE').textContent = '+' + formatPercentage(results[scenario].oeeIncrease);
+        }
     }
 
     // Update sector info card
+    const selectedOEEIncrease = selectedScenario === 'custom' ? customOEEIncrease : oeeData[selectedScenario];
     document.getElementById('sectorNameDisplay').textContent = data.name;
     document.getElementById('addedValueDisplay').textContent = formatCurrency(avgAddedValue) + t('perHourSuffix');
     document.getElementById('oeeStartDisplay').textContent = formatPercentage(avgOEE);
-    document.getElementById('oeeImprovementDisplay').textContent = '+' + formatPercentage(oeeData[selectedScenario]);
+    document.getElementById('oeeImprovementDisplay').textContent = '+' + formatPercentage(selectedOEEIncrease);
 
     // Update calculation breakdown
     renderCalcBreakdown(breakdownRows, results[selectedScenario].annual);
 
     // Update value bars using selected scenario (use avg per-line OEE)
     const currentOEE = avgOEE * 100;
-    const potentialOEE = Math.min(95, (avgOEE + oeeData[selectedScenario]) * 100);
+    const potentialOEE = Math.min(95, (avgOEE + selectedOEEIncrease) * 100);
     const gap = potentialOEE - currentOEE;
 
     document.getElementById('currentBar').style.width = currentOEE + '%';
@@ -1009,7 +1024,7 @@ function calculate() {
     document.getElementById('gapLabel').textContent = '+' + gap.toFixed(1) + '%';
 
     // Update break-even note with selected scenario name
-    const scenarioLabels = { conservative: t('conservative'), expected: t('expected'), optimistic: t('optimistic') };
+    const scenarioLabels = { conservative: t('conservative'), expected: t('expected'), optimistic: t('optimistic'), custom: t('custom') };
     const breakEvenNoteEl = document.querySelector('.break-even-note');
     if (breakEvenNoteEl) {
         breakEvenNoteEl.textContent = t('breakEvenNotePrefix') + ' ' + scenarioLabels[selectedScenario].toLowerCase() + ' ' + t('breakEvenNoteSuffix');
@@ -1389,7 +1404,7 @@ function exportPDF() {
     const totalFixedCost = fixedFee + internalCost;
 
     // Calculate all scenarios (per-line output/margin)
-    const scenarios = ['conservative', 'expected', 'optimistic'];
+    const scenarios = ['conservative', 'expected', 'optimistic', 'custom'];
     const results = {};
     let totalLines = 0;
     let totalAddedValue = 0;
@@ -1399,6 +1414,7 @@ function exportPDF() {
     }
 
     for (const scenario of scenarios) {
+        const oeeIncrease = scenario === 'custom' ? customOEEIncrease : oeeData[scenario];
         let totalAnnual = 0;
 
         for (let p = 1; p <= numPlants; p++) {
@@ -1410,9 +1426,9 @@ function exportPDF() {
                 const lineOEE = line.currentOEE !== null ? line.currentOEE : data.oeeStart;
                 const effectiveValue = lineAddedValue * lineOEE;
                 const costFactor = line.calcModel === 'cost'
-                    ? { conservative: 0.20, expected: 0.30, optimistic: 0.40 }[scenario]
+                    ? { conservative: 0.20, expected: 0.30, optimistic: 0.40, custom: 0.30 }[scenario]
                     : 1;
-                totalAnnual += effectiveValue * oeeData[scenario] * hours * costFactor;
+                totalAnnual += effectiveValue * oeeIncrease * hours * costFactor;
                 if (scenario === 'conservative') totalAddedValue += lineAddedValue;
             }
         }
@@ -1421,7 +1437,7 @@ function exportPDF() {
         results[scenario] = {
             annual: totalAnnual,
             threeYear: totalAnnual * (1/3 + 2/3 + 1),
-            oeeIncrease: oeeData[scenario]
+            oeeIncrease: oeeIncrease
         };
     }
 
@@ -1461,7 +1477,7 @@ function exportPDF() {
 
     const situationLabel = situation === 'noOEE' ? t('situationLabelNoOEE') : t('situationLabelBlue');
     const outputLabels = { min: t('outputLabelLow'), avg: t('outputLabelAvg'), max: t('outputLabelHigh'), custom: t('optionCustom') };
-    const scenarioLabels = { conservative: t('conservative'), expected: t('expected'), optimistic: t('optimistic') };
+    const scenarioLabels = { conservative: t('conservative'), expected: t('expected'), optimistic: t('optimistic'), custom: t('custom') };
     const dateLocale = currentLang === 'nl' ? 'nl-NL' : 'en-GB';
 
     const printContent = `
@@ -1575,6 +1591,7 @@ body { font-family: 'Segoe UI', Arial, sans-serif; color: #1e293b; line-height: 
             <th${selectedScenario === 'conservative' ? ' class="expected"' : ''}>${t('conservative')}</th>
             <th${selectedScenario === 'expected' ? ' class="expected"' : ''}>${t('expected')}</th>
             <th${selectedScenario === 'optimistic' ? ' class="expected"' : ''}>${t('optimistic')}</th>
+            <th${selectedScenario === 'custom' ? ' class="expected"' : ''}>${t('custom')}</th>
         </tr>
     </thead>
     <tbody>
@@ -1583,18 +1600,21 @@ body { font-family: 'Segoe UI', Arial, sans-serif; color: #1e293b; line-height: 
             <td${selectedScenario === 'conservative' ? ' class="expected"' : ''}>${formatCurrency(results.conservative.annual)}</td>
             <td${selectedScenario === 'expected' ? ' class="expected"' : ''}>${formatCurrency(results.expected.annual)}</td>
             <td${selectedScenario === 'optimistic' ? ' class="expected"' : ''}>${formatCurrency(results.optimistic.annual)}</td>
+            <td${selectedScenario === 'custom' ? ' class="expected"' : ''}>${formatCurrency(results.custom.annual)}</td>
         </tr>
         <tr class="value-row">
             <td class="row-label">${t('pdfOver3Years')}</td>
             <td${selectedScenario === 'conservative' ? ' class="expected"' : ''}>${formatCurrency(results.conservative.threeYear)}</td>
             <td${selectedScenario === 'expected' ? ' class="expected"' : ''}>${formatCurrency(results.expected.threeYear)}</td>
             <td${selectedScenario === 'optimistic' ? ' class="expected"' : ''}>${formatCurrency(results.optimistic.threeYear)}</td>
+            <td${selectedScenario === 'custom' ? ' class="expected"' : ''}>${formatCurrency(results.custom.threeYear)}</td>
         </tr>
         <tr>
             <td class="row-label">${t('pdfOeeImprovement')}</td>
             <td${selectedScenario === 'conservative' ? ' class="expected"' : ''}>+${formatPercentage(results.conservative.oeeIncrease)}</td>
             <td${selectedScenario === 'expected' ? ' class="expected"' : ''}>+${formatPercentage(results.expected.oeeIncrease)}</td>
             <td${selectedScenario === 'optimistic' ? ' class="expected"' : ''}>+${formatPercentage(results.optimistic.oeeIncrease)}</td>
+            <td${selectedScenario === 'custom' ? ' class="expected"' : ''}>+${formatPercentage(results.custom.oeeIncrease)}</td>
         </tr>
     </tbody>
 </table>
@@ -1619,8 +1639,8 @@ body { font-family: 'Segoe UI', Arial, sans-serif; color: #1e293b; line-height: 
         <div class="section-title">${t('pdfOeeImprovementSection')}</div>
         <table class="info-table">
             <tr><td class="label">${t('pdfCurrentOee')}</td><td class="value">${(data.oeeStart * 100).toFixed(0)}%</td></tr>
-            <tr><td class="label">${t('pdfExpectedImprov')}</td><td class="value">+${formatPercentage(oeeData[selectedScenario])}</td></tr>
-            <tr><td class="label">${t('pdfPotentialOee')}</td><td class="value">${Math.min(95, (data.oeeStart + oeeData[selectedScenario]) * 100).toFixed(0)}%</td></tr>
+            <tr><td class="label">${t('pdfExpectedImprov')}</td><td class="value">+${formatPercentage(selectedScenario === 'custom' ? customOEEIncrease : oeeData[selectedScenario])}</td></tr>
+            <tr><td class="label">${t('pdfPotentialOee')}</td><td class="value">${Math.min(95, (data.oeeStart + (selectedScenario === 'custom' ? customOEEIncrease : oeeData[selectedScenario])) * 100).toFixed(0)}%</td></tr>
         </table>
     </div>
 </div>

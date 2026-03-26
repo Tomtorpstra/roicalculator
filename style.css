@@ -632,7 +632,7 @@ body {
 /* Scenario Grid */
 .scenario-grid {
     display: grid;
-    grid-template-columns: 1fr 1.15fr 1fr;
+    grid-template-columns: 1fr 1.15fr 1fr 1fr;
     gap: 12px;
     margin-bottom: 20px;
 }
@@ -739,6 +739,38 @@ body {
     font-size: 0.65rem;
     color: #94a3b8;
     margin-top: 2px;
+}
+
+/* Custom OEE Input */
+.custom-oee-input-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 2px 0;
+}
+
+.custom-oee-input {
+    width: 72px;
+    padding: 4px 6px;
+    border: 2px solid #e5e7eb;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #16a34a;
+    text-align: center;
+    background: #fff;
+    transition: border-color 0.2s;
+}
+
+.custom-oee-input:focus {
+    outline: none;
+    border-color: #00AAFF;
+}
+
+.scenario-card.selected .custom-oee-input {
+    border-color: #00AAFF;
+    background: #fff;
 }
 
 /* Sector Info Grid */
@@ -1212,7 +1244,7 @@ footer {
     }
 
     .scenario-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr;
     }
 
     .scenario-card.selected {
