@@ -1186,134 +1186,113 @@ function renderGraph(yearData) {
 
     ctx.clearRect(0, 0, width, height);
 
-    if (yearData.length === 0) return;
+    if (!yearData || yearData.length < 2) return;
 
-    // --- MATH CALCULATION FOR ALIGNMENT ---
-    // We derive the annualBenefit from year 3+ data to ensure the ramp logic matches
-    const lastYearData = yearData[yearData.length - 1];
-    const secondToLastYearData = yearData[yearData.length - 2];
-    const annualBenefit = lastYearData.cumulativeBenefit - secondToLastYearData.cumulativeBenefit;
+    // 1. CALCULATE ANNUAL BENEFIT (Difference between Year 4 and 5 ensures we have the "full" rate)
+    const last = yearData[yearData.length - 1];
+    const prev = yearData[yearData.length - 2];
+    const annualBenefit = last.cumulativeBenefit - prev.cumulativeBenefit;
 
-    const maxYear = lastYearData.year;
+    // 2. GENERATE MONTHLY POINTS (Replacing generateRealisticCurvePoints call)
+    const maxYear = last.year;
+    const totalMonths = maxYear * 12;
+    const realisticPoints = [];
+    
+    // Starting point (Year 0)
+    realisticPoints.push({ 
+        year: 0, 
+        cumulativeBenefit: 0, 
+        cumulativeCost: yearData[0].cumulativeCost 
+    });
+
+    let runningBenefit = 0;
+    for (let m = 1; m <= totalMonths; m++) {
+        const yearFrac = m / 12;
+        
+        // Use the exact ramp logic from your calculation
+        let ramp;
+        if (yearFrac <= 1) ramp = 1/3;
+        else if (yearFrac <= 2) ramp = 2/3;
+        else ramp = 1;
+
+        runningBenefit += (annualBenefit * ramp) / 12;
+
+        // Linear interpolation for cost
+        let cost;
+        const targetYear = Math.floor(yearFrac);
+        const yearIndex = yearData.findIndex(d => d.year === targetYear);
+        if (yearIndex !== -1 && yearData[yearIndex + 1]) {
+            const startCost = yearData[yearIndex].cumulativeCost;
+            const endCost = yearData[yearIndex + 1].cumulativeCost;
+            const frac = yearFrac - targetYear;
+            cost = startCost + (endCost - startCost) * frac;
+        } else {
+            cost = last.cumulativeCost;
+        }
+
+        realisticPoints.push({
+            year: yearFrac,
+            cumulativeBenefit: runningBenefit,
+            cumulativeCost: cost
+        });
+    }
+
+    // 3. SCALING
     const maxValue = Math.max(...yearData.map(d => Math.max(d.cumulativeBenefit, d.cumulativeCost)));
-
     const xScale = (year) => padding.left + (year / maxYear) * graphWidth;
     const yScale = (value) => padding.top + graphHeight - (value / maxValue) * graphHeight;
 
-    // Grid
+    // 4. DRAW GRID
     ctx.strokeStyle = '#e5e7eb';
     ctx.lineWidth = 1;
-
     for (let i = 0; i <= 5; i++) {
         const y = padding.top + (i / 5) * graphHeight;
         ctx.beginPath();
         ctx.moveTo(padding.left, y);
         ctx.lineTo(width - padding.right, y);
         ctx.stroke();
-
-        const value = maxValue * (1 - i / 5);
+        const val = maxValue * (1 - i / 5);
         ctx.fillStyle = '#64748b';
-        ctx.font = '11px Inter, sans-serif';
         ctx.textAlign = 'right';
-        ctx.fillText(formatCurrency(value), padding.left - 10, y + 4);
+        ctx.fillText(formatCurrency(val), padding.left - 10, y + 4);
     }
 
-    for (let year = 1; year <= maxYear; year++) {
-        const x = xScale(year);
-        ctx.beginPath();
-        ctx.strokeStyle = '#e5e7eb';
-        ctx.moveTo(x, padding.top);
-        ctx.lineTo(x, height - padding.bottom);
-        ctx.stroke();
-
-        ctx.fillStyle = '#64748b';
-        ctx.textAlign = 'center';
-        ctx.fillText(t('yearLabel') + ' ' + year, x, height - padding.bottom + 20);
-    }
-
-    // Generate monthly points using the ramp logic (1/3, 2/3, 1)
-    // IMPORTANT: Make sure you use the updated generateRealisticCurvePoints I provided earlier
-    const realisticPoints = generateRealisticCurvePoints(yearData, annualBenefit);
-
-    // Cost line (Red)
+    // 5. DRAW COST LINE (Red)
     ctx.beginPath();
     ctx.strokeStyle = '#ef4444';
     ctx.lineWidth = 3;
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
     yearData.forEach((d, i) => {
         const x = xScale(d.year);
         const y = yScale(d.cumulativeCost);
-        if (i === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
     });
     ctx.stroke();
 
-    // Benefit line (Green)
+    // 6. DRAW BENEFIT LINE (Green)
     ctx.beginPath();
     ctx.strokeStyle = '#10b981';
     ctx.lineWidth = 3;
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
     realisticPoints.forEach((d, i) => {
         const x = xScale(d.year);
         const y = yScale(d.cumulativeBenefit);
-        if (i === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
     });
     ctx.stroke();
 
-    // Break-even marker (Yellow Dot)
+    // 7. DRAW BREAK-EVEN DOT (Yellow)
     for (let i = 1; i < realisticPoints.length; i++) {
         if (realisticPoints[i].cumulativeBenefit >= realisticPoints[i].cumulativeCost) {
-            const prev = realisticPoints[i - 1];
-            const curr = realisticPoints[i];
-            const benefitDiff = curr.cumulativeBenefit - prev.cumulativeBenefit;
-            const costDiff = curr.cumulativeCost - prev.cumulativeCost;
-            const prevGap = prev.cumulativeCost - prev.cumulativeBenefit;
-            const gapChange = benefitDiff - costDiff;
-
-            let beYear, beValue;
-            if (gapChange > 0) {
-                const frac = prevGap / gapChange;
-                const stepSize = curr.year - prev.year;
-                beYear = prev.year + frac * stepSize;
-                beValue = prev.cumulativeBenefit + benefitDiff * frac;
-            } else {
-                beYear = curr.year;
-                beValue = curr.cumulativeBenefit;
-            }
-
+            const p = realisticPoints[i];
             ctx.beginPath();
             ctx.fillStyle = '#fbbf24';
-            ctx.arc(xScale(beYear), yScale(beValue), 10, 0, Math.PI * 2);
+            ctx.arc(xScale(p.year), yScale(p.cumulativeBenefit), 8, 0, Math.PI * 2);
             ctx.fill();
-            ctx.beginPath();
-            ctx.fillStyle = '#ffffff';
-            ctx.arc(xScale(beYear), yScale(beValue), 5, 0, Math.PI * 2);
-            ctx.fill();
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 2;
+            ctx.stroke();
             break;
         }
     }
-
-    // Data point dots at year markers
-    yearData.forEach((d) => {
-        if (d.year === 0) return;
-        const x = xScale(d.year);
-
-        const pointAtYear = realisticPoints.find(p => Math.abs(p.year - d.year) < 0.01);
-        const benefitY = pointAtYear ? pointAtYear.cumulativeBenefit : d.cumulativeBenefit;
-
-        ctx.beginPath();
-        ctx.fillStyle = '#10b981';
-        ctx.arc(x, yScale(benefitY), 5, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.beginPath();
-        ctx.fillStyle = '#ef4444';
-        ctx.arc(x, yScale(d.cumulativeCost), 5, 0, Math.PI * 2);
-        ctx.fill();
-    });
 }
 
 // ==========================================
