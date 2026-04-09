@@ -1208,7 +1208,6 @@ function renderGraph(yearData, fixedFee, variableCost) {
         let ramp = yearFrac <= 1 ? 1/3 : (yearFrac <= 2 ? 2/3 : 1);
         runningBenefit += (annualBenefit * ramp) / 12;
 
-        // Cost interpolation
         const targetY = Math.floor(yearFrac);
         const idx = yearData.findIndex(d => d.year === targetY);
         let cost = (idx !== -1 && yearData[idx+1]) 
@@ -1217,32 +1216,21 @@ function renderGraph(yearData, fixedFee, variableCost) {
 
         realisticPoints.push({ year: yearFrac, cumulativeBenefit: runningBenefit, cumulativeCost: cost });
 
-        // Capture Break-even month for the badge
         if (runningBenefit >= cost && !beFound) {
             finalBreakEvenMonth = m;
             beFound = true;
         }
     }
 
-    // 2. UPDATE THE BADGE (KEEPING YOUR ORIGINAL LOGIC)
-    badge.classList.remove('warning', 'error');
-    if (beFound) {
-        breakEvenYear.textContent = finalBreakEvenMonth + ' ' + t('months');
-    } else if (last.cumulativeCost > last.cumulativeBenefit) {
-        breakEvenYear.textContent = t('overMonths');
-        badge.classList.add('error');
-    } else if (fixedFee === 0 && variableCost === 0) {
-        breakEvenYear.textContent = '0 ' + t('months');
-    }
-
-    // 3. DRAWING LOGIC
+    // 2. SCALING HELPERS
     const maxValue = Math.max(...yearData.map(d => Math.max(d.cumulativeBenefit, d.cumulativeCost)));
     const xScale = (y) => padding.left + (y / maxYear) * graphWidth;
     const yScale = (v) => padding.top + graphHeight - (v / maxValue) * graphHeight;
 
-    // Grid & Labels
+    // 3. DRAW GRID & Y-AXIS LABELS
     ctx.strokeStyle = '#e5e7eb';
     ctx.lineWidth = 1;
+    ctx.font = '11px Inter, sans-serif';
     for (let i = 0; i <= 5; i++) {
         const y = padding.top + (i / 5) * graphHeight;
         ctx.beginPath(); ctx.moveTo(padding.left, y); ctx.lineTo(width - padding.right, y); ctx.stroke();
@@ -1250,18 +1238,36 @@ function renderGraph(yearData, fixedFee, variableCost) {
         ctx.fillText(formatCurrency(maxValue * (1 - i / 5)), padding.left - 10, y + 4);
     }
 
-    // Cost Line (Red)
+    // --- NEW: DRAW X-AXIS LABELS (JAAR 1 - JAAR 5) ---
+    for (let year = 1; year <= maxYear; year++) {
+        const x = xScale(year);
+        ctx.beginPath();
+        ctx.strokeStyle = '#e5e7eb';
+        ctx.moveTo(x, padding.top);
+        ctx.lineTo(x, height - padding.bottom);
+        ctx.stroke();
+
+        ctx.fillStyle = '#64748b';
+        ctx.textAlign = 'center';
+        // Use your translation function t() or hardcode 'Jaar'
+        ctx.fillText(t('yearLabel') + ' ' + year, x, height - padding.bottom + 20);
+    }
+    // ------------------------------------------------
+
+    // 4. DRAW COST LINE (Red)
     ctx.beginPath(); ctx.strokeStyle = '#ef4444'; ctx.lineWidth = 3;
     yearData.forEach((d, i) => { i === 0 ? ctx.moveTo(xScale(d.year), yScale(d.cumulativeCost)) : ctx.lineTo(xScale(d.year), yScale(d.cumulativeCost)); });
     ctx.stroke();
 
-    // Benefit Line (Green)
+    // 5. DRAW BENEFIT LINE (Green)
     ctx.beginPath(); ctx.strokeStyle = '#10b981'; ctx.lineWidth = 3;
     realisticPoints.forEach((d, i) => { i === 0 ? ctx.moveTo(xScale(d.year), yScale(d.cumulativeBenefit)) : ctx.lineTo(xScale(d.year), yScale(d.cumulativeBenefit)); });
     ctx.stroke();
 
-    // Yellow Dot at Break-even
+    // 6. UPDATE BADGE & DRAW YELLOW DOT
+    badge.classList.remove('warning', 'error');
     if (beFound) {
+        breakEvenYear.textContent = finalBreakEvenMonth + ' ' + t('months');
         const pt = realisticPoints.find(p => p.year * 12 === finalBreakEvenMonth);
         if (pt) {
             ctx.beginPath(); ctx.fillStyle = '#fbbf24';
@@ -1269,13 +1275,10 @@ function renderGraph(yearData, fixedFee, variableCost) {
             ctx.fill();
             ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke();
         }
+    } else if (last.cumulativeCost > last.cumulativeBenefit) {
+        breakEvenYear.textContent = t('overMonths');
+        badge.classList.add('error');
     }
-}
-
-// Keep this version of displayBreakEven empty or remove it if you call it elsewhere, 
-// as the logic is now handled inside renderGraph to ensure they stay synced.
-function displayBreakEven(yearData, fixedFee, variableCost) {
-    // The badge is now updated inside renderGraph for perfect synchronization.
 }
 
 // ==========================================
