@@ -1079,294 +1079,87 @@ function renderCalcBreakdown(rows, totalAnnual) {
 // ==========================================
 // BREAK-EVEN
 // ==========================================
-function calculateBreakEven(annualBenefit, fixedFee, variableCost) {
-    const MIN_YEARS = 5;
-    let yearData = [];
 
-    // Year 0: upfront investment, no benefit yet
-    yearData.push({ year: 0, cumulativeBenefit: 0, cumulativeCost: fixedFee });
+function getBreakEvenData(annualBenefit, fixedFee, variableCost) {
+    const monthlyVarCost = variableCost / 12;
+    
+    // 1. THE CALCULUS (The Master Lead)
+    // Uses your specific 3-year ramp logic
+    let calcBenefit = 0;
+    let calcCost = fixedFee;
+    let breakEvenMonth = 0;
+    const MAX_MONTHS = 240;
 
-    let cumulativeBenefit = 0;
-    let cumulativeCost = fixedFee;
-    let breakEvenReached = false;
+    for (let m = 1; m <= MAX_MONTHS; m++) {
+        const year = m / 12;
+        // EXACT RAMP: Year 1 = 1/3, Year 2 = 2/3, Year 3+ = 100%
+        let rampFactor = 1;
+        if (year <= 1) rampFactor = 1/3;
+        else if (year <= 2) rampFactor = 2/3;
+        else rampFactor = 1;
 
-    for (let year = 1; year <= 20; year++) {
-        // OEE improvement ramps over 3 years: 1/3, 2/3, then full from year 3+
-        const rampFactor = year <= 3 ? year / 3 : 1;
-        cumulativeBenefit += annualBenefit * rampFactor;
-        cumulativeCost += variableCost;
+        // Benefit added this month is (Annual / 12) * current ramp
+        calcBenefit += (annualBenefit / 12) * rampFactor;
+        calcCost += monthlyVarCost;
 
-        yearData.push({
-            year: year,
-            cumulativeBenefit: cumulativeBenefit,
-            cumulativeCost: cumulativeCost
-        });
-
-        if (cumulativeBenefit >= cumulativeCost && !breakEvenReached) {
-            breakEvenReached = true;
-        }
-
-        if (year >= MIN_YEARS) {
-            if (breakEvenReached) {
-                const beYear = yearData.find(d => d.year > 0 && d.cumulativeBenefit >= d.cumulativeCost).year;
-                if (year >= beYear + 2) break;
-            }
-            if (fixedFee === 0 && variableCost === 0) break;
-        }
-    }
-
-    return yearData;
-}
-
-// Realistic OEE curve: implementation dip, quick wins, plateau, bumpy climb, diminishing returns
-function generateRealisticCurvePoints(yearData) {
-    if (yearData.length < 2) return yearData;
-
-    const maxYear = yearData[yearData.length - 1].year;
-    const totalBenefit = yearData[yearData.length - 1].cumulativeBenefit;
-
-    if (totalBenefit <= 0 || maxYear <= 0) return yearData;
-
-    const totalMonths = maxYear * 12;
-
-    // Phase-based growth rate multiplier for each month
-    const getPhaseMultiplier = (month) => {
-        if (month <= 3) return 0.15;             // Implementation dip: learning curve, installs
-        if (month <= 6) return 2.2;              // Quick wins: low-hanging fruit, sudden OEE jump
-        if (month <= 12) return 0.7;             // Plateau: stabilizing new baseline
-        const year = month / 12;
-        if (year <= 3) return 1.1;               // Steady growth: tackling harder issues
-        return Math.max(0.5, 1.1 - (year - 3) * 0.15); // Diminishing returns
-    };
-
-    // Deterministic bumps using overlapping sine waves (consistent on re-render)
-    const getBump = (month) => {
-        if (month <= 6) return 0; // No bumps during implementation + quick wins
-        return Math.sin(month * 2.7) * 0.3
-             + Math.sin(month * 1.3) * 0.2
-             + Math.sin(month * 4.1) * 0.1;
-    };
-
-    // Generate raw monthly growth rates
-    const rawRates = [];
-    for (let m = 1; m <= totalMonths; m++) {
-        const rate = getPhaseMultiplier(m) * (1 + getBump(m));
-        rawRates.push(Math.max(0.05, rate)); // ensure always positive
-    }
-
-    // Normalize so cumulative sum exactly equals totalBenefit
-    const rawSum = rawRates.reduce((a, b) => a + b, 0);
-    const monthlyBenefits = rawRates.map(r => (r / rawSum) * totalBenefit);
-
-    // Cost interpolation helper
-    const getCostAtYear = (yearFrac) => {
-        for (let i = 0; i < yearData.length - 1; i++) {
-            if (yearFrac >= yearData[i].year && yearFrac <= yearData[i + 1].year) {
-                const span = yearData[i + 1].year - yearData[i].year;
-                const frac = span > 0 ? (yearFrac - yearData[i].year) / span : 0;
-                return yearData[i].cumulativeCost + frac * (yearData[i + 1].cumulativeCost - yearData[i].cumulativeCost);
-            }
-        }
-        return yearData[yearData.length - 1].cumulativeCost;
-    };
-
-    // Build cumulative points at monthly resolution
-    const points = [];
-    points.push({ year: 0, cumulativeBenefit: 0, cumulativeCost: yearData[0].cumulativeCost });
-
-    let cumulBenefit = 0;
-    for (let m = 1; m <= totalMonths; m++) {
-        cumulBenefit += monthlyBenefits[m - 1];
-        const yearFrac = m / 12;
-        points.push({
-            year: yearFrac,
-            cumulativeBenefit: cumulBenefit,
-            cumulativeCost: getCostAtYear(yearFrac)
-        });
-    }
-
-    return points;
-}
-
-function renderGraph(yearData) {
-    const canvas = document.getElementById('breakEvenCanvas');
-    const ctx = canvas.getContext('2d');
-
-    const dpr = window.devicePixelRatio || 1;
-    const rect = canvas.getBoundingClientRect();
-    canvas.width = rect.width * dpr;
-    canvas.height = rect.height * dpr;
-    ctx.scale(dpr, dpr);
-
-    const width = rect.width;
-    const height = rect.height;
-    const padding = { top: 30, right: 30, bottom: 50, left: 80 };
-    const graphWidth = width - padding.left - padding.right;
-    const graphHeight = height - padding.top - padding.bottom;
-
-    ctx.clearRect(0, 0, width, height);
-
-    if (yearData.length === 0) return;
-
-    const maxYear = yearData[yearData.length - 1].year;
-    const maxValue = Math.max(...yearData.map(d => Math.max(d.cumulativeBenefit, d.cumulativeCost)));
-
-    const xScale = (year) => padding.left + (year / maxYear) * graphWidth;
-    const yScale = (value) => padding.top + graphHeight - (value / maxValue) * graphHeight;
-
-    // Grid
-    ctx.strokeStyle = '#e5e7eb';
-    ctx.lineWidth = 1;
-
-    for (let i = 0; i <= 5; i++) {
-        const y = padding.top + (i / 5) * graphHeight;
-        ctx.beginPath();
-        ctx.moveTo(padding.left, y);
-        ctx.lineTo(width - padding.right, y);
-        ctx.stroke();
-
-        const value = maxValue * (1 - i / 5);
-        ctx.fillStyle = '#64748b';
-        ctx.font = '11px Inter, sans-serif';
-        ctx.textAlign = 'right';
-        ctx.fillText(formatCurrency(value), padding.left - 10, y + 4);
-    }
-
-    for (let year = 1; year <= maxYear; year++) {
-        const x = xScale(year);
-        ctx.beginPath();
-        ctx.strokeStyle = '#e5e7eb';
-        ctx.moveTo(x, padding.top);
-        ctx.lineTo(x, height - padding.bottom);
-        ctx.stroke();
-
-        ctx.fillStyle = '#64748b';
-        ctx.textAlign = 'center';
-        ctx.fillText(t('yearLabel') + ' ' + year, x, height - padding.bottom + 20);
-    }
-
-    // Generate realistic OEE curve points for benefit line
-    const realisticPoints = generateRealisticCurvePoints(yearData);
-
-    // Cost line (linear, from yearData including year 0)
-    ctx.beginPath();
-    ctx.strokeStyle = '#ef4444';
-    ctx.lineWidth = 3;
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    yearData.forEach((d, i) => {
-        const x = xScale(d.year);
-        const y = yScale(d.cumulativeCost);
-        if (i === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-    });
-    ctx.stroke();
-
-    // Benefit line (realistic OEE curve)
-    ctx.beginPath();
-    ctx.strokeStyle = '#10b981';
-    ctx.lineWidth = 3;
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    realisticPoints.forEach((d, i) => {
-        const x = xScale(d.year);
-        const y = yScale(d.cumulativeBenefit);
-        if (i === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-    });
-    ctx.stroke();
-
-    // Break-even marker (where realistic benefit crosses cost)
-    for (let i = 1; i < realisticPoints.length; i++) {
-        if (realisticPoints[i].cumulativeBenefit >= realisticPoints[i].cumulativeCost) {
-            const prev = realisticPoints[i - 1];
-            const curr = realisticPoints[i];
-            const benefitDiff = curr.cumulativeBenefit - prev.cumulativeBenefit;
-            const costDiff = curr.cumulativeCost - prev.cumulativeCost;
-            const prevGap = prev.cumulativeCost - prev.cumulativeBenefit;
-            const gapChange = benefitDiff - costDiff;
-
-            let beYear, beValue;
-            if (gapChange > 0) {
-                const frac = prevGap / gapChange;
-                const stepSize = curr.year - prev.year;
-                beYear = prev.year + frac * stepSize;
-                beValue = prev.cumulativeBenefit + benefitDiff * frac;
-            } else {
-                beYear = curr.year;
-                beValue = curr.cumulativeBenefit;
-            }
-
-            ctx.beginPath();
-            ctx.fillStyle = '#fbbf24';
-            ctx.arc(xScale(beYear), yScale(beValue), 10, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.fillStyle = '#ffffff';
-            ctx.arc(xScale(beYear), yScale(beValue), 5, 0, Math.PI * 2);
-            ctx.fill();
+        if (calcBenefit >= calcCost && breakEvenMonth === 0) {
+            breakEvenMonth = m;
             break;
         }
     }
 
-    // Data point dots at integer years
-    yearData.forEach((d) => {
-        if (d.year === 0) return;
-        const x = xScale(d.year);
+    // 2. THE GRAPH (The Visual Representation)
+    // We pin the "Realistic" curve to the calculated Break-Even Month
+    const totalMonths = breakEvenMonth > 0 ? Math.max(breakEvenMonth + 24, 60) : 60;
+    const costAtBE = fixedFee + (breakEvenMonth * monthlyVarCost);
+    
+    // Generate "weights" for the realistic look (bumps/dips)
+    let weights = [];
+    for (let m = 1; m <= (breakEvenMonth || totalMonths); m++) {
+        // Keeps the visual "feel" but the math will override the scale
+        const w = m <= 3 ? 0.2 : (m <= 6 ? 1.8 : 1.0); 
+        weights.push(w);
+    }
+    
+    const sumWeights = weights.reduce((a, b) => a + b, 0);
+    // This multiplier ensures Cumulative Benefit == costAtBE at the exact breakEvenMonth
+    const scaleFactor = breakEvenMonth > 0 ? (costAtBE / sumWeights) : 0;
 
-        // Find realistic curve benefit at this year
-        const pointAtYear = realisticPoints.find(p => Math.abs(p.year - d.year) < 0.01);
-        const benefitY = pointAtYear ? pointAtYear.cumulativeBenefit : d.cumulativeBenefit;
-
-        ctx.beginPath();
-        ctx.fillStyle = '#10b981';
-        ctx.arc(x, yScale(benefitY), 5, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.beginPath();
-        ctx.fillStyle = '#ef4444';
-        ctx.arc(x, yScale(d.cumulativeCost), 5, 0, Math.PI * 2);
-        ctx.fill();
-    });
-}
-
-function displayBreakEven(yearData, fixedFee, variableCost) {
-    const badge = document.getElementById('breakEvenBadge');
-    const breakEvenYear = document.getElementById('breakEvenYear');
-
-    badge.classList.remove('warning', 'error');
-
-    // Skip year 0 (index 0) - start from year 1
-    for (let i = 1; i < yearData.length; i++) {
-        if (yearData[i].cumulativeBenefit >= yearData[i].cumulativeCost) {
-            const prevD = yearData[i - 1];
-            const currD = yearData[i];
-            const benefitDiff = currD.cumulativeBenefit - prevD.cumulativeBenefit;
-            const costDiff = currD.cumulativeCost - prevD.cumulativeCost;
-            const prevGap = prevD.cumulativeCost - prevD.cumulativeBenefit;
-            const gapChangeRate = benefitDiff - costDiff;
-
-            let totalMonths;
-            if (gapChangeRate !== 0) {
-                const fraction = prevGap / gapChangeRate;
-                totalMonths = Math.ceil((prevD.year + fraction) * 12);
-            } else {
-                totalMonths = currD.year * 12;
-            }
-
-            if (totalMonths <= 0) totalMonths = 1;
-            breakEvenYear.textContent = totalMonths + ' ' + t('months');
-            return;
+    const points = [];
+    points.push({ year: 0, cumulativeBenefit: 0, cumulativeCost: fixedFee });
+    
+    let runningBenefit = 0;
+    for (let m = 1; m <= totalMonths; m++) {
+        if (breakEvenMonth > 0 && m <= breakEvenMonth) {
+            runningBenefit += weights[m-1] * scaleFactor;
+        } else {
+            // After break-even, it continues at the full 100% annual rate
+            runningBenefit += (annualBenefit / 12);
         }
+
+        points.push({
+            year: m / 12,
+            cumulativeBenefit: runningBenefit,
+            cumulativeCost: fixedFee + (m * monthlyVarCost)
+        });
     }
 
-    if (yearData.length > 0 && yearData[yearData.length - 1].cumulativeCost > yearData[yearData.length - 1].cumulativeBenefit) {
-        breakEvenYear.textContent = t('overMonths');
-        badge.classList.add('error');
-    } else if (fixedFee === 0 && variableCost === 0) {
-        breakEvenYear.textContent = '0 ' + t('months');
-    }
+    return { 
+        points, 
+        breakEvenMonth, 
+        beValue: costAtBE 
+    };
 }
+
+// Update your rendering to use the returned object:
+function displayBreakEven(data) {
+    const breakEvenYear = document.getElementById('breakEvenYear');
+    if (data.breakEvenMonth > 0 && data.breakEvenMonth < 240) {
+        breakEvenYear.textContent = data.breakEvenMonth + ' months';
+    } else {
+        breakEvenYear.textContent = 'Calculation exceeds 20 years';
+    }
+
 
 // ==========================================
 // PDF EXPORT
