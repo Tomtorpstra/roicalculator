@@ -1119,46 +1119,19 @@ function calculateBreakEven(annualBenefit, fixedFee, variableCost) {
 }
 
 // Realistic OEE curve: implementation dip, quick wins, plateau, bumpy climb, diminishing returns
-function generateRealisticCurvePoints(yearData) {
+function generateRealisticCurvePoints(yearData, annualBenefit) {
     if (yearData.length < 2) return yearData;
 
     const maxYear = yearData[yearData.length - 1].year;
-    const totalBenefit = yearData[yearData.length - 1].cumulativeBenefit;
-
-    if (totalBenefit <= 0 || maxYear <= 0) return yearData;
-
     const totalMonths = maxYear * 12;
+    const points = [];
 
-    // Phase-based growth rate multiplier for each month
-    const getPhaseMultiplier = (month) => {
-        if (month <= 3) return 0.15;             // Implementation dip: learning curve, installs
-        if (month <= 6) return 2.2;              // Quick wins: low-hanging fruit, sudden OEE jump
-        if (month <= 12) return 0.7;             // Plateau: stabilizing new baseline
-        const year = month / 12;
-        if (year <= 3) return 1.1;               // Steady growth: tackling harder issues
-        return Math.max(0.5, 1.1 - (year - 3) * 0.15); // Diminishing returns
-    };
+    // Start at Year 0
+    points.push({ year: 0, cumulativeBenefit: 0, cumulativeCost: yearData[0].cumulativeCost });
 
-    // Deterministic bumps using overlapping sine waves (consistent on re-render)
-    const getBump = (month) => {
-        if (month <= 6) return 0; // No bumps during implementation + quick wins
-        return Math.sin(month * 2.7) * 0.3
-             + Math.sin(month * 1.3) * 0.2
-             + Math.sin(month * 4.1) * 0.1;
-    };
+    let currentCumulativeBenefit = 0;
 
-    // Generate raw monthly growth rates
-    const rawRates = [];
-    for (let m = 1; m <= totalMonths; m++) {
-        const rate = getPhaseMultiplier(m) * (1 + getBump(m));
-        rawRates.push(Math.max(0.05, rate)); // ensure always positive
-    }
-
-    // Normalize so cumulative sum exactly equals totalBenefit
-    const rawSum = rawRates.reduce((a, b) => a + b, 0);
-    const monthlyBenefits = rawRates.map(r => (r / rawSum) * totalBenefit);
-
-    // Cost interpolation helper
+    // Helper to get cost at any fractional year (linear interpolation)
     const getCostAtYear = (yearFrac) => {
         for (let i = 0; i < yearData.length - 1; i++) {
             if (yearFrac >= yearData[i].year && yearFrac <= yearData[i + 1].year) {
@@ -1170,17 +1143,29 @@ function generateRealisticCurvePoints(yearData) {
         return yearData[yearData.length - 1].cumulativeCost;
     };
 
-    // Build cumulative points at monthly resolution
-    const points = [];
-    points.push({ year: 0, cumulativeBenefit: 0, cumulativeCost: yearData[0].cumulativeCost });
-
-    let cumulBenefit = 0;
     for (let m = 1; m <= totalMonths; m++) {
-        cumulBenefit += monthlyBenefits[m - 1];
         const yearFrac = m / 12;
+        
+        // Match the calculateBreakEven ramp logic:
+        // Year 1 (0-12m): 1/3 benefit
+        // Year 2 (13-24m): 2/3 benefit
+        // Year 3+ (25m+): Full benefit
+        let currentRamp;
+        if (yearFrac <= 1) {
+            currentRamp = 1 / 3;
+        } else if (yearFrac <= 2) {
+            currentRamp = 2 / 3;
+        } else {
+            currentRamp = 1;
+        }
+
+        // Add 1/12th of the yearly ramped benefit each month
+        const monthlyBenefit = (annualBenefit * currentRamp) / 12;
+        currentCumulativeBenefit += monthlyBenefit;
+
         points.push({
             year: yearFrac,
-            cumulativeBenefit: cumulBenefit,
+            cumulativeBenefit: currentCumulativeBenefit,
             cumulativeCost: getCostAtYear(yearFrac)
         });
     }
