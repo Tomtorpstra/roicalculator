@@ -1168,9 +1168,11 @@ function generateRealisticCurvePoints(yearData, annualBenefit) {
     return points;
 }
 
-function renderGraph(yearData) {
+function renderGraph(yearData, fixedFee, variableCost) {
     const canvas = document.getElementById('breakEvenCanvas');
     const ctx = canvas.getContext('2d');
+    const badge = document.getElementById('breakEvenBadge');
+    const breakEvenYear = document.getElementById('breakEvenYear');
 
     const dpr = window.devicePixelRatio || 1;
     const rect = canvas.getBoundingClientRect();
@@ -1185,114 +1187,95 @@ function renderGraph(yearData) {
     const graphHeight = height - padding.top - padding.bottom;
 
     ctx.clearRect(0, 0, width, height);
-
     if (!yearData || yearData.length < 2) return;
 
-    // 1. CALCULATE ANNUAL BENEFIT (Difference between Year 4 and 5 ensures we have the "full" rate)
+    // 1. MATH: DERIVE ANNUAL BENEFIT & GENERATE POINTS
     const last = yearData[yearData.length - 1];
     const prev = yearData[yearData.length - 2];
     const annualBenefit = last.cumulativeBenefit - prev.cumulativeBenefit;
-
-    // 2. GENERATE MONTHLY POINTS (Replacing generateRealisticCurvePoints call)
     const maxYear = last.year;
     const totalMonths = maxYear * 12;
     const realisticPoints = [];
     
-    // Starting point (Year 0)
-    realisticPoints.push({ 
-        year: 0, 
-        cumulativeBenefit: 0, 
-        cumulativeCost: yearData[0].cumulativeCost 
-    });
+    realisticPoints.push({ year: 0, cumulativeBenefit: 0, cumulativeCost: yearData[0].cumulativeCost });
 
     let runningBenefit = 0;
+    let beFound = false;
+    let finalBreakEvenMonth = null;
+
     for (let m = 1; m <= totalMonths; m++) {
         const yearFrac = m / 12;
-        
-        // Use the exact ramp logic from your calculation
-        let ramp;
-        if (yearFrac <= 1) ramp = 1/3;
-        else if (yearFrac <= 2) ramp = 2/3;
-        else ramp = 1;
-
+        let ramp = yearFrac <= 1 ? 1/3 : (yearFrac <= 2 ? 2/3 : 1);
         runningBenefit += (annualBenefit * ramp) / 12;
 
-        // Linear interpolation for cost
-        let cost;
-        const targetYear = Math.floor(yearFrac);
-        const yearIndex = yearData.findIndex(d => d.year === targetYear);
-        if (yearIndex !== -1 && yearData[yearIndex + 1]) {
-            const startCost = yearData[yearIndex].cumulativeCost;
-            const endCost = yearData[yearIndex + 1].cumulativeCost;
-            const frac = yearFrac - targetYear;
-            cost = startCost + (endCost - startCost) * frac;
-        } else {
-            cost = last.cumulativeCost;
-        }
+        // Cost interpolation
+        const targetY = Math.floor(yearFrac);
+        const idx = yearData.findIndex(d => d.year === targetY);
+        let cost = (idx !== -1 && yearData[idx+1]) 
+            ? yearData[idx].cumulativeCost + (yearData[idx+1].cumulativeCost - yearData[idx].cumulativeCost) * (yearFrac - targetY)
+            : last.cumulativeCost;
 
-        realisticPoints.push({
-            year: yearFrac,
-            cumulativeBenefit: runningBenefit,
-            cumulativeCost: cost
-        });
+        realisticPoints.push({ year: yearFrac, cumulativeBenefit: runningBenefit, cumulativeCost: cost });
+
+        // Capture Break-even month for the badge
+        if (runningBenefit >= cost && !beFound) {
+            finalBreakEvenMonth = m;
+            beFound = true;
+        }
     }
 
-    // 3. SCALING
-    const maxValue = Math.max(...yearData.map(d => Math.max(d.cumulativeBenefit, d.cumulativeCost)));
-    const xScale = (year) => padding.left + (year / maxYear) * graphWidth;
-    const yScale = (value) => padding.top + graphHeight - (value / maxValue) * graphHeight;
+    // 2. UPDATE THE BADGE (KEEPING YOUR ORIGINAL LOGIC)
+    badge.classList.remove('warning', 'error');
+    if (beFound) {
+        breakEvenYear.textContent = finalBreakEvenMonth + ' ' + t('months');
+    } else if (last.cumulativeCost > last.cumulativeBenefit) {
+        breakEvenYear.textContent = t('overMonths');
+        badge.classList.add('error');
+    } else if (fixedFee === 0 && variableCost === 0) {
+        breakEvenYear.textContent = '0 ' + t('months');
+    }
 
-    // 4. DRAW GRID
+    // 3. DRAWING LOGIC
+    const maxValue = Math.max(...yearData.map(d => Math.max(d.cumulativeBenefit, d.cumulativeCost)));
+    const xScale = (y) => padding.left + (y / maxYear) * graphWidth;
+    const yScale = (v) => padding.top + graphHeight - (v / maxValue) * graphHeight;
+
+    // Grid & Labels
     ctx.strokeStyle = '#e5e7eb';
     ctx.lineWidth = 1;
     for (let i = 0; i <= 5; i++) {
         const y = padding.top + (i / 5) * graphHeight;
-        ctx.beginPath();
-        ctx.moveTo(padding.left, y);
-        ctx.lineTo(width - padding.right, y);
-        ctx.stroke();
-        const val = maxValue * (1 - i / 5);
-        ctx.fillStyle = '#64748b';
-        ctx.textAlign = 'right';
-        ctx.fillText(formatCurrency(val), padding.left - 10, y + 4);
+        ctx.beginPath(); ctx.moveTo(padding.left, y); ctx.lineTo(width - padding.right, y); ctx.stroke();
+        ctx.fillStyle = '#64748b'; ctx.textAlign = 'right';
+        ctx.fillText(formatCurrency(maxValue * (1 - i / 5)), padding.left - 10, y + 4);
     }
 
-    // 5. DRAW COST LINE (Red)
-    ctx.beginPath();
-    ctx.strokeStyle = '#ef4444';
-    ctx.lineWidth = 3;
-    yearData.forEach((d, i) => {
-        const x = xScale(d.year);
-        const y = yScale(d.cumulativeCost);
-        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-    });
+    // Cost Line (Red)
+    ctx.beginPath(); ctx.strokeStyle = '#ef4444'; ctx.lineWidth = 3;
+    yearData.forEach((d, i) => { i === 0 ? ctx.moveTo(xScale(d.year), yScale(d.cumulativeCost)) : ctx.lineTo(xScale(d.year), yScale(d.cumulativeCost)); });
     ctx.stroke();
 
-    // 6. DRAW BENEFIT LINE (Green)
-    ctx.beginPath();
-    ctx.strokeStyle = '#10b981';
-    ctx.lineWidth = 3;
-    realisticPoints.forEach((d, i) => {
-        const x = xScale(d.year);
-        const y = yScale(d.cumulativeBenefit);
-        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-    });
+    // Benefit Line (Green)
+    ctx.beginPath(); ctx.strokeStyle = '#10b981'; ctx.lineWidth = 3;
+    realisticPoints.forEach((d, i) => { i === 0 ? ctx.moveTo(xScale(d.year), yScale(d.cumulativeBenefit)) : ctx.lineTo(xScale(d.year), yScale(d.cumulativeBenefit)); });
     ctx.stroke();
 
-    // 7. DRAW BREAK-EVEN DOT (Yellow)
-    for (let i = 1; i < realisticPoints.length; i++) {
-        if (realisticPoints[i].cumulativeBenefit >= realisticPoints[i].cumulativeCost) {
-            const p = realisticPoints[i];
-            ctx.beginPath();
-            ctx.fillStyle = '#fbbf24';
-            ctx.arc(xScale(p.year), yScale(p.cumulativeBenefit), 8, 0, Math.PI * 2);
+    // Yellow Dot at Break-even
+    if (beFound) {
+        const pt = realisticPoints.find(p => p.year * 12 === finalBreakEvenMonth);
+        if (pt) {
+            ctx.beginPath(); ctx.fillStyle = '#fbbf24';
+            ctx.arc(xScale(pt.year), yScale(pt.cumulativeBenefit), 8, 0, Math.PI * 2);
             ctx.fill();
-            ctx.strokeStyle = '#fff';
-            ctx.lineWidth = 2;
-            ctx.stroke();
-            break;
+            ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke();
         }
     }
+}
+
+// Keep this version of displayBreakEven empty or remove it if you call it elsewhere, 
+// as the logic is now handled inside renderGraph to ensure they stay synced.
+function displayBreakEven(yearData, fixedFee, variableCost) {
+    // The badge is now updated inside renderGraph for perfect synchronization.
 }
 
 // ==========================================
