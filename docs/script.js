@@ -878,49 +878,49 @@ function calculate() {
     const sectorCard = document.getElementById('sectorCard');
     const breakEvenCard = document.getElementById('breakEvenCard');
     const exportBtn = document.getElementById('exportBtn');
-
     const calcBreakdownCard = document.getElementById('calcBreakdownCard');
 
+    // 1. Initial State Check
     if (!sector || !situation || !sectorData[sector]) {
-        placeholderCard.style.display = 'block';
-        scenarioCard.style.display = 'none';
-        sectorCard.style.display = 'none';
-        breakEvenCard.style.display = 'none';
+        if (placeholderCard) placeholderCard.style.display = 'block';
+        if (scenarioCard) scenarioCard.style.display = 'none';
+        if (sectorCard) sectorCard.style.display = 'none';
+        if (breakEvenCard) breakEvenCard.style.display = 'none';
         if (calcBreakdownCard) calcBreakdownCard.style.display = 'none';
-        exportBtn.style.display = 'none';
+        if (exportBtn) exportBtn.style.display = 'none';
         return;
     }
 
-    placeholderCard.style.display = 'none';
-    scenarioCard.style.display = 'block';
-    sectorCard.style.display = 'block';
-    breakEvenCard.style.display = 'block';
+    // 2. Show UI Elements
+    if (placeholderCard) placeholderCard.style.display = 'none';
+    if (scenarioCard) scenarioCard.style.display = 'block';
+    if (sectorCard) sectorCard.style.display = 'block';
+    if (breakEvenCard) breakEvenCard.style.display = 'block';
     if (calcBreakdownCard) calcBreakdownCard.style.display = 'block';
-    exportBtn.style.display = 'inline-flex';
+    if (exportBtn) exportBtn.style.display = 'inline-flex';
 
     const data = sectorData[sector];
 
-    // Get OEE increases based on situation
+    // 3. Get OEE increases based on situation
     const oeeData = situation === 'noOEE' ? data.oeeNothingToT4A : data.oeeBlueToT4A;
 
-    // Show/hide saving potential tooltip based on situation
+    // Show/hide saving potential info tooltip
     const savingInfo = document.getElementById('savingPotentialInfo');
     if (savingInfo) {
         savingInfo.style.display = situation === 'blueUpgrade' ? 'inline' : 'none';
     }
 
-    // Calculate for each scenario (per-line output/margin, per-line OEE)
+    // 4. Main Calculation Loop
     const scenarios = ['conservative', 'expected', 'optimistic'];
     const results = {};
-
     let totalLines = 0;
     let totalAddedValue = 0;
     let totalWeightedOEE = 0;
+
     for (let p = 1; p <= numPlants; p++) {
-        totalLines += plantData[p].lines.length;
+        if (plantData[p]) totalLines += plantData[p].lines.length;
     }
 
-    // Collect breakdown data for the selected scenario
     const breakdownRows = [];
 
     for (const scenario of scenarios) {
@@ -929,25 +929,28 @@ function calculate() {
         let lineCounter = 0;
 
         for (let p = 1; p <= numPlants; p++) {
+            if (!plantData[p]) continue;
             for (const line of plantData[p].lines) {
                 lineCounter++;
-                const hours = workHours[line.shifts.toString()];
+                const hours = workHours[line.shifts.toString()] || 0;
                 const lineOutput = line.outputLevel === 'custom' ? (line.customOutput || 0) : data.outputPerHour[line.outputLevel || 'avg'];
                 const lineMargin = line.marginLevel === 'custom' ? (line.customMargin || 0) : data.marginPerUnit[line.marginLevel || 'avg'];
                 const lineAddedValue = lineOutput * lineMargin;
                 const lineOEE = line.currentOEE !== null ? line.currentOEE : data.oeeStart;
                 const effectiveValue = lineAddedValue * lineOEE;
+                
                 const costFactor = line.calcModel === 'cost'
                     ? { conservative: 0.20, expected: 0.30, optimistic: 0.40 }[scenario]
                     : 1;
+
                 const annual = effectiveValue * oeeIncrease * hours * costFactor;
                 totalAnnual += annual;
+
                 if (scenario === 'conservative') {
                     totalAddedValue += lineAddedValue;
                     totalWeightedOEE += lineOEE;
                 }
 
-                // Collect breakdown for selected scenario
                 if (scenario === selectedScenario) {
                     breakdownRows.push({
                         plantNum: p,
@@ -965,12 +968,9 @@ function calculate() {
             }
         }
 
-        // OEE improvement ramps evenly over 3 years: 1/3, 2/3, 3/3
-        // Annual = year 3 savings (full improvement)
-        // 3-year total = year1 (1/3) + year2 (2/3) + year3 (3/3) = annual * 2
         results[scenario] = {
             annual: totalAnnual,
-            threeYear: totalAnnual * (1/3 + 2/3 + 1),
+            threeYear: totalAnnual * 2, // 1/3 + 2/3 + 1 = 2
             oeeIncrease: oeeIncrease
         };
     }
@@ -978,50 +978,69 @@ function calculate() {
     const avgAddedValue = totalLines > 0 ? totalAddedValue / totalLines : 0;
     const avgOEE = totalLines > 0 ? totalWeightedOEE / totalLines : data.oeeStart;
 
-    // Update scenario cards
-    document.getElementById('totalLinesDisplay').textContent = totalLines;
-    document.getElementById('totalPlantsDisplay').textContent = numPlants;
+    // 5. Update UI Numbers - Scenario Cards
+    const totalLinesEl = document.getElementById('totalLinesDisplay');
+    const totalPlantsEl = document.getElementById('totalPlantsDisplay');
+    if (totalLinesEl) totalLinesEl.textContent = totalLines;
+    if (totalPlantsEl) totalPlantsEl.textContent = numPlants;
 
     for (const scenario of scenarios) {
-        document.getElementById(scenario + 'Annual').textContent = formatCurrency(results[scenario].annual);
-        document.getElementById(scenario + 'ThreeYear').textContent = formatCurrency(results[scenario].threeYear);
-        document.getElementById(scenario + 'OEE').textContent = '+' + formatPercentage(results[scenario].oeeIncrease);
+        const annEl = document.getElementById(scenario + 'Annual');
+        const thrEl = document.getElementById(scenario + 'ThreeYear');
+        const oeeEl = document.getElementById(scenario + 'OEE');
+        
+        if (annEl) annEl.textContent = formatCurrency(results[scenario].annual);
+        if (thrEl) thrEl.textContent = formatCurrency(results[scenario].threeYear);
+        if (oeeEl) oeeEl.textContent = '+' + formatPercentage(results[scenario].oeeIncrease);
     }
 
-    // Update sector info card
-    document.getElementById('sectorNameDisplay').textContent = data.name;
-    document.getElementById('addedValueDisplay').textContent = formatCurrency(avgAddedValue) + t('perHourSuffix');
-    document.getElementById('oeeStartDisplay').textContent = formatPercentage(avgOEE);
-    document.getElementById('oeeImprovementDisplay').textContent = '+' + formatPercentage(oeeData[selectedScenario]);
+    // 6. Update Sector Info Card
+    const sectorNameEl = document.getElementById('sectorNameDisplay');
+    const addedValEl = document.getElementById('addedValueDisplay');
+    const oeeStartEl = document.getElementById('oeeStartDisplay');
+    const oeeImprEl = document.getElementById('oeeImprovementDisplay');
 
-    // Update calculation breakdown
+    if (sectorNameEl) sectorNameEl.textContent = data.name;
+    if (addedValEl) addedValEl.textContent = formatCurrency(avgAddedValue) + t('perHourSuffix');
+    if (oeeStartEl) oeeStartEl.textContent = formatPercentage(avgOEE);
+    if (oeeImprEl) oeeImprEl.textContent = '+' + formatPercentage(oeeData[selectedScenario]);
+
+    // 7. Render Breakdown Table
     renderCalcBreakdown(breakdownRows, results[selectedScenario].annual);
 
-    // Update value bars using selected scenario (use avg per-line OEE)
-    const currentOEE = avgOEE * 100;
-    const potentialOEE = Math.min(95, (avgOEE + oeeData[selectedScenario]) * 100);
-    const gap = potentialOEE - currentOEE;
+    // 8. Update OEE Progress Bars
+    const currentOEEVal = avgOEE * 100;
+    const potentialOEEVal = Math.min(95, (avgOEE + oeeData[selectedScenario]) * 100);
+    const gapVal = potentialOEEVal - currentOEEVal;
 
-    document.getElementById('currentBar').style.width = currentOEE + '%';
-    document.getElementById('currentBar').textContent = currentOEE.toFixed(0) + '%';
-    document.getElementById('potentialBar').style.width = potentialOEE + '%';
-    document.getElementById('potentialBar').textContent = potentialOEE.toFixed(0) + '%';
-    document.getElementById('gapLabel').textContent = '+' + gap.toFixed(1) + '%';
+    const curBar = document.getElementById('currentBar');
+    const potBar = document.getElementById('potentialBar');
+    const gapLab = document.getElementById('gapLabel');
 
-    // Update break-even note with selected scenario name
+    if (curBar) {
+        curBar.style.width = currentOEEVal + '%';
+        curBar.textContent = currentOEEVal.toFixed(0) + '%';
+    }
+    if (potBar) {
+        potBar.style.width = potentialOEEVal + '%';
+        potBar.textContent = potentialOEEVal.toFixed(0) + '%';
+    }
+    if (gapLab) gapLab.textContent = '+' + gapVal.toFixed(1) + '%';
+
+    // 9. Update Break-even Note
     const scenarioLabels = { conservative: t('conservative'), expected: t('expected'), optimistic: t('optimistic') };
     const breakEvenNoteEl = document.querySelector('.break-even-note');
     if (breakEvenNoteEl) {
         breakEvenNoteEl.textContent = t('breakEvenNotePrefix') + ' ' + scenarioLabels[selectedScenario].toLowerCase() + ' ' + t('breakEvenNoteSuffix');
     }
 
-    // Break-even using selected scenario
+    // 10. Graph and Final Result
     const annualBenefit = results[selectedScenario].annual;
     const yearData = calculateBreakEven(annualBenefit, totalFixedCost, variableCost);
     renderGraph(yearData);
-    displayBreakEven(yearData, totalFixedCost, variableCost);
-}
-
+    if (typeof displayBreakEven === 'function') {
+        displayBreakEven(yearData, totalFixedCost, variableCost);
+        
 // ==========================================
 // CALCULATION BREAKDOWN
 // ==========================================
