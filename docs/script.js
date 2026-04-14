@@ -648,7 +648,9 @@ function syncPlantSlider(value) {
 function updatePlantTabs() {
     const newNumPlants = Math.min(10, Math.max(1, parseInt(document.getElementById('numPlants').value) || 1));
     numPlants = newNumPlants;
-    document.getElementById('numPlantsSlider').value = newNumPlants;
+    
+    const slider = document.getElementById('numPlantsSlider');
+    if (slider) slider.value = newNumPlants;
 
     for (let p = 1; p <= numPlants; p++) {
         if (!plantData[p]) {
@@ -666,6 +668,7 @@ function updatePlantTabs() {
 
     renderPlantTabs();
     renderPlantContent();
+    applyTranslations(); // Ensures new plant/line UI gets the correct language text
     calculate();
 }
 
@@ -1040,7 +1043,7 @@ function calculate() {
     renderGraph(yearData);
     if (typeof displayBreakEven === 'function') {
         displayBreakEven(yearData, totalFixedCost, variableCost);
-        
+
 // ==========================================
 // CALCULATION BREAKDOWN
 // ==========================================
@@ -1624,7 +1627,16 @@ body { font-family: 'Segoe UI', Arial, sans-serif; color: #1e293b; line-height: 
 // INITIALIZE
 // ==========================================
 document.addEventListener('DOMContentLoaded', async function() {
+    // 1. Load any external data
     await loadSectorData();
+    
+    // 2. Set the initial language UI text
+    applyTranslations(); 
+    
+    // 3. Initialize components
     initSearchableSelect();
     updatePlantTabs();
+    
+    // 4. Run calculation (in case values are pre-filled)
+    calculate();
 });
