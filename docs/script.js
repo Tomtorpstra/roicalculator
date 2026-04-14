@@ -1040,7 +1040,7 @@ function calculate() {
     renderGraph(yearData);
     if (typeof displayBreakEven === 'function') {
         displayBreakEven(yearData, totalFixedCost, variableCost);
-
+        
 // ==========================================
 // CALCULATION BREAKDOWN
 // ==========================================
@@ -1624,16 +1624,7 @@ body { font-family: 'Segoe UI', Arial, sans-serif; color: #1e293b; line-height: 
 // INITIALIZE
 // ==========================================
 document.addEventListener('DOMContentLoaded', async function() {
-    // 1. Load any external data
     await loadSectorData();
-    
-    // 2. Set the initial language UI text
-    applyTranslations(); 
-    
-    // 3. Initialize components
     initSearchableSelect();
     updatePlantTabs();
-    
-    // 4. Run calculation (in case values are pre-filled)
-    calculate();
 });
