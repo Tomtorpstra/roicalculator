@@ -648,9 +648,7 @@ function syncPlantSlider(value) {
 function updatePlantTabs() {
     const newNumPlants = Math.min(10, Math.max(1, parseInt(document.getElementById('numPlants').value) || 1));
     numPlants = newNumPlants;
-    
-    const slider = document.getElementById('numPlantsSlider');
-    if (slider) slider.value = newNumPlants;
+    document.getElementById('numPlantsSlider').value = newNumPlants;
 
     for (let p = 1; p <= numPlants; p++) {
         if (!plantData[p]) {
@@ -668,7 +666,6 @@ function updatePlantTabs() {
 
     renderPlantTabs();
     renderPlantContent();
-    applyTranslations(); // Ensures new plant/line UI gets the correct language text
     calculate();
 }
 
