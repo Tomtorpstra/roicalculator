@@ -1605,7 +1605,18 @@ body { font-family: 'Segoe UI', Arial, sans-serif; color: #1e293b; line-height: 
 // INITIALIZE
 // ==========================================
 document.addEventListener('DOMContentLoaded', async function() {
+    // 1. Load data from sector-data.json (if available)
     await loadSectorData();
+    
+    // 2. Initialize the search dropdown
     initSearchableSelect();
+    
+    // 3. Setup the plant/line structure
     updatePlantTabs();
+
+    // 4. FIX: Force the JS to overwrite the old HTML text with current translations
+    applyTranslations(); 
+
+    // 5. FIX: Run calculations immediately to populate the cards with current data
+    calculate();
 });
