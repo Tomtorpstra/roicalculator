@@ -648,9 +648,7 @@ function syncPlantSlider(value) {
 function updatePlantTabs() {
     const newNumPlants = Math.min(10, Math.max(1, parseInt(document.getElementById('numPlants').value) || 1));
     numPlants = newNumPlants;
-    
-    const slider = document.getElementById('numPlantsSlider');
-    if (slider) slider.value = newNumPlants;
+    document.getElementById('numPlantsSlider').value = newNumPlants;
 
     for (let p = 1; p <= numPlants; p++) {
         if (!plantData[p]) {
@@ -668,9 +666,20 @@ function updatePlantTabs() {
 
     renderPlantTabs();
     renderPlantContent();
-    applyTranslations(); // Ensures new plant/line UI gets the correct language text
     calculate();
 }
+
+function renderPlantTabs() {
+    const tabsContainer = document.getElementById('plantTabs');
+    tabsContainer.innerHTML = '';
+
+    for (let p = 1; p <= numPlants; p++) {
+        const tab = document.createElement('div');
+        tab.className = 'plant-tab' + (p === activePlant ? ' active' : '');
+        tab.textContent = 'Plant ' + p;
+        tab.onclick = () => switchPlant(p);
+        tabsContainer.appendChild(tab);
+    }
 }
 
 function switchPlant(plantNum) {
@@ -1596,18 +1605,7 @@ body { font-family: 'Segoe UI', Arial, sans-serif; color: #1e293b; line-height: 
 // INITIALIZE
 // ==========================================
 document.addEventListener('DOMContentLoaded', async function() {
-    // 1. Load data from sector-data.json (if available)
     await loadSectorData();
-    
-    // 2. Initialize the search dropdown
     initSearchableSelect();
-    
-    // 3. Setup the plant/line structure
     updatePlantTabs();
-
-    // 4. FIX: Force the JS to overwrite the old HTML text with current translations
-    applyTranslations(); 
-
-    // 5. FIX: Run calculations immediately to populate the cards with current data
-    calculate();
 });
