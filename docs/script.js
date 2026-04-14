@@ -648,7 +648,9 @@ function syncPlantSlider(value) {
 function updatePlantTabs() {
     const newNumPlants = Math.min(10, Math.max(1, parseInt(document.getElementById('numPlants').value) || 1));
     numPlants = newNumPlants;
-    document.getElementById('numPlantsSlider').value = newNumPlants;
+    
+    const slider = document.getElementById('numPlantsSlider');
+    if (slider) slider.value = newNumPlants;
 
     for (let p = 1; p <= numPlants; p++) {
         if (!plantData[p]) {
@@ -666,20 +668,9 @@ function updatePlantTabs() {
 
     renderPlantTabs();
     renderPlantContent();
+    applyTranslations(); // Ensures new plant/line UI gets the correct language text
     calculate();
 }
-
-function renderPlantTabs() {
-    const tabsContainer = document.getElementById('plantTabs');
-    tabsContainer.innerHTML = '';
-
-    for (let p = 1; p <= numPlants; p++) {
-        const tab = document.createElement('div');
-        tab.className = 'plant-tab' + (p === activePlant ? ' active' : '');
-        tab.textContent = 'Plant ' + p;
-        tab.onclick = () => switchPlant(p);
-        tabsContainer.appendChild(tab);
-    }
 }
 
 function switchPlant(plantNum) {
