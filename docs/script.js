@@ -912,7 +912,6 @@ function addLine(plantNum) {
 // ==========================================
 function calculate() {
     const sector = document.getElementById('sector').value;
-    // We remove the global 'situation' variable here
     const fixedFee = parseFloat(document.getElementById('fixedFee').value) || 0;
     const variableCost = parseFloat(document.getElementById('variableCost').value) || 0;
     const internalCost = parseFloat(document.getElementById('internalCost').value) || 0;
@@ -925,10 +924,13 @@ function calculate() {
     const exportBtn = document.getElementById('exportBtn');
     const calcBreakdownCard = document.getElementById('calcBreakdownCard');
 
-    // Adjusted validation: no longer checking for a global 'situation'
     if (!sector || !sectorData[sector]) {
         placeholderCard.style.display = 'block';
-        // ... hide other cards ...
+        scenarioCard.style.display = 'none';
+        sectorCard.style.display = 'none';
+        breakEvenCard.style.display = 'none';
+        if (calcBreakdownCard) calcBreakdownCard.style.display = 'none';
+        exportBtn.style.display = 'none';
         return;
     }
 
@@ -940,51 +942,53 @@ function calculate() {
     exportBtn.style.display = 'inline-flex';
 
     const data = sectorData[sector];
-    }
-
-    // Calculate for each scenario (per-line output/margin, per-line OEE)
     const scenarios = ['conservative', 'expected', 'optimistic'];
     const results = {};
-
     let totalLines = 0;
     let totalAddedValue = 0;
     let totalWeightedOEE = 0;
+    const breakdownRows = [];
+
+    // Count lines first
     for (let p = 1; p <= numPlants; p++) {
         totalLines += plantData[p].lines.length;
     }
 
-    // Collect breakdown data for the selected scenario
-    const breakdownRows = [];
-
     for (const scenario of scenarios) {
-        const oeeIncrease = oeeData[scenario];
         let totalAnnual = 0;
         let lineCounter = 0;
 
         for (let p = 1; p <= numPlants; p++) {
             for (const line of plantData[p].lines) {
                 lineCounter++;
+                
+                // LINE-SPECIFIC OEE DATA
+                const lineSituation = line.situation || 'noOEE';
+                const currentOeeData = lineSituation === 'noOEE' ? data.oeeNothingToT4A : data.oeeBlueToT4A;
+                const oeeIncrease = currentOeeData[scenario];
+
                 const hours = workHours[line.shifts.toString()];
                 const lineOutput = line.outputLevel === 'custom' ? (line.customOutput || 0) : data.outputPerHour[line.outputLevel || 'avg'];
                 const lineMargin = line.marginLevel === 'custom' ? (line.customMargin || 0) : data.marginPerUnit[line.marginLevel || 'avg'];
                 const lineAddedValue = lineOutput * lineMargin;
                 const lineOEE = line.currentOEE !== null ? line.currentOEE : data.oeeStart;
                 const effectiveValue = lineAddedValue * lineOEE;
+                
                 const costFactor = line.calcModel === 'cost'
                     ? { conservative: 0.20, expected: 0.30, optimistic: 0.40 }[scenario]
                     : 1;
+                
                 const annual = effectiveValue * oeeIncrease * hours * costFactor;
                 totalAnnual += annual;
+
                 if (scenario === 'conservative') {
                     totalAddedValue += lineAddedValue;
                     totalWeightedOEE += lineOEE;
                 }
 
-                // Collect breakdown for selected scenario
                 if (scenario === selectedScenario) {
                     breakdownRows.push({
                         plantNum: p,
-                        lineIndex: lineCounter,
                         lineName: line.name || (t('calcBreakdownLine') + ' ' + lineCounter),
                         hours: hours,
                         oeeIncrease: oeeIncrease,
@@ -997,6 +1001,37 @@ function calculate() {
                 }
             }
         }
+        results[scenario] = {
+            annual: totalAnnual,
+            threeYear: totalAnnual * 2, // Ramp up: 1/3 + 2/3 + 1
+            oeeIncrease: data.oeeBlueToT4A[scenario] // Fallback for labels
+        };
+    }
+
+    // Display updates
+    const avgAddedValue = totalLines > 0 ? totalAddedValue / totalLines : 0;
+    const avgOEE = totalLines > 0 ? totalWeightedOEE / totalLines : data.oeeStart;
+
+    document.getElementById('totalLinesDisplay').textContent = totalLines;
+    document.getElementById('totalPlantsDisplay').textContent = numPlants;
+
+    for (const scenario of scenarios) {
+        document.getElementById(scenario + 'Annual').textContent = formatCurrency(results[scenario].annual);
+        document.getElementById(scenario + 'ThreeYear').textContent = formatCurrency(results[scenario].threeYear);
+        document.getElementById(scenario + 'OEE').textContent = '+' + formatPercentage(results[scenario].oeeIncrease);
+    }
+
+    document.getElementById('sectorNameDisplay').textContent = data.name;
+    document.getElementById('addedValueDisplay').textContent = formatCurrency(avgAddedValue) + t('perHourSuffix');
+    document.getElementById('oeeStartDisplay').textContent = formatPercentage(avgOEE);
+
+    renderCalcBreakdown(breakdownRows, results[selectedScenario].annual);
+
+    const annualBenefit = results[selectedScenario].annual;
+    const yearData = calculateBreakEven(annualBenefit, totalFixedCost, variableCost);
+    renderGraph(yearData);
+    displayBreakEven(yearData, totalFixedCost, variableCost);
+}
 
         // OEE improvement ramps evenly over 3 years: 1/3, 2/3, 3/3
         // Annual = year 3 savings (full improvement)
@@ -1344,24 +1379,27 @@ function exportPDF() {
 
     for (const scenario of scenarios) {
         let totalAnnual = 0;
-
-         for (let p = 1; p <= numPlants; p++) {
+        for (let p = 1; p <= numPlants; p++) {
             for (const line of plantData[p].lines) {
-                // ADD THIS HERE:
                 const lineSituation = line.situation || 'noOEE';
                 const currentOeeData = lineSituation === 'noOEE' ? data.oeeNothingToT4A : data.oeeBlueToT4A;
                 const oeeIncrease = currentOeeData[scenario];
                 
                 const hours = workHours[line.shifts.toString()];
-                // ... then make sure the math below uses 'oeeIncrease' instead of the old 'oeeData[scenario]'
+                const lineOutput = line.outputLevel === 'custom' ? (line.customOutput || 0) : data.outputPerHour[line.outputLevel || 'avg'];
+                const lineMargin = line.marginLevel === 'custom' ? (line.customMargin || 0) : data.marginPerUnit[line.marginLevel || 'avg'];
+                const lineOEE = line.currentOEE !== null ? line.currentOEE : data.oeeStart;
+                
+                const costFactor = line.calcModel === 'cost' ? { conservative: 0.2, expected: 0.3, optimistic: 0.4 }[scenario] : 1;
+                totalAnnual += (lineOutput * lineMargin) * lineOEE * oeeIncrease * hours * costFactor;
+                
+                if (scenario === 'conservative') totalAddedValue += (lineOutput * lineMargin);
             }
         }
-
-        // OEE improvement ramps evenly over 3 years: 1/3, 2/3, 3/3
         results[scenario] = {
             annual: totalAnnual,
-            threeYear: totalAnnual * (1/3 + 2/3 + 1),
-            oeeIncrease: oeeData[scenario]
+            threeYear: totalAnnual * 2,
+            oeeIncrease: data.oeeBlueToT4A[scenario]
         };
     }
 
