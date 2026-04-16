@@ -1053,7 +1053,6 @@ function calculate() {
     const yearData = calculateBreakEven(annualBenefit, totalFixedCost, variableCost);
     renderGraph(yearData);
     displayBreakEven(yearData, totalFixedCost, variableCost);
-}
 
 // ==========================================
 // CALCULATION BREAKDOWN
