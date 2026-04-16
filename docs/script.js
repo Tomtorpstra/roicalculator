@@ -510,7 +510,7 @@ const workHours = { "1": 2000, "2": 4000, "3": 6000, "4": 8000, "5": 8760 };
 // ==========================================
 // STATE
 // ==========================================
-let plantData = { 1: { lines: [{ shifts: 3, outputLevel: 'avg', marginLevel: 'avg', name: '', customOutput: null, customMargin: null, calcModel: 'demand', currentOEE: null }] } };
+let plantData = { 1: { lines: [{ shifts: 3, outputLevel: 'avg', marginLevel: 'avg', name: '', customOutput: null, customMargin: null, calcModel: 'demand', currentOEE: null, situation: 'noOEE' }] } };
 let numPlants = 1;
 let activePlant = 1;
 let selectedScenario = 'expected';
@@ -725,6 +725,7 @@ function renderPlantContent() {
                         <th class="th-tooltip">${t('thOutput')} <span style="font-size:0.7rem; opacity:0.6;">&#9432;</span><div class="tooltip-text"><span class="tooltip-title">${t('outputTooltipTitle')}</span>${t('outputTooltipBody')}</div></th>
                         <th class="th-tooltip">${t('thMargin')} <span style="font-size:0.7rem; opacity:0.6;">&#9432;</span><div class="tooltip-text"><span class="tooltip-title">${t('marginTooltipTitle')}</span>${t('marginTooltipBody')}</div></th>
                         <th>${t('thAddedValue')}</th>
+                        <th>${t('currentSituationLabel')}</th>
                         <th class="th-tooltip">${t('thCurrentOEE')} <span style="font-size:0.7rem; opacity:0.6;">&#9432;</span><div class="tooltip-text"><span class="tooltip-title">${t('currentOEETooltipTitle')}</span>${t('currentOEETooltipBody')}</div></th>
                         <th class="th-tooltip">${t('thModel')} <span style="font-size:0.7rem; opacity:0.6;">&#9432;</span><div class="tooltip-text"><span class="tooltip-title">${t('modelTooltipTitle')}</span>${t('modelTooltipBody')}</div></th>
                         <th>${t('thShiftRegime')}</th>
@@ -738,11 +739,15 @@ function renderPlantContent() {
             const shiftWord = (s) => s === 1 ? t('shift') : t('shifts');
             const ol = line.outputLevel || 'avg';
             const ml = line.marginLevel || 'avg';
+            const sit = line.situation || 'noOEE'; // Default to noOEE if not set
+            
             const customOutputHTML = ol === 'custom' ? `<input type="number" class="custom-value-input" value="${line.customOutput || ''}" onchange="updateLineCustomOutput(${p}, ${index}, this.value)" oninput="updateLineCustomOutput(${p}, ${index}, this.value)" placeholder="${t('unitsPerHour')}">` : '';
             const customMarginHTML = ml === 'custom' ? `<input type="number" class="custom-value-input" step="0.001" value="${line.customMargin || ''}" onchange="updateLineCustomMargin(${p}, ${index}, this.value)" oninput="updateLineCustomMargin(${p}, ${index}, this.value)" placeholder="${t('perUnit')}">` : '';
+            
             const lineOutput = ol === 'custom' ? (line.customOutput || 0) : (data ? data.outputPerHour[ol] : 0);
             const lineMargin = ml === 'custom' ? (line.customMargin || 0) : (data ? data.marginPerUnit[ml] : 0);
             const lineAddedValue = lineOutput * lineMargin;
+
             tableHTML += `
                 <tr>
                     <td class="line-number">${index + 1}</td>
@@ -768,6 +773,12 @@ function renderPlantContent() {
                         ${customMarginHTML}
                     </td>
                     <td class="added-value-cell">${formatCurrency(lineAddedValue)}</td>
+                    <td>
+                        <select onchange="updateLineSituation(${p}, ${index}, this.value)">
+                            <option value="noOEE" ${sit === 'noOEE' ? 'selected' : ''}>${t('situationNoOEE')}</option>
+                            <option value="blueUpgrade" ${sit === 'blueUpgrade' ? 'selected' : ''}>${t('situationBlue')}</option>
+                        </select>
+                    </td>
                     <td>
                         <input type="number" class="oee-input" step="1" min="1" max="100" value="${line.currentOEE !== null ? Math.round(line.currentOEE * 100) : (data ? Math.round(data.oeeStart * 100) : '')}" onchange="updateLineOEE(${p}, ${index}, this.value)" oninput="updateLineOEE(${p}, ${index}, this.value)" placeholder="${data ? Math.round(data.oeeStart * 100) + '%' : '%'}">
                     </td>
@@ -805,7 +816,17 @@ function renderPlantContent() {
 }
 
 function addLine(plantNum) {
-    plantData[plantNum].lines.push({ shifts: 3, outputLevel: 'avg', marginLevel: 'avg', name: '', customOutput: null, customMargin: null, calcModel: 'demand', currentOEE: null });
+    plantData[plantNum].lines.push({ 
+        shifts: 3, 
+        outputLevel: 'avg', 
+        marginLevel: 'avg', 
+        name: '', 
+        customOutput: null, 
+        customMargin: null, 
+        calcModel: 'demand', 
+        currentOEE: null,
+        situation: 'noOEE' 
+    });
     renderPlantContent();
     calculate();
 }
@@ -862,12 +883,36 @@ function updateLineOEE(plantNum, lineIndex, value) {
     calculate();
 }
 
+// Paste the new code below:
+function updateLineSituation(plantNum, lineIndex, value) {
+    plantData[plantNum].lines[lineIndex].situation = value;
+    calculate();
+}
+
+// Note: You should also find your existing "function addLine" 
+// (which is likely just above or below this) and replace it with this one:
+function addLine(plantNum) {
+    plantData[plantNum].lines.push({ 
+        shifts: 3, 
+        outputLevel: 'avg', 
+        marginLevel: 'avg', 
+        name: '', 
+        customOutput: null, 
+        customMargin: null, 
+        calcModel: 'demand', 
+        currentOEE: null,
+        situation: 'noOEE' 
+    });
+    renderPlantContent();
+    calculate();
+}
+
 // ==========================================
 // MAIN CALCULATION
 // ==========================================
 function calculate() {
     const sector = document.getElementById('sector').value;
-    const situation = document.getElementById('currentSituation').value;
+    // We remove the global 'situation' variable here
     const fixedFee = parseFloat(document.getElementById('fixedFee').value) || 0;
     const variableCost = parseFloat(document.getElementById('variableCost').value) || 0;
     const internalCost = parseFloat(document.getElementById('internalCost').value) || 0;
@@ -878,16 +923,12 @@ function calculate() {
     const sectorCard = document.getElementById('sectorCard');
     const breakEvenCard = document.getElementById('breakEvenCard');
     const exportBtn = document.getElementById('exportBtn');
-
     const calcBreakdownCard = document.getElementById('calcBreakdownCard');
 
-    if (!sector || !situation || !sectorData[sector]) {
+    // Adjusted validation: no longer checking for a global 'situation'
+    if (!sector || !sectorData[sector]) {
         placeholderCard.style.display = 'block';
-        scenarioCard.style.display = 'none';
-        sectorCard.style.display = 'none';
-        breakEvenCard.style.display = 'none';
-        if (calcBreakdownCard) calcBreakdownCard.style.display = 'none';
-        exportBtn.style.display = 'none';
+        // ... hide other cards ...
         return;
     }
 
@@ -899,14 +940,6 @@ function calculate() {
     exportBtn.style.display = 'inline-flex';
 
     const data = sectorData[sector];
-
-    // Get OEE increases based on situation
-    const oeeData = situation === 'noOEE' ? data.oeeNothingToT4A : data.oeeBlueToT4A;
-
-    // Show/hide saving potential tooltip based on situation
-    const savingInfo = document.getElementById('savingPotentialInfo');
-    if (savingInfo) {
-        savingInfo.style.display = situation === 'blueUpgrade' ? 'inline' : 'none';
     }
 
     // Calculate for each scenario (per-line output/margin, per-line OEE)
@@ -1295,7 +1328,6 @@ function exportPDF() {
     }
 
     const data = sectorData[sector];
-    const oeeData = situation === 'noOEE' ? data.oeeNothingToT4A : data.oeeBlueToT4A;
     const fixedFee = parseFloat(document.getElementById('fixedFee').value) || 0;
     const variableCost = parseFloat(document.getElementById('variableCost').value) || 0;
     const internalCost = parseFloat(document.getElementById('internalCost').value) || 0;
@@ -1314,19 +1346,15 @@ function exportPDF() {
     for (const scenario of scenarios) {
         let totalAnnual = 0;
 
-        for (let p = 1; p <= numPlants; p++) {
+         for (let p = 1; p <= numPlants; p++) {
             for (const line of plantData[p].lines) {
+                // ADD THIS HERE:
+                const lineSituation = line.situation || 'noOEE';
+                const currentOeeData = lineSituation === 'noOEE' ? data.oeeNothingToT4A : data.oeeBlueToT4A;
+                const oeeIncrease = currentOeeData[scenario];
+                
                 const hours = workHours[line.shifts.toString()];
-                const lineOutput = line.outputLevel === 'custom' ? (line.customOutput || 0) : data.outputPerHour[line.outputLevel || 'avg'];
-                const lineMargin = line.marginLevel === 'custom' ? (line.customMargin || 0) : data.marginPerUnit[line.marginLevel || 'avg'];
-                const lineAddedValue = lineOutput * lineMargin;
-                const lineOEE = line.currentOEE !== null ? line.currentOEE : data.oeeStart;
-                const effectiveValue = lineAddedValue * lineOEE;
-                const costFactor = line.calcModel === 'cost'
-                    ? { conservative: 0.20, expected: 0.30, optimistic: 0.40 }[scenario]
-                    : 1;
-                totalAnnual += effectiveValue * oeeData[scenario] * hours * costFactor;
-                if (scenario === 'conservative') totalAddedValue += lineAddedValue;
+                // ... then make sure the math below uses 'oeeIncrease' instead of the old 'oeeData[scenario]'
             }
         }
 
