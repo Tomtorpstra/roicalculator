@@ -1041,7 +1041,6 @@ function calculate() {
             threeYear: totalAnnual * (1/3 + 2/3 + 1),
             oeeIncrease: oeeIncrease
         };
-    }
 
     const avgAddedValue = totalLines > 0 ? totalAddedValue / totalLines : 0;
     const avgOEE = totalLines > 0 ? totalWeightedOEE / totalLines : data.oeeStart;
