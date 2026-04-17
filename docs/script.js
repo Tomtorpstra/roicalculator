@@ -510,7 +510,7 @@ const workHours = { "1": 2000, "2": 4000, "3": 6000, "4": 8000, "5": 8760 };
 // ==========================================
 // STATE
 // ==========================================
-let plantData = { 1: { lines: [{ shifts: 3, outputLevel: 'avg', marginLevel: 'avg', name: '', customOutput: null, customMargin: null, calcModel: 'demand', currentOEE: null, situation: 'noOEE' }] } };
+let plantData = { 1: { lines: [{ shifts: 3, outputLevel: 'avg', marginLevel: 'avg', name: '', customOutput: null, customMargin: null, calcModel: 'demand', currentOEE: null }] } };
 let numPlants = 1;
 let activePlant = 1;
 let selectedScenario = 'expected';
