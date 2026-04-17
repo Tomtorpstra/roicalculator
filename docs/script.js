@@ -915,17 +915,17 @@ function calculate() {
                 const output = line.outputLevel === 'custom' ? (line.customOutput || 0) : data.outputPerHour[line.outputLevel || 'avg'];
                 const margin = line.marginLevel === 'custom' ? (line.customMargin || 0) : data.marginPerUnit[line.marginLevel || 'avg'];
                 const oeeStart = line.currentOEE !== null ? line.currentOEE : data.oeeStart;
+                
+                // CRITICAL CHANGE: Get situation per line
                 const lineSit = line.situation || 'blueUpgrade';
                 
                 let improvement;
                 if (scenario === 'aangepast') {
                     const customInput = document.getElementById('customOEEInput');
-                    // Get the raw value, defaulting to 0 if empty
                     let val = (customInput && customInput.value !== "") ? parseFloat(customInput.value.replace(',', '.')) : 0;
-                    
-                    // Always treat the input as a percentage (e.g., 1.3 becomes 0.013)
-                    improvement = val / 100; 
+                    improvement = val / 100; // Treated as direct percentage
                 } else {
+                    // CRITICAL CHANGE: Use lineSit to decide the improvement for this specific line
                     improvement = lineSit === 'noOEE' ? data.oeeNothingToT4A[scenario] : data.oeeBlueToT4A[scenario];
                 }
                 
@@ -972,18 +972,25 @@ function calculate() {
 
         if (annualEl) annualEl.textContent = formatCurrency(results[scenario].annual);
         if (threeYearEl) threeYearEl.textContent = formatCurrency(results[scenario].threeYear);
-        if (oeeEl && scenario !== 'aangepast') {
-            oeeEl.textContent = '+' + formatPercentage(results[scenario].avgImprov);
+        
+        // CRITICAL CHANGE: Remove the percentage text from cards
+        if (oeeEl) {
+            oeeEl.textContent = ""; 
         }
     }
 
     const avgOEE = totalLines > 0 ? totalWeightedOEE / totalLines : data.oeeStart;
     const activeRes = results[selectedScenario] || results['expected'];
 
+    // Update Sector Info Display
     document.getElementById('addedValueDisplay').textContent = formatCurrency(totalLines > 0 ? totalAddedValue / totalLines : 0) + t('perHourSuffix');
     document.getElementById('oeeStartDisplay').textContent = formatPercentage(avgOEE);
-    document.getElementById('oeeImprovementDisplay').textContent = '+' + formatPercentage(activeRes.avgImprov);
     
+    // Since OEE improvement is now mixed, we hide the single percentage display in the comparison section
+    const improvDisplay = document.getElementById('oeeImprovementDisplay');
+    if (improvDisplay) improvDisplay.textContent = "-";
+    
+    // Update Comparison Bars
     const currentBar = document.getElementById('currentBar');
     const potentialBar = document.getElementById('potentialBar');
     const gapLabel = document.getElementById('gapLabel');
@@ -996,7 +1003,7 @@ function calculate() {
         potentialBar.style.width = (potOEE * 100) + '%';
         potentialBar.textContent = Math.round(potOEE * 100) + '%';
     }
-    if (gapLabel) gapLabel.textContent = '+' + formatPercentage(activeRes.avgImprov);
+    if (gapLabel) gapLabel.textContent = t('pdfPotentialOee'); // Changed to label instead of mixed %
 
     renderCalcBreakdown(breakdownRows, activeRes.annual);
     renderGraph(calculateBreakEven(activeRes.annual, totalFixedCost, variableCost));
