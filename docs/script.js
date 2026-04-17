@@ -920,8 +920,11 @@ function calculate() {
                 let improvement;
                 if (scenario === 'aangepast') {
                     const customInput = document.getElementById('customOEEInput');
+                    // Get the raw value, defaulting to 0 if empty
                     let val = (customInput && customInput.value !== "") ? parseFloat(customInput.value.replace(',', '.')) : 0;
-                    improvement = val > 1 ? val / 100 : val; 
+                    
+                    // Always treat the input as a percentage (e.g., 1.3 becomes 0.013)
+                    improvement = val / 100; 
                 } else {
                     improvement = lineSit === 'noOEE' ? data.oeeNothingToT4A[scenario] : data.oeeBlueToT4A[scenario];
                 }
