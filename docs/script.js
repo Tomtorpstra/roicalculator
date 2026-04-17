@@ -871,7 +871,7 @@ function calculate() {
     const exportBtn = document.getElementById('exportBtn');
     const calcBreakdownCard = document.getElementById('calcBreakdownCard');
 
-    // Hide/Show UI logic
+    // UI Toggle logic
     if (!sector || !sectorData[sector]) {
         if (placeholderCard) placeholderCard.style.display = 'block';
         if (scenarioCard) scenarioCard.style.display = 'none';
@@ -900,7 +900,6 @@ function calculate() {
 
     const breakdownRows = [];
 
-    // Main calculation loop per scenario
     for (const scenario of scenarios) {
         let totalAnnual = 0;
         let lineCounter = 0;
@@ -920,7 +919,7 @@ function calculate() {
                 if (scenario === 'aangepast') {
                     const customInput = document.getElementById('customOEEInput');
                     let val = (customInput && customInput.value !== "") ? parseFloat(customInput.value.replace(',', '.')) : 0;
-                    improvement = val / 100; // Always treated as direct percentage
+                    improvement = val / 100; 
                 } else {
                     improvement = lineSit === 'noOEE' ? data.oeeNothingToT4A[scenario] : data.oeeBlueToT4A[scenario];
                 }
@@ -979,30 +978,13 @@ function calculate() {
         }
     }
 
-    const avgOEE = totalLines > 0 ? totalWeightedOEE / totalLines : data.oeeStart;
     const activeRes = results[selectedScenario] || results['expected'];
 
-    // Update Comparison Bars in Break-even section
-    const currentBar = document.getElementById('currentBar');
-    const potentialBar = document.getElementById('potentialBar');
-    const gapLabel = document.getElementById('gapLabel');
-    
-    if (currentBar) {
-        currentBar.style.width = (avgOEE * 100) + '%';
-        currentBar.textContent = Math.round(avgOEE * 100) + '%';
-    }
-    if (potentialBar) {
-        const potOEE = Math.min(1, avgOEE + activeRes.avgImprov);
-        potentialBar.style.width = (potOEE * 100) + '%';
-        potentialBar.textContent = Math.round(potOEE * 100) + '%';
-    }
-    if (gapLabel) gapLabel.textContent = t('pdfPotentialOee'); 
-
-    // Refresh breakdown and graph
+    // Refresh remaining components
     renderCalcBreakdown(breakdownRows, activeRes.annual);
     renderGraph(calculateBreakEven(activeRes.annual, totalFixedCost, variableCost));
 
-    // Update graph note
+    // Update Graph Note
     const scenarioLabels = { 
         conservative: t('conservative'), 
         expected: t('expected'), 
