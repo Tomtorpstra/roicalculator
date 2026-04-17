@@ -725,10 +725,10 @@ function renderPlantContent() {
                         <th>${t('currentSituationLabel')}</th>
                         <th class="th-tooltip">${t('thOutput')} <span style="font-size:0.7rem; opacity:0.6;">&#9432;</span><div class="tooltip-text"><span class="tooltip-title">${t('outputTooltipTitle')}</span>${t('outputTooltipBody')}</div></th>
                         <th class="th-tooltip">${t('thMargin')} <span style="font-size:0.7rem; opacity:0.6;">&#9432;</span><div class="tooltip-text"><span class="tooltip-title">${t('marginTooltipTitle')}</span>${t('marginTooltipBody')}</div></th>
-                        <th>${t('thAddedValue')}</th>
-                        <th class="th-tooltip">${t('thCurrentOEE')} <span style="font-size:0.7rem; opacity:0.6;">&#9432;</span><div class="tooltip-text"><span class="tooltip-title">${t('currentOEETooltipTitle')}</span>${t('currentOEETooltipBody')}</div></th>
                         <th class="th-tooltip">${t('thModel')} <span style="font-size:0.7rem; opacity:0.6;">&#9432;</span><div class="tooltip-text"><span class="tooltip-title">${t('modelTooltipTitle')}</span>${t('modelTooltipBody')}</div></th>
                         <th>${t('thShiftRegime')}</th>
+                        <th>${t('thAddedValue')}</th>
+                        <th class="th-tooltip">${t('thCurrentOEE')} <span style="font-size:0.7rem; opacity:0.6;">&#9432;</span><div class="tooltip-text"><span class="tooltip-title">${t('currentOEETooltipTitle')}</span>${t('currentOEETooltipBody')}</div></th>
                         <th>${t('thAction')}</th>
                     </tr>
                 </thead>
@@ -776,16 +776,16 @@ function renderPlantContent() {
                         </select>
                         ${customMarginHTML}
                     </td>
-                    <td class="added-value-cell">${formatCurrency(lineAddedValue)}</td>
-                    <td><input type="number" class="oee-input" value="${line.currentOEE !== null ? Math.round(line.currentOEE * 100) : ''}" oninput="updateLineOEE(${p}, ${index}, this.value)" placeholder="${data ? Math.round(data.oeeStart * 100) + '%' : '%'}"></td>
                     <td><select onchange="updateLineModel(${p}, ${index}, this.value)"><option value="demand" ${line.calcModel === 'demand' ? 'selected' : ''}>${t('modelDemand')}</option><option value="cost" ${line.calcModel === 'cost' ? 'selected' : ''}>${t('modelCost')}</option></select></td>
                     <td><select onchange="updateLineShifts(${p}, ${index}, this.value)">${[1,2,3,4,5].map(s => `<option value="${s}" ${line.shifts === s ? 'selected' : ''}>${s} ${shiftWord(s)}</option>`).join('')}</select></td>
+                    <td class="added-value-cell">${formatCurrency(lineAddedValue)}</td>
+                    <td><input type="number" class="oee-input" value="${line.currentOEE !== null ? Math.round(line.currentOEE * 100) : ''}" oninput="updateLineOEE(${p}, ${index}, this.value)" placeholder="${data ? Math.round(data.oeeStart * 100) + '%' : '%'}"></td>
                     <td><button class="btn btn-remove" onclick="removeLine(${p}, ${index})" ${plantData[p].lines.length <= 1 ? 'disabled' : ''}>${t('removeBtn')}</button></td>
                 </tr>
             `;
         });
         tableHTML += `</tbody></table><button class="btn btn-primary" onclick="addLine(${p})">${t('addLineBtn')}</button>`;
-        content.innerHTML = tableHTML;
+        container.innerHTML = tableHTML;
         container.appendChild(content);
     }
 }
