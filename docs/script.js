@@ -865,7 +865,6 @@ function calculate() {
     const exportBtn = document.getElementById('exportBtn');
     const calcBreakdownCard = document.getElementById('calcBreakdownCard');
 
-    // Only hide if sector is missing
     if (!sector || !sectorData[sector]) {
         if (placeholderCard) placeholderCard.style.display = 'block';
         if (scenarioCard) scenarioCard.style.display = 'none';
@@ -913,8 +912,8 @@ function calculate() {
                 let improvement;
                 if (scenario === 'aangepast') {
                     const customInput = document.getElementById('customOEEInput');
-                    let val = customInput ? parseFloat(customInput.value.replace(',', '.')) : 0;
-                    // Auto-convert percentage (e.g., 30) to decimal (0.3)
+                    // FIX: Ensure val is at least 0 to avoid NaN if field is empty
+                    let val = (customInput && customInput.value !== "") ? parseFloat(customInput.value.replace(',', '.')) : 0;
                     improvement = val > 1 ? val / 100 : val; 
                 } else {
                     improvement = lineSit === 'noOEE' ? data.oeeNothingToT4A[scenario] : data.oeeBlueToT4A[scenario];
@@ -950,9 +949,7 @@ function calculate() {
 
     // Update Scenario Cards UI
     for (const scenario of scenarios) {
-        // Map 'aangepast' scenario name to the 'custom' element IDs in your HTML
         const idPrefix = scenario === 'aangepast' ? 'custom' : scenario;
-        
         const annualEl = document.getElementById(idPrefix + 'Annual');
         const threeYearEl = document.getElementById(idPrefix + 'ThreeYear');
         const oeeEl = document.getElementById(idPrefix + 'OEE');
@@ -960,7 +957,6 @@ function calculate() {
         if (annualEl) annualEl.textContent = formatCurrency(results[scenario].annual);
         if (threeYearEl) threeYearEl.textContent = formatCurrency(results[scenario].threeYear);
         
-        // Update OEE improvement text for standard scenarios
         if (oeeEl && scenario !== 'aangepast') {
             let totalImprov = 0;
             for(let p = 1; p <= numPlants; p++) {
@@ -976,8 +972,22 @@ function calculate() {
     document.getElementById('addedValueDisplay').textContent = formatCurrency(totalLines > 0 ? totalAddedValue / totalLines : 0) + t('perHourSuffix');
     document.getElementById('oeeStartDisplay').textContent = formatPercentage(avgOEE);
 
-    renderCalcBreakdown(breakdownRows, results[selectedScenario].annual);
-    renderGraph(calculateBreakEven(results[selectedScenario].annual, totalFixedCost, variableCost));
+    // FIX: Use active results for the current selection
+    const activeResults = results[selectedScenario] || results['expected'];
+    
+    renderCalcBreakdown(breakdownRows, activeResults.annual);
+    renderGraph(calculateBreakEven(activeResults.annual, totalFixedCost, variableCost));
+
+    const scenarioLabels = { 
+        conservative: t('conservative'), 
+        expected: t('expected'), 
+        optimistic: t('optimistic'), 
+        aangepast: t('optionCustom') 
+    };
+    const beNote = document.querySelector('.break-even-note');
+    if (beNote) {
+        beNote.textContent = `${t('breakEvenNotePrefix')} ${scenarioLabels[selectedScenario]} ${t('breakEvenNoteSuffix')}`;
+    }
 }
 
 // ==========================================
