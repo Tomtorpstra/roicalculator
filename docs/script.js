@@ -955,6 +955,7 @@ function calculate() {
 
     // Update Scenario Cards UI
     for (const scenario of scenarios) {
+        // IMPORTANT: Map 'aangepast' to the 'custom' ID used in your HTML
         const idPrefix = scenario === 'aangepast' ? 'custom' : scenario;
         const annualEl = document.getElementById(idPrefix + 'Annual');
         const threeYearEl = document.getElementById(idPrefix + 'ThreeYear');
@@ -962,16 +963,17 @@ function calculate() {
 
         if (annualEl) annualEl.textContent = formatCurrency(results[scenario].annual);
         if (threeYearEl) threeYearEl.textContent = formatCurrency(results[scenario].threeYear);
+        
+        // Only update the improvement % text for the first 3 cards
         if (oeeEl && scenario !== 'aangepast') {
             oeeEl.textContent = '+' + formatPercentage(results[scenario].avgImprov);
         }
     }
 
-    // Update Sector Info Display
     const avgOEE = totalLines > 0 ? totalWeightedOEE / totalLines : data.oeeStart;
     const activeRes = results[selectedScenario] || results['expected'];
 
-    // Update the "Verwachte Verbetering" text and Bars
+    // Update Sector Info Display
     document.getElementById('addedValueDisplay').textContent = formatCurrency(totalLines > 0 ? totalAddedValue / totalLines : 0) + t('perHourSuffix');
     document.getElementById('oeeStartDisplay').textContent = formatPercentage(avgOEE);
     document.getElementById('oeeImprovementDisplay').textContent = '+' + formatPercentage(activeRes.avgImprov);
@@ -991,7 +993,7 @@ function calculate() {
     }
     if (gapLabel) gapLabel.textContent = '+' + formatPercentage(activeRes.avgImprov);
 
-    // Refresh breakdown and graph based on selection
+    // Refresh breakdown and graph using the SELECTED scenario (works for aangepast now!)
     renderCalcBreakdown(breakdownRows, activeRes.annual);
     renderGraph(calculateBreakEven(activeRes.annual, totalFixedCost, variableCost));
 
