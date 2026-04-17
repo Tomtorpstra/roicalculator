@@ -867,15 +867,14 @@ function calculate() {
 
     const placeholderCard = document.getElementById('placeholderCard');
     const scenarioCard = document.getElementById('scenarioCard');
-    const sectorCard = document.getElementById('sectorCard');
     const breakEvenCard = document.getElementById('breakEvenCard');
     const exportBtn = document.getElementById('exportBtn');
     const calcBreakdownCard = document.getElementById('calcBreakdownCard');
 
+    // Hide/Show UI logic
     if (!sector || !sectorData[sector]) {
         if (placeholderCard) placeholderCard.style.display = 'block';
         if (scenarioCard) scenarioCard.style.display = 'none';
-        if (sectorCard) sectorCard.style.display = 'none';
         if (breakEvenCard) breakEvenCard.style.display = 'none';
         if (calcBreakdownCard) calcBreakdownCard.style.display = 'none';
         if (exportBtn) exportBtn.style.display = 'none';
@@ -884,7 +883,6 @@ function calculate() {
 
     if (placeholderCard) placeholderCard.style.display = 'none';
     if (scenarioCard) scenarioCard.style.display = 'block';
-    if (sectorCard) sectorCard.style.display = 'block';
     if (breakEvenCard) breakEvenCard.style.display = 'block';
     if (calcBreakdownCard) calcBreakdownCard.style.display = 'block';
     if (exportBtn) exportBtn.style.display = 'inline-flex';
@@ -894,7 +892,6 @@ function calculate() {
     const results = {};
 
     let totalLines = 0;
-    let totalAddedValue = 0;
     let totalWeightedOEE = 0;
 
     for (let p = 1; p <= numPlants; p++) {
@@ -903,6 +900,7 @@ function calculate() {
 
     const breakdownRows = [];
 
+    // Main calculation loop per scenario
     for (const scenario of scenarios) {
         let totalAnnual = 0;
         let lineCounter = 0;
@@ -916,16 +914,14 @@ function calculate() {
                 const margin = line.marginLevel === 'custom' ? (line.customMargin || 0) : data.marginPerUnit[line.marginLevel || 'avg'];
                 const oeeStart = line.currentOEE !== null ? line.currentOEE : data.oeeStart;
                 
-                // CRITICAL CHANGE: Get situation per line
                 const lineSit = line.situation || 'blueUpgrade';
                 
                 let improvement;
                 if (scenario === 'aangepast') {
                     const customInput = document.getElementById('customOEEInput');
                     let val = (customInput && customInput.value !== "") ? parseFloat(customInput.value.replace(',', '.')) : 0;
-                    improvement = val / 100; // Treated as direct percentage
+                    improvement = val / 100; // Always treated as direct percentage
                 } else {
-                    // CRITICAL CHANGE: Use lineSit to decide the improvement for this specific line
                     improvement = lineSit === 'noOEE' ? data.oeeNothingToT4A[scenario] : data.oeeBlueToT4A[scenario];
                 }
                 
@@ -938,7 +934,6 @@ function calculate() {
                 totalAnnual += annual;
 
                 if (scenario === 'conservative') {
-                    totalAddedValue += (output * margin);
                     totalWeightedOEE += oeeStart;
                 }
 
@@ -973,15 +968,12 @@ function calculate() {
         if (annualEl) annualEl.textContent = formatCurrency(results[scenario].annual);
         if (threeYearEl) threeYearEl.textContent = formatCurrency(results[scenario].threeYear);
         
-        // Find the label text (OEE Verbetering) inside this specific card
         const card = document.querySelector(`.scenario-card[data-scenario="${scenario}"]`);
         const labelEl = card ? card.querySelector('.scenario-oee-label') : null;
 
         if (scenario === 'aangepast') {
-            // Keep the label for the Custom card so the user knows what the input field is
             if (labelEl) labelEl.style.display = 'block';
         } else {
-            // Hide both the percentage and the "OEE verbetering" text for benchmark cards
             if (oeeEl) oeeEl.textContent = ""; 
             if (labelEl) labelEl.style.display = 'none';
         }
@@ -990,18 +982,11 @@ function calculate() {
     const avgOEE = totalLines > 0 ? totalWeightedOEE / totalLines : data.oeeStart;
     const activeRes = results[selectedScenario] || results['expected'];
 
-    // Update Sector Info Display
-    document.getElementById('addedValueDisplay').textContent = formatCurrency(totalLines > 0 ? totalAddedValue / totalLines : 0) + t('perHourSuffix');
-    document.getElementById('oeeStartDisplay').textContent = formatPercentage(avgOEE);
-    
-    // Since OEE improvement is now mixed, we hide the single percentage display in the comparison section
-    const improvDisplay = document.getElementById('oeeImprovementDisplay');
-    if (improvDisplay) improvDisplay.textContent = "-";
-    
-    // Update Comparison Bars
+    // Update Comparison Bars in Break-even section
     const currentBar = document.getElementById('currentBar');
     const potentialBar = document.getElementById('potentialBar');
     const gapLabel = document.getElementById('gapLabel');
+    
     if (currentBar) {
         currentBar.style.width = (avgOEE * 100) + '%';
         currentBar.textContent = Math.round(avgOEE * 100) + '%';
@@ -1011,11 +996,13 @@ function calculate() {
         potentialBar.style.width = (potOEE * 100) + '%';
         potentialBar.textContent = Math.round(potOEE * 100) + '%';
     }
-    if (gapLabel) gapLabel.textContent = t('pdfPotentialOee'); // Changed to label instead of mixed %
+    if (gapLabel) gapLabel.textContent = t('pdfPotentialOee'); 
 
+    // Refresh breakdown and graph
     renderCalcBreakdown(breakdownRows, activeRes.annual);
     renderGraph(calculateBreakEven(activeRes.annual, totalFixedCost, variableCost));
 
+    // Update graph note
     const scenarioLabels = { 
         conservative: t('conservative'), 
         expected: t('expected'), 
