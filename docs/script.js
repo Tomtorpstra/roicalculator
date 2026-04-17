@@ -785,8 +785,7 @@ function renderPlantContent() {
             `;
         });
         tableHTML += `</tbody></table><button class="btn btn-primary" onclick="addLine(${p})">${t('addLineBtn')}</button>`;
-        content.innerHTML = tableHTML;
-        container.appendChild(content);
+        container.innerHTML = tableHTML;
     }
 
         tableHTML += `
@@ -874,8 +873,6 @@ function calculate() {
     const exportBtn = document.getElementById('exportBtn');
     const calcBreakdownCard = document.getElementById('calcBreakdownCard');
 
-    // FIX: We removed "|| !situation" from this check 
-    // because situation is now handled per line inside the loop below.
     if (!sector || !sectorData[sector]) {
         placeholderCard.style.display = 'block';
         if (scenarioCard) scenarioCard.style.display = 'none';
@@ -919,13 +916,10 @@ function calculate() {
                 const margin = line.marginLevel === 'custom' ? (line.customMargin || 0) : data.marginPerUnit[line.marginLevel || 'avg'];
                 const oeeStart = line.currentOEE !== null ? line.currentOEE : data.oeeStart;
                 
-                // Line-specific improvement logic
                 const lineSit = line.situation || 'blueUpgrade';
                 const improvement = lineSit === 'noOEE' ? data.oeeNothingToT4A[scenario] : data.oeeBlueToT4A[scenario];
                 
-                const costFactor = line.calcModel === 'cost'
-                    ? { conservative: 0.20, expected: 0.30, optimistic: 0.40 }[scenario]
-                    : 1;
+                const costFactor = line.calcModel === 'cost' ? { conservative: 0.20, expected: 0.30, optimistic: 0.40 }[scenario] : 1;
                 
                 const annual = (output * margin) * oeeStart * improvement * hours * costFactor;
                 totalAnnual += annual;
@@ -950,23 +944,16 @@ function calculate() {
             }
         }
 
-        results[scenario] = {
-            annual: totalAnnual,
-            threeYear: totalAnnual * 2
-        };
+        results[scenario] = { annual: totalAnnual, threeYear: totalAnnual * 2 };
     }
 
-    // Update the Scenario Cards
+    // Update Scenario Cards & Averages
     for (const scenario of scenarios) {
         document.getElementById(scenario + 'Annual').textContent = formatCurrency(results[scenario].annual);
         document.getElementById(scenario + 'ThreeYear').textContent = formatCurrency(results[scenario].threeYear);
         
         let totalImprov = 0;
-        for(let p=1; p<=numPlants; p++) {
-            plantData[p].lines.forEach(l => {
-                totalImprov += (l.situation === 'noOEE' ? data.oeeNothingToT4A[scenario] : data.oeeBlueToT4A[scenario]);
-            });
-        }
+        for(let p=1; p<=numPlants; p++) plantData[p].lines.forEach(l => totalImprov += (l.situation === 'noOEE' ? data.oeeNothingToT4A[scenario] : data.oeeBlueToT4A[scenario]));
         document.getElementById(scenario + 'OEE').textContent = '+' + formatPercentage(totalImprov / totalLines);
     }
 
@@ -975,11 +962,7 @@ function calculate() {
     document.getElementById('oeeStartDisplay').textContent = formatPercentage(avgOEE);
 
     renderCalcBreakdown(breakdownRows, results[selectedScenario].annual);
-    
-    // Update Graphs
-    const annualBenefit = results[selectedScenario].annual;
-    const yearData = calculateBreakEven(annualBenefit, totalFixedCost, variableCost);
-    renderGraph(yearData);
+    renderGraph(calculateBreakEven(results[selectedScenario].annual, totalFixedCost, variableCost));
 }
 
 // ==========================================
