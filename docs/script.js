@@ -105,7 +105,6 @@ const translations = {
         conservative: 'Conservatief',
         expected: 'Verwacht',
         optimistic: 'Optimistisch',
-        custom: 'Handmatig',
         perYear: 'per jaar',
         overThreeYears: 'over 3 jaar',
         oeeImprovement: 'OEE verbetering',
@@ -267,7 +266,6 @@ const translations = {
         conservative: 'Conservative',
         expected: 'Expected',
         optimistic: 'Optimistic',
-        custom: 'Custom',
         perYear: 'per year',
         overThreeYears: 'over 3 years',
         oeeImprovement: 'OEE improvement',
@@ -296,7 +294,7 @@ const translations = {
         pdfNetBenefit3Year: 'Net Benefit (3 years)',
         pdfScenarioAnalysis: 'Scenario Analysis',
         pdfPerYear: 'Per Year',
-        pdfOver3Years: 'Over 3 Year',
+        pdfOver3Years: 'Over 3 Years',
         pdfOeeImprovement: 'OEE Improvement',
         pdfCompanyDetails: 'Company Details',
         pdfCompany: 'Company',
@@ -345,7 +343,9 @@ function setLanguage(lang) {
 }
 
 function applyTranslations() {
+    // Keys that need innerHTML (contain HTML tags)
     const htmlKeys = new Set(['calcStep3Desc']);
+    // Update all elements with data-i18n attribute (textContent)
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (translations[currentLang][key] !== undefined) {
@@ -356,6 +356,7 @@ function applyTranslations() {
             }
         }
     });
+    // Update all elements with data-i18n-placeholder attribute
     document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
         const key = el.getAttribute('data-i18n-placeholder');
         if (translations[currentLang][key] !== undefined) {
@@ -364,6 +365,9 @@ function applyTranslations() {
     });
 }
 
+// ==========================================
+// CALCULATION MODAL
+// ==========================================
 function openCalcModal() {
     document.getElementById('calcModal').classList.add('open');
 }
@@ -374,6 +378,9 @@ function closeCalcModal(event) {
     }
 }
 
+// ==========================================
+// SECTOR DATA (fallback, updated via sector-data.json from GitHub Action)
+// ==========================================
 const sectorData = {
     "farmaceutische": {
         name: "Farmaceutische",
@@ -481,6 +488,9 @@ const sectorData = {
     }
 };
 
+// ==========================================
+// SECTOR DATA SYNC (from sector-data.json, updated by GitHub Action)
+// ==========================================
 async function loadSectorData() {
     try {
         const resp = await fetch('sector-data.json');
@@ -497,11 +507,17 @@ async function loadSectorData() {
 
 const workHours = { "1": 2000, "2": 4000, "3": 6000, "4": 8000, "5": 8760 };
 
+// ==========================================
+// STATE
+// ==========================================
 let plantData = { 1: { lines: [{ shifts: 3, outputLevel: 'avg', marginLevel: 'avg', situation: 'blueUpgrade', name: '', customOutput: null, customMargin: null, calcModel: 'demand', currentOEE: null }] } };
 let numPlants = 1;
 let activePlant = 1;
 let selectedScenario = 'expected';
 
+// ==========================================
+// FORMATTING
+// ==========================================
 function formatCurrency(value) {
     return new Intl.NumberFormat('nl-NL', {
         style: 'currency',
@@ -529,6 +545,9 @@ function formatMarginValue(value) {
     return '\u20AC' + value.toFixed(3);
 }
 
+// ==========================================
+// SEARCHABLE SELECT
+// ==========================================
 function initSearchableSelect() {
     const wrapper = document.getElementById('sectorWrapper');
     const select = document.getElementById('sector');
@@ -540,8 +559,10 @@ function initSearchableSelect() {
         `<div class="select-option" data-value="${opt.value}">${opt.text}</div>`
     ).join('');
 
+    // Remove old listeners by cloning
     const newSelect = select.cloneNode(true);
     select.parentNode.replaceChild(newSelect, select);
+    // Use mousedown to prevent native dropdown from opening
     newSelect.addEventListener('mousedown', (e) => {
         e.preventDefault();
         wrapper.classList.add('open', 'searching');
@@ -562,6 +583,7 @@ function initSearchableSelect() {
         }, 150);
     });
 
+    // Remove old dropdown listeners by cloning
     const newDropdown = dropdown.cloneNode(true);
     dropdown.parentNode.replaceChild(newDropdown, dropdown);
     newDropdown.addEventListener('click', (e) => {
@@ -581,8 +603,13 @@ function initSearchableSelect() {
     }
 }
 
+// ==========================================
+// SECTOR CHANGE
+// ==========================================
 function onSectorChange() {
     const sector = document.getElementById('sector').value;
+
+    // Reset all lines to average when sector changes
     for (let p = 1; p <= numPlants; p++) {
         if (plantData[p]) {
             for (const line of plantData[p].lines) {
@@ -596,6 +623,10 @@ function onSectorChange() {
     calculate();
 }
 
+
+// ==========================================
+// SCENARIO SELECTION
+// ==========================================
 function selectScenario(scenario) {
     selectedScenario = scenario;
     document.querySelectorAll('.scenario-card').forEach(card => {
@@ -606,10 +637,9 @@ function selectScenario(scenario) {
     calculate();
 }
 
-function onCustomOEEChange(val) {
-    calculate();
-}
-
+// ==========================================
+// PLANT / LINE MANAGEMENT
+// ==========================================
 function syncPlantSlider(value) {
     document.getElementById('numPlants').value = value;
     updatePlantTabs();
@@ -677,6 +707,7 @@ function getMarginOptionText(level, data) {
 function renderPlantContent() {
     const container = document.getElementById('plantContents');
     container.innerHTML = '';
+
     const sector = document.getElementById('sector').value;
     const data = (sector && sectorData[sector]) ? sectorData[sector] : null;
 
@@ -692,12 +723,12 @@ function renderPlantContent() {
                         <th>${t('thLine')}</th>
                         <th>${t('thLineName')}</th>
                         <th>${t('currentSituationLabel')}</th>
-                        <th>${t('thOutput')}</th>
-                        <th>${t('thMargin')}</th>
-                        <th>${t('thModel')}</th>
+                        <th class="th-tooltip">${t('thOutput')} <span style="font-size:0.7rem; opacity:0.6;">&#9432;</span><div class="tooltip-text"><span class="tooltip-title">${t('outputTooltipTitle')}</span>${t('outputTooltipBody')}</div></th>
+                        <th class="th-tooltip">${t('thMargin')} <span style="font-size:0.7rem; opacity:0.6;">&#9432;</span><div class="tooltip-text"><span class="tooltip-title">${t('marginTooltipTitle')}</span>${t('marginTooltipBody')}</div></th>
+                        <th class="th-tooltip">${t('thModel')} <span style="font-size:0.7rem; opacity:0.6;">&#9432;</span><div class="tooltip-text"><span class="tooltip-title">${t('modelTooltipTitle')}</span>${t('modelTooltipBody')}</div></th>
                         <th>${t('thShiftRegime')}</th>
                         <th>${t('thAddedValue')}</th>
-                        <th>${t('thCurrentOEE')}</th>
+                        <th class="th-tooltip">${t('thCurrentOEE')} <span style="font-size:0.7rem; opacity:0.6;">&#9432;</span><div class="tooltip-text"><span class="tooltip-title">${t('currentOEETooltipTitle')}</span>${t('currentOEETooltipBody')}</div></th>
                         <th>${t('thAction')}</th>
                     </tr>
                 </thead>
@@ -710,6 +741,9 @@ function renderPlantContent() {
             const ml = line.marginLevel || 'avg';
             const sit = line.situation || 'blueUpgrade';
             
+            const customOutputHTML = ol === 'custom' ? `<input type="number" class="custom-value-input" value="${line.customOutput || ''}" oninput="updateLineCustomOutput(${p}, ${index}, this.value)" placeholder="${t('unitsPerHour')}">` : '';
+            const customMarginHTML = ml === 'custom' ? `<input type="number" class="custom-value-input" step="0.001" value="${line.customMargin || ''}" oninput="updateLineCustomMargin(${p}, ${index}, this.value)" placeholder="${t('perUnit')}">` : '';
+            
             const lineOutput = ol === 'custom' ? (line.customOutput || 0) : (data ? data.outputPerHour[ol] : 0);
             const lineMargin = ml === 'custom' ? (line.customMargin || 0) : (data ? data.marginPerUnit[ml] : 0);
             const lineAddedValue = lineOutput * lineMargin;
@@ -717,7 +751,7 @@ function renderPlantContent() {
             tableHTML += `
                 <tr>
                     <td class="line-number">${index + 1}</td>
-                    <td><input type="text" class="line-name-input" value="${line.name || ''}" onchange="updateLineName(${p}, ${index}, this.value)"></td>
+                    <td><input type="text" class="line-name-input" value="${line.name || ''}" onchange="updateLineName(${p}, ${index}, this.value)" placeholder="${t('lineNamePlaceholder')} ${index + 1}"></td>
                     <td>
                         <select onchange="plantData[${p}].lines[${index}].situation=this.value; calculate();">
                             <option value="blueUpgrade" ${sit === 'blueUpgrade' ? 'selected' : ''}>${t('situationLabelBlue')}</option>
@@ -731,6 +765,7 @@ function renderPlantContent() {
                             <option value="max" ${ol === 'max' ? 'selected' : ''}>${getOutputOptionText('max', data)}</option>
                             <option value="custom" ${ol === 'custom' ? 'selected' : ''}>${t('optionCustom')}</option>
                         </select>
+                        ${customOutputHTML}
                     </td>
                     <td>
                         <select onchange="updateLineMargin(${p}, ${index}, this.value)">
@@ -739,11 +774,12 @@ function renderPlantContent() {
                             <option value="max" ${ml === 'max' ? 'selected' : ''}>${getMarginOptionText('max', data)}</option>
                             <option value="custom" ${ml === 'custom' ? 'selected' : ''}>${t('optionCustom')}</option>
                         </select>
+                        ${customMarginHTML}
                     </td>
                     <td><select onchange="updateLineModel(${p}, ${index}, this.value)"><option value="demand" ${line.calcModel === 'demand' ? 'selected' : ''}>${t('modelDemand')}</option><option value="cost" ${line.calcModel === 'cost' ? 'selected' : ''}>${t('modelCost')}</option></select></td>
                     <td><select onchange="updateLineShifts(${p}, ${index}, this.value)">${[1,2,3,4,5].map(s => `<option value="${s}" ${line.shifts === s ? 'selected' : ''}>${s} ${shiftWord(s)}</option>`).join('')}</select></td>
                     <td class="added-value-cell">${formatCurrency(lineAddedValue)}</td>
-                    <td><input type="number" class="oee-input" value="${line.currentOEE !== null ? Math.round(line.currentOEE * 100) : ''}" oninput="updateLineOEE(${p}, ${index}, this.value)"></td>
+                    <td><input type="number" class="oee-input" value="${line.currentOEE !== null ? Math.round(line.currentOEE * 100) : ''}" oninput="updateLineOEE(${p}, ${index}, this.value)" placeholder="${data ? Math.round(data.oeeStart * 100) + '%' : '%'}"></td>
                     <td><button class="btn btn-remove" onclick="removeLine(${p}, ${index})" ${plantData[p].lines.length <= 1 ? 'disabled' : ''}>${t('removeBtn')}</button></td>
                 </tr>
             `;
@@ -812,6 +848,9 @@ function updateLineOEE(plantNum, lineIndex, value) {
     calculate();
 }
 
+// ==========================================
+// MAIN CALCULATION
+// ==========================================
 function calculate() {
     const sector = document.getElementById('sector').value;
     const fixedFee = parseFloat(document.getElementById('fixedFee').value) || 0;
@@ -826,6 +865,7 @@ function calculate() {
     const exportBtn = document.getElementById('exportBtn');
     const calcBreakdownCard = document.getElementById('calcBreakdownCard');
 
+    // Only hide if sector is missing
     if (!sector || !sectorData[sector]) {
         if (placeholderCard) placeholderCard.style.display = 'block';
         if (scenarioCard) scenarioCard.style.display = 'none';
@@ -836,15 +876,15 @@ function calculate() {
         return;
     }
 
-    placeholderCard.style.display = 'none';
-    scenarioCard.style.display = 'block';
-    sectorCard.style.display = 'block';
-    breakEvenCard.style.display = 'block';
-    calcBreakdownCard.style.display = 'block';
-    exportBtn.style.display = 'inline-flex';
+    if (placeholderCard) placeholderCard.style.display = 'none';
+    if (scenarioCard) scenarioCard.style.display = 'block';
+    if (sectorCard) sectorCard.style.display = 'block';
+    if (breakEvenCard) breakEvenCard.style.display = 'block';
+    if (calcBreakdownCard) calcBreakdownCard.style.display = 'block';
+    if (exportBtn) exportBtn.style.display = 'inline-flex';
 
     const data = sectorData[sector];
-    const scenarios = ['conservative', 'expected', 'optimistic', 'custom'];
+    const scenarios = ['conservative', 'expected', 'optimistic', 'aangepast'];
     const results = {};
 
     let totalLines = 0;
@@ -871,16 +911,17 @@ function calculate() {
                 const lineSit = line.situation || 'blueUpgrade';
                 
                 let improvement;
-                if (scenario === 'custom') {
+                if (scenario === 'aangepast') {
                     const customInput = document.getElementById('customOEEInput');
                     let val = customInput ? parseFloat(customInput.value.replace(',', '.')) : 0;
+                    // Auto-convert percentage (e.g., 30) to decimal (0.3)
                     improvement = val > 1 ? val / 100 : val; 
                 } else {
                     improvement = lineSit === 'noOEE' ? data.oeeNothingToT4A[scenario] : data.oeeBlueToT4A[scenario];
                 }
                 
                 const costFactor = line.calcModel === 'cost' ? 
-                    { conservative: 0.20, expected: 0.30, optimistic: 0.40, custom: 0.30 }[scenario] : 1;
+                    { conservative: 0.20, expected: 0.30, optimistic: 0.40, aangepast: 0.30 }[scenario] : 1;
                 
                 const annual = (output * margin) * oeeStart * improvement * hours * costFactor;
                 totalAnnual += annual;
@@ -907,17 +948,22 @@ function calculate() {
         results[scenario] = { annual: totalAnnual, threeYear: totalAnnual * 2 };
     }
 
+    // Update Scenario Cards UI
     for (const scenario of scenarios) {
-        const annualEl = document.getElementById(scenario + 'Annual');
-        const threeYearEl = document.getElementById(scenario + 'ThreeYear');
-        const oeeEl = document.getElementById(scenario + 'OEE');
+        // Map 'aangepast' scenario name to the 'custom' element IDs in your HTML
+        const idPrefix = scenario === 'aangepast' ? 'custom' : scenario;
+        
+        const annualEl = document.getElementById(idPrefix + 'Annual');
+        const threeYearEl = document.getElementById(idPrefix + 'ThreeYear');
+        const oeeEl = document.getElementById(idPrefix + 'OEE');
 
         if (annualEl) annualEl.textContent = formatCurrency(results[scenario].annual);
         if (threeYearEl) threeYearEl.textContent = formatCurrency(results[scenario].threeYear);
         
-        if (oeeEl && scenario !== 'custom') {
+        // Update OEE improvement text for standard scenarios
+        if (oeeEl && scenario !== 'aangepast') {
             let totalImprov = 0;
-            for(let p=1; p<=numPlants; p++) {
+            for(let p = 1; p <= numPlants; p++) {
                 plantData[p].lines.forEach(l => {
                     totalImprov += (l.situation === 'noOEE' ? data.oeeNothingToT4A[scenario] : data.oeeBlueToT4A[scenario]);
                 });
@@ -934,16 +980,150 @@ function calculate() {
     renderGraph(calculateBreakEven(results[selectedScenario].annual, totalFixedCost, variableCost));
 }
 
+// ==========================================
+// CALCULATION BREAKDOWN
+// ==========================================
 function renderCalcBreakdown(rows, totalAnnual) {
     const container = document.getElementById('calcBreakdownContent');
     if (!container) return;
+
     const modelLabels = { demand: t('modelDemand'), cost: t('modelCost') };
-    let html = `<div class="calc-breakdown-formula">${t('calcBreakdownFormula')}</div><table class="calc-breakdown-table"><thead><tr><th>${t('calcBreakdownLine')}</th><th>${t('calcBreakdownHours')}</th><th>${t('calcBreakdownOEEImpr')}</th><th>${t('calcBreakdownCurrentOEE')}</th><th>${t('calcBreakdownValueHr')}</th><th>${t('calcBreakdownModel')}</th><th>${t('calcBreakdownAnnual')}</th></tr></thead><tbody>`;
+
+    let html = `
+        <div class="calc-breakdown-formula">${t('calcBreakdownFormula')}</div>
+        <table class="calc-breakdown-table">
+            <thead>
+                <tr>
+                    <th>${t('calcBreakdownLine')}</th>
+                    <th>${t('calcBreakdownHours')}</th>
+                    <th>${t('calcBreakdownOEEImpr')}</th>
+                    <th>${t('calcBreakdownCurrentOEE')}</th>
+                    <th>${t('calcBreakdownValueHr')}</th>
+                    <th>${t('calcBreakdownModel')}</th>
+                    <th>${t('calcBreakdownAnnual')}</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+
     for (const row of rows) {
-        html += `<tr><td class="line-number">${row.lineName}</td><td>${new Intl.NumberFormat('nl-NL').format(row.hours)}</td><td>${formatPercentage(row.oeeIncrease)}</td><td>${formatPercentage(row.currentOEE)}</td><td>${formatCurrency(row.addedValue)}</td><td>${modelLabels[row.model] || row.model}${row.costFactor < 1 ? ' (' + Math.round(row.costFactor * 100) + '%)' : ''}</td><td class="annual-value">${formatCurrency(row.annual)}</td></tr>`;
+        html += `
+            <tr>
+                <td class="line-number">${row.lineName}</td>
+                <td>${new Intl.NumberFormat('nl-NL').format(row.hours)}</td>
+                <td>${formatPercentage(row.oeeIncrease)}</td>
+                <td>${formatPercentage(row.currentOEE)}</td>
+                <td>${formatCurrency(row.addedValue)}</td>
+                <td>${modelLabels[row.model] || row.model}${row.costFactor < 1 ? ' (' + Math.round(row.costFactor * 100) + '%)' : ''}</td>
+                <td class="annual-value">${formatCurrency(row.annual)}</td>
+            </tr>
+        `;
     }
-    html += `</tbody><tfoot><tr class="calc-breakdown-total"><td colspan="6">${t('calcBreakdownTotal')}</td><td class="annual-value">${formatCurrency(totalAnnual)}</td></tr></tfoot></table>`;
+
+    html += `
+            </tbody>
+            <tfoot>
+                <tr class="calc-breakdown-total">
+                    <td colspan="6">${t('calcBreakdownTotal')}</td>
+                    <td class="annual-value">${formatCurrency(totalAnnual)}</td>
+                </tr>
+            </tfoot>
+        </table>
+    `;
+
     container.innerHTML = html;
+}
+
+// ==========================================
+// BREAK-EVEN
+// ==========================================
+function calculateBreakEven(annualBenefit, fixedFee, variableCost) {
+    const MIN_YEARS = 5;
+    let yearData = [];
+
+    // Year 0: upfront investment, no benefit yet
+    yearData.push({ year: 0, cumulativeBenefit: 0, cumulativeCost: fixedFee });
+
+    let cumulativeBenefit = 0;
+    let cumulativeCost = fixedFee;
+    let breakEvenReached = false;
+
+    for (let year = 1; year <= 20; year++) {
+        // OEE improvement ramps over 3 years: 1/3, 2/3, then full from year 3+
+        const rampFactor = year <= 3 ? year / 3 : 1;
+        cumulativeBenefit += annualBenefit * rampFactor;
+        cumulativeCost += variableCost;
+
+        yearData.push({
+            year: year,
+            cumulativeBenefit: cumulativeBenefit,
+            cumulativeCost: cumulativeCost
+        });
+
+        if (cumulativeBenefit >= cumulativeCost && !breakEvenReached) {
+            breakEvenReached = true;
+        }
+
+        if (year >= MIN_YEARS) {
+            if (breakEvenReached) {
+                const beYear = yearData.find(d => d.year > 0 && d.cumulativeBenefit >= d.cumulativeCost).year;
+                if (year >= beYear + 2) break;
+            }
+            if (fixedFee === 0 && variableCost === 0) break;
+        }
+    }
+
+    return yearData;
+}
+
+// Realistic OEE curve: implementation dip, quick wins, plateau, bumpy climb, diminishing returns
+function generateRealisticCurvePoints(yearData, annualBenefit) {
+    if (yearData.length < 2) return yearData;
+
+    // Fallback: If annualBenefit isn't passed, derive it from the last year's data
+    // to ensure the line always renders.
+    const effectiveAnnualBenefit = annualBenefit || 
+        (yearData[yearData.length - 1].cumulativeBenefit / (yearData.length - 1));
+
+    const maxYear = yearData[yearData.length - 1].year;
+    const totalMonths = maxYear * 12;
+    const points = [];
+
+    points.push({ year: 0, cumulativeBenefit: 0, cumulativeCost: yearData[0].cumulativeCost });
+
+    let currentCumulativeBenefit = 0;
+
+    const getCostAtYear = (yearFrac) => {
+        for (let i = 0; i < yearData.length - 1; i++) {
+            if (yearFrac >= yearData[i].year && yearFrac <= yearData[i + 1].year) {
+                const span = yearData[i + 1].year - yearData[i].year;
+                const frac = span > 0 ? (yearFrac - yearData[i].year) / span : 0;
+                return yearData[i].cumulativeCost + frac * (yearData[i + 1].cumulativeCost - yearData[i].cumulativeCost);
+            }
+        }
+        return yearData[yearData.length - 1].cumulativeCost;
+    };
+
+    for (let m = 1; m <= totalMonths; m++) {
+        const yearFrac = m / 12;
+        
+        // Match your Break-even logic (1/3, 2/3, 1)
+        let currentRamp;
+        if (yearFrac <= 1) currentRamp = 1 / 3;
+        else if (yearFrac <= 2) currentRamp = 2 / 3;
+        else currentRamp = 1;
+
+        const monthlyBenefit = (effectiveAnnualBenefit * currentRamp) / 12;
+        currentCumulativeBenefit += monthlyBenefit;
+
+        points.push({
+            year: yearFrac,
+            cumulativeBenefit: currentCumulativeBenefit,
+            cumulativeCost: getCostAtYear(yearFrac)
+        });
+    }
+
+    return points;
 }
 
 function renderGraph(yearData, fixedFee, variableCost) {
@@ -951,63 +1131,98 @@ function renderGraph(yearData, fixedFee, variableCost) {
     const ctx = canvas.getContext('2d');
     const badge = document.getElementById('breakEvenBadge');
     const breakEvenYear = document.getElementById('breakEvenYear');
+
     const dpr = window.devicePixelRatio || 1;
     const rect = canvas.getBoundingClientRect();
     canvas.width = rect.width * dpr;
     canvas.height = rect.height * dpr;
     ctx.scale(dpr, dpr);
+
     const width = rect.width;
     const height = rect.height;
     const padding = { top: 30, right: 30, bottom: 50, left: 80 };
     const graphWidth = width - padding.left - padding.right;
     const graphHeight = height - padding.top - padding.bottom;
+
     ctx.clearRect(0, 0, width, height);
     if (!yearData || yearData.length < 2) return;
+
+    // 1. MATH: DERIVE ANNUAL BENEFIT & GENERATE POINTS
     const last = yearData[yearData.length - 1];
     const prev = yearData[yearData.length - 2];
     const annualBenefit = last.cumulativeBenefit - prev.cumulativeBenefit;
     const maxYear = last.year;
     const totalMonths = maxYear * 12;
     const realisticPoints = [];
+    
     realisticPoints.push({ year: 0, cumulativeBenefit: 0, cumulativeCost: yearData[0].cumulativeCost });
+
     let runningBenefit = 0;
     let beFound = false;
     let finalBreakEvenMonth = null;
+
     for (let m = 1; m <= totalMonths; m++) {
         const yearFrac = m / 12;
         let ramp = yearFrac <= 1 ? 1/3 : (yearFrac <= 2 ? 2/3 : 1);
         runningBenefit += (annualBenefit * ramp) / 12;
+
         const targetY = Math.floor(yearFrac);
         const idx = yearData.findIndex(d => d.year === targetY);
-        let cost = (idx !== -1 && yearData[idx+1]) ? yearData[idx].cumulativeCost + (yearData[idx+1].cumulativeCost - yearData[idx].cumulativeCost) * (yearFrac - targetY) : last.cumulativeCost;
+        let cost = (idx !== -1 && yearData[idx+1]) 
+            ? yearData[idx].cumulativeCost + (yearData[idx+1].cumulativeCost - yearData[idx].cumulativeCost) * (yearFrac - targetY)
+            : last.cumulativeCost;
+
         realisticPoints.push({ year: yearFrac, cumulativeBenefit: runningBenefit, cumulativeCost: cost });
+
         if (runningBenefit >= cost && !beFound) {
             finalBreakEvenMonth = m;
             beFound = true;
         }
     }
+
+    // 2. SCALING HELPERS
     const maxValue = Math.max(...yearData.map(d => Math.max(d.cumulativeBenefit, d.cumulativeCost)));
     const xScale = (y) => padding.left + (y / maxYear) * graphWidth;
     const yScale = (v) => padding.top + graphHeight - (v / maxValue) * graphHeight;
-    ctx.strokeStyle = '#e5e7eb'; ctx.lineWidth = 1; ctx.font = '11px Inter, sans-serif';
+
+    // 3. DRAW GRID & Y-AXIS LABELS
+    ctx.strokeStyle = '#e5e7eb';
+    ctx.lineWidth = 1;
+    ctx.font = '11px Inter, sans-serif';
     for (let i = 0; i <= 5; i++) {
         const y = padding.top + (i / 5) * graphHeight;
         ctx.beginPath(); ctx.moveTo(padding.left, y); ctx.lineTo(width - padding.right, y); ctx.stroke();
         ctx.fillStyle = '#64748b'; ctx.textAlign = 'right';
         ctx.fillText(formatCurrency(maxValue * (1 - i / 5)), padding.left - 10, y + 4);
     }
+
+    // --- NEW: DRAW X-AXIS LABELS (JAAR 1 - JAAR 5) ---
     for (let year = 1; year <= maxYear; year++) {
         const x = xScale(year);
-        ctx.beginPath(); ctx.strokeStyle = '#e5e7eb'; ctx.moveTo(x, padding.top); ctx.lineTo(x, height - padding.bottom); ctx.stroke();
-        ctx.fillStyle = '#64748b'; ctx.textAlign = 'center';
+        ctx.beginPath();
+        ctx.strokeStyle = '#e5e7eb';
+        ctx.moveTo(x, padding.top);
+        ctx.lineTo(x, height - padding.bottom);
+        ctx.stroke();
+
+        ctx.fillStyle = '#64748b';
+        ctx.textAlign = 'center';
+        // Use your translation function t() or hardcode 'Jaar'
         ctx.fillText(t('yearLabel') + ' ' + year, x, height - padding.bottom + 20);
     }
+    // ------------------------------------------------
+
+    // 4. DRAW COST LINE (Red)
     ctx.beginPath(); ctx.strokeStyle = '#ef4444'; ctx.lineWidth = 3;
     yearData.forEach((d, i) => { i === 0 ? ctx.moveTo(xScale(d.year), yScale(d.cumulativeCost)) : ctx.lineTo(xScale(d.year), yScale(d.cumulativeCost)); });
     ctx.stroke();
+
+    // 5. DRAW BENEFIT LINE (Green)
     ctx.beginPath(); ctx.strokeStyle = '#10b981'; ctx.lineWidth = 3;
     realisticPoints.forEach((d, i) => { i === 0 ? ctx.moveTo(xScale(d.year), yScale(d.cumulativeBenefit)) : ctx.lineTo(xScale(d.year), yScale(d.cumulativeBenefit)); });
     ctx.stroke();
+
+    // 6. UPDATE BADGE & DRAW YELLOW DOT
     badge.classList.remove('warning', 'error');
     if (beFound) {
         breakEvenYear.textContent = finalBreakEvenMonth + ' ' + t('months');
@@ -1024,6 +1239,328 @@ function renderGraph(yearData, fixedFee, variableCost) {
     }
 }
 
+// ==========================================
+// PDF EXPORT
+// ==========================================
+function exportPDF() {
+    const companyName = document.getElementById('companyName').value || t('companyDefault');
+    const sector = document.getElementById('sector').value;
+
+    if (!sector) {
+        alert(t('alertFillIn'));
+        return;
+    }
+
+    const data = sectorData[sector];
+    const fixedFee = parseFloat(document.getElementById('fixedFee').value) || 0;
+    const variableCost = parseFloat(document.getElementById('variableCost').value) || 0;
+    const internalCost = parseFloat(document.getElementById('internalCost').value) || 0;
+    const totalFixedCost = fixedFee + internalCost;
+
+    const scenarios = ['conservative', 'expected', 'optimistic'];
+    const results = {};
+    let totalLines = 0;
+    let totalAddedValue = 0;
+
+    for (let p = 1; p <= numPlants; p++) {
+        totalLines += plantData[p].lines.length;
+    }
+
+    for (const scenario of scenarios) {
+        let totalAnnual = 0;
+        let totalImprovement = 0;
+
+        for (let p = 1; p <= numPlants; p++) {
+            for (const line of plantData[p].lines) {
+                const hours = workHours[line.shifts.toString()] || 2000;
+                const lineOutput = line.outputLevel === 'custom' ? (line.customOutput || 0) : data.outputPerHour[line.outputLevel || 'avg'];
+                const lineMargin = line.marginLevel === 'custom' ? (line.customMargin || 0) : data.marginPerUnit[line.marginLevel || 'avg'];
+                const lineOEE = line.currentOEE !== null ? line.currentOEE : data.oeeStart;
+                
+                const lineSit = line.situation || 'blueUpgrade';
+                const improvement = lineSit === 'noOEE' ? data.oeeNothingToT4A[scenario] : data.oeeBlueToT4A[scenario];
+                totalImprovement += improvement;
+
+                const costFactor = line.calcModel === 'cost' ? { conservative: 0.20, expected: 0.30, optimistic: 0.40 }[scenario] : 1;
+                totalAnnual += (lineOutput * lineMargin * lineOEE) * improvement * hours * costFactor;
+                
+                if (scenario === 'conservative') totalAddedValue += (lineOutput * lineMargin);
+            }
+        }
+
+        results[scenario] = {
+            annual: totalAnnual,
+            threeYear: totalAnnual * 2,
+            oeeIncrease: totalImprovement / totalLines
+        };
+    }
+
+    const avgAddedValue = totalLines > 0 ? totalAddedValue / totalLines : 0;
+    const selectedAnnual = results[selectedScenario].annual;
+    const totalCost3Years = totalFixedCost + (variableCost * 3);
+    const netBenefit = results[selectedScenario].threeYear - totalCost3Years;
+    const roi = totalCost3Years > 0 ? ((results[selectedScenario].threeYear / totalCost3Years) * 100).toFixed(0) : '0';
+
+    // Break-even in months (using selected scenario)
+    let breakEvenMonths = 0;
+    let cumulativeBenefit = 0;
+    let cumulativeCost = totalFixedCost;
+    for (let year = 1; year <= 20; year++) {
+        // OEE improvement ramps over 3 years: 1/3, 2/3, then full from year 3+
+        const rampFactor = year <= 3 ? year / 3 : 1;
+        const yearBenefit = selectedAnnual * rampFactor;
+        cumulativeBenefit += yearBenefit;
+        cumulativeCost += variableCost;
+        if (cumulativeBenefit >= cumulativeCost) {
+            if (year === 1) {
+                const prevGap = totalFixedCost;
+                const gapChange = yearBenefit - variableCost;
+                const fraction = prevGap / gapChange;
+                breakEvenMonths = Math.ceil(fraction * 12);
+            } else {
+                const prevBenefit = cumulativeBenefit - yearBenefit;
+                const prevCost = cumulativeCost - variableCost;
+                const prevGap = prevCost - prevBenefit;
+                const gapChange = yearBenefit - variableCost;
+                const fraction = prevGap / gapChange;
+                breakEvenMonths = Math.ceil(((year - 1) + fraction) * 12);
+            }
+            break;
+        }
+    }
+
+    const situationLabel = situation === 'noOEE' ? t('situationLabelNoOEE') : t('situationLabelBlue');
+    const outputLabels = { min: t('outputLabelLow'), avg: t('outputLabelAvg'), max: t('outputLabelHigh'), custom: t('optionCustom') };
+    const scenarioLabels = { conservative: t('conservative'), expected: t('expected'), optimistic: t('optimistic') };
+    const dateLocale = currentLang === 'nl' ? 'nl-NL' : 'en-GB';
+
+    const printContent = `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>${t('pdfTitle')} - ${companyName}</title>
+    <style>
+@page { margin: 15mm; size: A4; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', Arial, sans-serif; color: #1e293b; line-height: 1.5; font-size: 11pt; }
+
+.header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 15px; border-bottom: 3px solid #00AAFF; margin-bottom: 25px; }
+.header-left h1 { font-size: 22pt; font-weight: 800; color: #0f172a; }
+.header-left h1 span { color: #00AAFF; }
+.header-left .company { font-size: 14pt; color: #0f172a; font-weight: 600; margin-top: 3px; }
+.header-right { text-align: right; font-size: 9pt; color: #64748b; }
+.header-right .brand { font-weight: 700; color: #0f172a; font-size: 10pt; }
+
+.exec-summary { background: #0f172a; color: #ffffff; padding: 20px 25px; border-radius: 8px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
+.exec-summary .main-value .label { font-size: 9pt; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.8; }
+.exec-summary .main-value .number { font-size: 28pt; font-weight: 800; color: #00AAFF; }
+.exec-summary .metrics { display: flex; gap: 30px; }
+.exec-summary .metric { text-align: center; }
+.exec-summary .metric .value { font-size: 16pt; font-weight: 700; }
+.exec-summary .metric .label { font-size: 8pt; text-transform: uppercase; opacity: 0.7; }
+.exec-summary .metric.green .value { color: #4ade80; }
+.exec-summary .metric.cyan .value { color: #00AAFF; }
+
+.content-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 25px; }
+.section { margin-bottom: 20px; }
+.section-title { font-size: 11pt; font-weight: 700; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; margin-bottom: 12px; }
+
+.info-table { width: 100%; }
+.info-table tr td { padding: 6px 0; border-bottom: 1px solid #f1f5f9; font-size: 10pt; }
+.info-table tr:last-child td { border-bottom: none; }
+.info-table .label { color: #64748b; width: 50%; }
+.info-table .value { font-weight: 600; color: #0f172a; text-align: right; }
+
+.scenario-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+.scenario-table th { text-align: center; padding: 10px; font-size: 9pt; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b; border-bottom: 2px solid #e5e7eb; }
+.scenario-table th.expected { color: #00AAFF; background: #f0f9ff; border-radius: 6px 6px 0 0; }
+.scenario-table td { text-align: center; padding: 8px; font-size: 10pt; border-bottom: 1px solid #f1f5f9; }
+.scenario-table td.expected { background: #f0f9ff; }
+.scenario-table .row-label { text-align: left; color: #64748b; font-size: 9pt; }
+.scenario-table .value-row td { font-weight: 700; font-size: 12pt; color: #0f172a; }
+.scenario-table .value-row td.expected { color: #0284c7; }
+
+.financials { background: #f8fafc; border-radius: 8px; padding: 15px; }
+.financials-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e5e7eb; }
+.financials-row:last-child { border-bottom: none; }
+.financials-row .label { color: #64748b; font-size: 10pt; }
+.financials-row .value { font-weight: 600; font-size: 10pt; }
+.financials-row.total { background: #0f172a; color: #fff; margin: 10px -15px -15px -15px; padding: 12px 15px; border-radius: 0 0 8px 8px; }
+.financials-row.total .label { color: #fff; font-weight: 600; }
+.financials-row.total .value { color: #4ade80; font-size: 12pt; }
+
+.plant-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+.plant-card { background: #f8fafc; padding: 10px 12px; border-radius: 6px; border-left: 3px solid #00AAFF; }
+.plant-card .plant-name { font-weight: 600; font-size: 10pt; color: #0f172a; margin-bottom: 4px; }
+.plant-card .plant-lines { font-size: 9pt; color: #64748b; }
+
+.footer { margin-top: 30px; padding-top: 15px; border-top: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; font-size: 8pt; color: #94a3b8; }
+.footer-brand { font-weight: 600; color: #64748b; }
+
+@media print {
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+    </style>
+</head>
+<body>
+    <div class="header">
+<div class="header-left">
+    <h1>OEE <span>${t('pdfTitle')}</span></h1>
+    <div class="company">${companyName}</div>
+</div>
+<div class="header-right">
+    <div class="brand">Decide4Action</div>
+    ${new Date().toLocaleDateString(dateLocale, { day: 'numeric', month: 'long', year: 'numeric' })}
+</div>
+    </div>
+
+    <div class="exec-summary">
+<div class="main-value">
+    <div class="label">${scenarioLabels[selectedScenario]} - ${t('pdfExpectedSavings')}</div>
+    <div class="number">${formatCurrency(selectedAnnual)}</div>
+</div>
+<div class="metrics">
+    <div class="metric green">
+        <div class="value">${breakEvenMonths > 0 ? breakEvenMonths : '0'}</div>
+        <div class="label">${t('pdfMonthsBreakEven')}</div>
+    </div>
+    <div class="metric cyan">
+        <div class="value">${roi}%</div>
+        <div class="label">${t('pdfRoi3Year')}</div>
+    </div>
+    <div class="metric green">
+        <div class="value">${formatCurrency(netBenefit)}</div>
+        <div class="label">${t('pdfNetBenefit3Year')}</div>
+    </div>
+</div>
+    </div>
+
+    <div class="section">
+<div class="section-title">${t('pdfScenarioAnalysis')}</div>
+<table class="scenario-table">
+    <thead>
+        <tr>
+            <th></th>
+            <th${selectedScenario === 'conservative' ? ' class="expected"' : ''}>${t('conservative')}</th>
+            <th${selectedScenario === 'expected' ? ' class="expected"' : ''}>${t('expected')}</th>
+            <th${selectedScenario === 'optimistic' ? ' class="expected"' : ''}>${t('optimistic')}</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="value-row">
+            <td class="row-label">${t('pdfPerYear')}</td>
+            <td${selectedScenario === 'conservative' ? ' class="expected"' : ''}>${formatCurrency(results.conservative.annual)}</td>
+            <td${selectedScenario === 'expected' ? ' class="expected"' : ''}>${formatCurrency(results.expected.annual)}</td>
+            <td${selectedScenario === 'optimistic' ? ' class="expected"' : ''}>${formatCurrency(results.optimistic.annual)}</td>
+        </tr>
+        <tr class="value-row">
+            <td class="row-label">${t('pdfOver3Years')}</td>
+            <td${selectedScenario === 'conservative' ? ' class="expected"' : ''}>${formatCurrency(results.conservative.threeYear)}</td>
+            <td${selectedScenario === 'expected' ? ' class="expected"' : ''}>${formatCurrency(results.expected.threeYear)}</td>
+            <td${selectedScenario === 'optimistic' ? ' class="expected"' : ''}>${formatCurrency(results.optimistic.threeYear)}</td>
+        </tr>
+        <tr>
+            <td class="row-label">${t('pdfOeeImprovement')}</td>
+            <td${selectedScenario === 'conservative' ? ' class="expected"' : ''}>+${formatPercentage(results.conservative.oeeIncrease)}</td>
+            <td${selectedScenario === 'expected' ? ' class="expected"' : ''}>+${formatPercentage(results.expected.oeeIncrease)}</td>
+            <td${selectedScenario === 'optimistic' ? ' class="expected"' : ''}>+${formatPercentage(results.optimistic.oeeIncrease)}</td>
+        </tr>
+    </tbody>
+</table>
+    </div>
+
+    <div class="content-grid">
+<div>
+    <div class="section">
+        <div class="section-title">${t('pdfCompanyDetails')}</div>
+        <table class="info-table">
+            <tr><td class="label">${t('pdfCompany')}</td><td class="value">${companyName}</td></tr>
+            <tr><td class="label">${t('pdfSector')}</td><td class="value">${data.name}</td></tr>
+            <tr><td class="label">${t('pdfOeeSituation')}</td><td class="value">${situationLabel}</td></tr>
+            <tr><td class="label">${t('pdfValuePerHour')}</td><td class="value">${formatCurrency(avgAddedValue)}</td></tr>
+            <tr><td class="label">${t('breakEvenNotePrefix')} scenario</td><td class="value">${scenarioLabels[selectedScenario]}</td></tr>
+            <tr><td class="label">${t('pdfNumPlants')}</td><td class="value">${numPlants}</td></tr>
+            <tr><td class="label">${t('pdfTotalLines')}</td><td class="value">${totalLines}</td></tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <div class="section-title">${t('pdfOeeImprovementSection')}</div>
+        <table class="info-table">
+            <tr><td class="label">${t('pdfCurrentOee')}</td><td class="value">${(data.oeeStart * 100).toFixed(0)}%</td></tr>
+            <tr><td class="label">${t('pdfExpectedImprov')}</td><td class="value">+${formatPercentage(oeeData[selectedScenario])}</td></tr>
+            <tr><td class="label">${t('pdfPotentialOee')}</td><td class="value">${Math.min(95, (data.oeeStart + oeeData[selectedScenario]) * 100).toFixed(0)}%</td></tr>
+        </table>
+    </div>
+</div>
+
+<div>
+    <div class="section">
+        <div class="section-title">${t('pdfInvestment')}</div>
+        <div class="financials">
+            <div class="financials-row">
+                <span class="label">${t('pdfFixedCosts')}</span>
+                <span class="value">${formatCurrency(fixedFee)}</span>
+            </div>
+            ${internalCost > 0 ? `<div class="financials-row">
+                <span class="label">${t('pdfInternalCosts')}</span>
+                <span class="value">${formatCurrency(internalCost)}</span>
+            </div>` : ''}
+            <div class="financials-row">
+                <span class="label">${t('pdfVariableCosts')}</span>
+                <span class="value">${formatCurrency(variableCost)}</span>
+            </div>
+            <div class="financials-row">
+                <span class="label">${t('pdfTotalCosts3yr')}</span>
+                <span class="value">${formatCurrency(totalCost3Years)}</span>
+            </div>
+            <div class="financials-row total">
+                <span class="label">${t('pdfNetBenefitExpected')} (${scenarioLabels[selectedScenario]})</span>
+                <span class="value">${formatCurrency(netBenefit)}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">${t('pdfPlantsLines')}</div>
+        <div class="plant-grid">
+            ${Array.from({length: numPlants}, (_, i) => i + 1).map(p => `
+                <div class="plant-card">
+                    <div class="plant-name">Plant ${p}</div>
+                    <div class="plant-lines">${plantData[p].lines.map((l, j) => {
+                        const lineName = l.name || (t('pdfLine') + ' ' + (j+1));
+                        const outputText = l.outputLevel === 'custom' ? t('optionCustom') + ' (' + formatOutputValue(l.customOutput || 0) + ')' : outputLabels[l.outputLevel || 'avg'];
+                        const marginText = l.marginLevel === 'custom' ? t('optionCustom') + ' (' + formatMarginValue(l.customMargin || 0) + ')' : outputLabels[l.marginLevel || 'avg'];
+                        const modelText = l.calcModel === 'cost' ? t('modelCost') : t('modelDemand');
+                        return `${lineName}: ${l.shifts} ${l.shifts > 1 ? t('shifts') : t('shift')} | ${t('thOutput')}: ${outputText} | ${t('thMargin')}: ${marginText} | ${t('thModel')}: ${modelText}`;
+                    }).join('<br>')}</div>
+                </div>
+            `).join('')}
+        </div>
+    </div>
+</div>
+    </div>
+
+    <div class="footer">
+<div class="footer-brand">Decide4Action OEE ROI Calculator</div>
+<div>${t('pdfFooterData')}</div>
+    </div>
+</body>
+</html>`;
+
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+    printWindow.focus();
+    setTimeout(() => {
+        printWindow.print();
+    }, 250);
+}
+
+// ==========================================
+// INITIALIZE
+// ==========================================
 document.addEventListener('DOMContentLoaded', async function() {
     await loadSectorData();
     initSearchableSelect();
