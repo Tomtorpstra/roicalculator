@@ -72,15 +72,6 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="currentSituation" data-i18n="currentSituationLabel">Huidige OEE Situatie</label>
-                        <select id="currentSituation" onchange="calculate()">
-                            <option value="" data-i18n="situationDefault">-- Selecteer uw huidige situatie --</option>
-                            <option value="noOEE" data-i18n="situationNoOEE">Nieuwe klant - Geen OEE registratie (naar T4A/P4A)</option>
-                            <option value="blueUpgrade" data-i18n="situationBlue">OEE Blue upgrade (naar T4A/P4A)</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
                         <label for="numPlants" data-i18n="numPlantsLabel">Aantal Plants</label>
                         <div class="slider-input">
                             <input type="range" id="numPlantsSlider" min="1" max="10" value="1" oninput="syncPlantSlider(this.value)">
