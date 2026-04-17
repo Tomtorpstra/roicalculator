@@ -785,18 +785,10 @@ function renderPlantContent() {
             `;
         });
         tableHTML += `</tbody></table><button class="btn btn-primary" onclick="addLine(${p})">${t('addLineBtn')}</button>`;
-        container.innerHTML = tableHTML;
-    }
-
-        tableHTML += `
-                </tbody>
-            </table>
-            <button class="btn btn-primary" onclick="addLine(${p})">${t('addLineBtn')}</button>
-        `;
-
         content.innerHTML = tableHTML;
         container.appendChild(content);
     }
+}
 
 function addLine(plantNum) {
     plantData[plantNum].lines.push({ shifts: 3, outputLevel: 'avg', marginLevel: 'avg', name: '', customOutput: null, customMargin: null, calcModel: 'demand', currentOEE: null });
@@ -1230,21 +1222,18 @@ function renderGraph(yearData, fixedFee, variableCost) {
 function exportPDF() {
     const companyName = document.getElementById('companyName').value || t('companyDefault');
     const sector = document.getElementById('sector').value;
-    const situation = document.getElementById('currentSituation').value;
 
-    if (!sector || !situation) {
+    if (!sector) {
         alert(t('alertFillIn'));
         return;
     }
 
     const data = sectorData[sector];
-    const oeeData = situation === 'noOEE' ? data.oeeNothingToT4A : data.oeeBlueToT4A;
     const fixedFee = parseFloat(document.getElementById('fixedFee').value) || 0;
     const variableCost = parseFloat(document.getElementById('variableCost').value) || 0;
     const internalCost = parseFloat(document.getElementById('internalCost').value) || 0;
     const totalFixedCost = fixedFee + internalCost;
 
-    // Calculate all scenarios (per-line output/margin)
     const scenarios = ['conservative', 'expected', 'optimistic'];
     const results = {};
     let totalLines = 0;
@@ -1256,28 +1245,31 @@ function exportPDF() {
 
     for (const scenario of scenarios) {
         let totalAnnual = 0;
+        let totalImprovement = 0;
 
         for (let p = 1; p <= numPlants; p++) {
             for (const line of plantData[p].lines) {
-                const hours = workHours[line.shifts.toString()];
+                const hours = workHours[line.shifts.toString()] || 2000;
                 const lineOutput = line.outputLevel === 'custom' ? (line.customOutput || 0) : data.outputPerHour[line.outputLevel || 'avg'];
                 const lineMargin = line.marginLevel === 'custom' ? (line.customMargin || 0) : data.marginPerUnit[line.marginLevel || 'avg'];
                 const lineAddedValue = lineOutput * lineMargin;
                 const lineOEE = line.currentOEE !== null ? line.currentOEE : data.oeeStart;
-                const effectiveValue = lineAddedValue * lineOEE;
-                const costFactor = line.calcModel === 'cost'
-                    ? { conservative: 0.20, expected: 0.30, optimistic: 0.40 }[scenario]
-                    : 1;
-                totalAnnual += effectiveValue * oeeData[scenario] * hours * costFactor;
+                
+                const lineSit = line.situation || 'blueUpgrade';
+                const improvement = lineSit === 'noOEE' ? data.oeeNothingToT4A[scenario] : data.oeeBlueToT4A[scenario];
+                totalImprovement += improvement;
+
+                const costFactor = line.calcModel === 'cost' ? { conservative: 0.20, expected: 0.30, optimistic: 0.40 }[scenario] : 1;
+                totalAnnual += (lineAddedValue * lineOEE) * improvement * hours * costFactor;
+                
                 if (scenario === 'conservative') totalAddedValue += lineAddedValue;
             }
         }
 
-        // OEE improvement ramps evenly over 3 years: 1/3, 2/3, 3/3
         results[scenario] = {
             annual: totalAnnual,
-            threeYear: totalAnnual * (1/3 + 2/3 + 1),
-            oeeIncrease: oeeData[scenario]
+            threeYear: totalAnnual * 2,
+            oeeIncrease: totalImprovement / totalLines
         };
     }
 
@@ -1285,7 +1277,7 @@ function exportPDF() {
     const selectedAnnual = results[selectedScenario].annual;
     const totalCost3Years = totalFixedCost + (variableCost * 3);
     const netBenefit = results[selectedScenario].threeYear - totalCost3Years;
-    const roi = totalCost3Years > 0 ? ((results[selectedScenario].threeYear / totalCost3Years) * 100).toFixed(0) : '\u221E';
+    const roi = totalCost3Years > 0 ? ((results[selectedScenario].threeYear / totalCost3Years) * 100).toFixed(0) : '0';
 
     // Break-even in months (using selected scenario)
     let breakEvenMonths = 0;
