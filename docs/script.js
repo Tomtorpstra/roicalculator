@@ -785,13 +785,13 @@ function renderPlantContent() {
             `;
         });
         tableHTML += `</tbody></table><button class="btn btn-primary" onclick="addLine(${p})">${t('addLineBtn')}</button>`;
-        container.innerHTML = tableHTML;
+        content.innerHTML = tableHTML;
         container.appendChild(content);
     }
 }
 
 function addLine(plantNum) {
-    plantData[plantNum].lines.push({ shifts: 3, outputLevel: 'avg', marginLevel: 'avg', name: '', customOutput: null, customMargin: null, calcModel: 'demand', currentOEE: null });
+    plantData[plantNum].lines.push({ shifts: 3, outputLevel: 'avg', marginLevel: 'avg', name: '', customOutput: null, customMargin: null, calcModel: 'demand', currentOEE: null, situation: 'blueUpgrade' });
     renderPlantContent();
     calculate();
 }
@@ -865,8 +865,9 @@ function calculate() {
     const exportBtn = document.getElementById('exportBtn');
     const calcBreakdownCard = document.getElementById('calcBreakdownCard');
 
+    // Only hide if sector is missing
     if (!sector || !sectorData[sector]) {
-        placeholderCard.style.display = 'block';
+        if (placeholderCard) placeholderCard.style.display = 'block';
         if (scenarioCard) scenarioCard.style.display = 'none';
         if (sectorCard) sectorCard.style.display = 'none';
         if (breakEvenCard) breakEvenCard.style.display = 'none';
@@ -875,7 +876,7 @@ function calculate() {
         return;
     }
 
-    placeholderCard.style.display = 'none';
+    if (placeholderCard) placeholderCard.style.display = 'none';
     if (scenarioCard) scenarioCard.style.display = 'block';
     if (sectorCard) sectorCard.style.display = 'block';
     if (breakEvenCard) breakEvenCard.style.display = 'block';
@@ -907,16 +908,13 @@ function calculate() {
                 const output = line.outputLevel === 'custom' ? (line.customOutput || 0) : data.outputPerHour[line.outputLevel || 'avg'];
                 const margin = line.marginLevel === 'custom' ? (line.customMargin || 0) : data.marginPerUnit[line.marginLevel || 'avg'];
                 const oeeStart = line.currentOEE !== null ? line.currentOEE : data.oeeStart;
-                
                 const lineSit = line.situation || 'blueUpgrade';
                 
-                // --- FIXED IMPROVEMENT LOGIC FOR AANGEPAST ---
                 let improvement;
                 if (scenario === 'aangepast') {
                     const customInput = document.getElementById('customOEEInput');
-                    // Get value from blue box (0.3) and convert to decimal if needed, 
-                    // or use as decimal if user typed 0.3
                     let val = customInput ? parseFloat(customInput.value.replace(',', '.')) : 0;
+                    // Auto-convert percentage (e.g., 30) to decimal (0.3)
                     improvement = val > 1 ? val / 100 : val; 
                 } else {
                     improvement = lineSit === 'noOEE' ? data.oeeNothingToT4A[scenario] : data.oeeBlueToT4A[scenario];
@@ -947,11 +945,10 @@ function calculate() {
                 }
             }
         }
-
         results[scenario] = { annual: totalAnnual, threeYear: totalAnnual * 2 };
     }
 
-    // Update Scenario Cards & Averages
+    // Update Scenario Cards UI
     for (const scenario of scenarios) {
         const annualEl = document.getElementById(scenario + 'Annual');
         const threeYearEl = document.getElementById(scenario + 'ThreeYear');
@@ -960,10 +957,13 @@ function calculate() {
         if (annualEl) annualEl.textContent = formatCurrency(results[scenario].annual);
         if (threeYearEl) threeYearEl.textContent = formatCurrency(results[scenario].threeYear);
         
-        // Update OEE improvement text labels (skip for Aangepast box itself)
         if (oeeEl && scenario !== 'aangepast') {
             let totalImprov = 0;
-            for(let p=1; p<=numPlants; p++) plantData[p].lines.forEach(l => totalImprov += (l.situation === 'noOEE' ? data.oeeNothingToT4A[scenario] : data.oeeBlueToT4A[scenario]));
+            for(let p=1; p<=numPlants; p++) {
+                plantData[p].lines.forEach(l => {
+                    totalImprov += (l.situation === 'noOEE' ? data.oeeNothingToT4A[scenario] : data.oeeBlueToT4A[scenario]);
+                });
+            }
             oeeEl.textContent = '+' + formatPercentage(totalImprov / totalLines);
         }
     }
@@ -1271,7 +1271,6 @@ function exportPDF() {
                 const hours = workHours[line.shifts.toString()] || 2000;
                 const lineOutput = line.outputLevel === 'custom' ? (line.customOutput || 0) : data.outputPerHour[line.outputLevel || 'avg'];
                 const lineMargin = line.marginLevel === 'custom' ? (line.customMargin || 0) : data.marginPerUnit[line.marginLevel || 'avg'];
-                const lineAddedValue = lineOutput * lineMargin;
                 const lineOEE = line.currentOEE !== null ? line.currentOEE : data.oeeStart;
                 
                 const lineSit = line.situation || 'blueUpgrade';
@@ -1279,9 +1278,9 @@ function exportPDF() {
                 totalImprovement += improvement;
 
                 const costFactor = line.calcModel === 'cost' ? { conservative: 0.20, expected: 0.30, optimistic: 0.40 }[scenario] : 1;
-                totalAnnual += (lineAddedValue * lineOEE) * improvement * hours * costFactor;
+                totalAnnual += (lineOutput * lineMargin * lineOEE) * improvement * hours * costFactor;
                 
-                if (scenario === 'conservative') totalAddedValue += lineAddedValue;
+                if (scenario === 'conservative') totalAddedValue += (lineOutput * lineMargin);
             }
         }
 
