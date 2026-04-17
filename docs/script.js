@@ -1243,7 +1243,7 @@ function renderGraph(yearData, fixedFee, variableCost) {
 // PDF EXPORT
 // ==========================================
 function exportPDF() {
-    const companyName = document.getElementById('companyName').value || t('companyDefault');
+    // 1. Removed companyName check and situation dropdown check to prevent crashes
     const sector = document.getElementById('sector').value;
 
     if (!sector) {
@@ -1257,7 +1257,8 @@ function exportPDF() {
     const internalCost = parseFloat(document.getElementById('internalCost').value) || 0;
     const totalFixedCost = fixedFee + internalCost;
 
-    const scenarios = ['conservative', 'expected', 'optimistic'];
+    // Include all 4 scenarios so the PDF works regardless of which card is selected
+    const scenarios = ['conservative', 'expected', 'optimistic', 'aangepast'];
     const results = {};
     let totalLines = 0;
     let totalAddedValue = 0;
@@ -1279,10 +1280,21 @@ function exportPDF() {
                 const lineOEE = line.currentOEE !== null ? line.currentOEE : data.oeeStart;
                 
                 const lineSit = line.situation || 'blueUpgrade';
-                const improvement = lineSit === 'noOEE' ? data.oeeNothingToT4A[scenario] : data.oeeBlueToT4A[scenario];
+                
+                let improvement;
+                if (scenario === 'aangepast') {
+                    const customInput = document.getElementById('customOEEInput');
+                    let val = customInput ? parseFloat(customInput.value.replace(',', '.')) : 0;
+                    improvement = val > 1 ? val / 100 : val; 
+                } else {
+                    improvement = lineSit === 'noOEE' ? data.oeeNothingToT4A[scenario] : data.oeeBlueToT4A[scenario];
+                }
+                
                 totalImprovement += improvement;
 
-                const costFactor = line.calcModel === 'cost' ? { conservative: 0.20, expected: 0.30, optimistic: 0.40 }[scenario] : 1;
+                const costFactor = line.calcModel === 'cost' ? 
+                    { conservative: 0.20, expected: 0.30, optimistic: 0.40, aangepast: 0.30 }[scenario] : 1;
+                
                 totalAnnual += (lineOutput * lineMargin * lineOEE) * improvement * hours * costFactor;
                 
                 if (scenario === 'conservative') {
@@ -1301,12 +1313,15 @@ function exportPDF() {
 
     const avgAddedValue = totalLines > 0 ? totalAddedValue / totalLines : 0;
     const avgStartOEE = totalLines > 0 ? totalStartOEE / totalLines : data.oeeStart;
-    const selectedAnnual = results[selectedScenario] ? results[selectedScenario].annual : results['expected'].annual;
+    
+    // Safety: use selectedScenario or fallback to expected
+    const activeRes = results[selectedScenario] || results['expected'];
+    const selectedAnnual = activeRes.annual;
     const totalCost3Years = totalFixedCost + (variableCost * 3);
-    const netBenefit = (results[selectedScenario] ? results[selectedScenario].threeYear : results['expected'].threeYear) - totalCost3Years;
-    const roi = totalCost3Years > 0 ? (((results[selectedScenario] ? results[selectedScenario].threeYear : results['expected'].threeYear) / totalCost3Years) * 100).toFixed(0) : '0';
+    const netBenefit = activeRes.threeYear - totalCost3Years;
+    const roi = totalCost3Years > 0 ? ((activeRes.threeYear / totalCost3Years) * 100).toFixed(0) : '0';
 
-    // Break-even in months
+    // Break-even Calculation
     let breakEvenMonths = 0;
     let cumulativeBenefit = 0;
     let cumulativeCost = totalFixedCost;
@@ -1318,7 +1333,7 @@ function exportPDF() {
         if (cumulativeBenefit >= cumulativeCost) {
             const prevBenefit = cumulativeBenefit - yearBenefit;
             const prevCost = cumulativeCost - variableCost;
-            const prevGap = prevCost - prevBenefit;
+            const prevGap = Math.max(0, prevCost - prevBenefit);
             const gapChange = yearBenefit - variableCost;
             const fraction = gapChange > 0 ? prevGap / gapChange : 0;
             breakEvenMonths = Math.ceil(((year - 1) + fraction) * 12);
@@ -1326,16 +1341,16 @@ function exportPDF() {
         }
     }
 
-    const outputLabels = { min: t('optionLow'), avg: t('optionAvg'), max: t('optionHigh'), custom: t('optionCustom') };
-    const scenarioLabels = { conservative: t('conservative'), expected: t('expected'), optimistic: t('optimistic') };
+    const scenarioLabels = { conservative: t('conservative'), expected: t('expected'), optimistic: t('optimistic'), aangepast: t('optionCustom') };
     const dateLocale = currentLang === 'nl' ? 'nl-NL' : 'en-GB';
 
+    // Generate the HTML for the PDF (Removed Company Name references)
     const printContent = `
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>${t('pdfTitle')} - ${companyName}</title>
+    <title>${t('pdfTitle')}</title>
     <style>
         @page { margin: 15mm; size: A4; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -1343,7 +1358,6 @@ function exportPDF() {
         .header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 15px; border-bottom: 3px solid #00AAFF; margin-bottom: 25px; }
         .header-left h1 { font-size: 22pt; font-weight: 800; color: #0f172a; }
         .header-left h1 span { color: #00AAFF; }
-        .header-left .company { font-size: 14pt; color: #0f172a; font-weight: 600; margin-top: 3px; }
         .header-right { text-align: right; font-size: 9pt; color: #64748b; }
         .header-right .brand { font-weight: 700; color: #0f172a; font-size: 10pt; }
         .exec-summary { background: #0f172a; color: #ffffff; padding: 20px 25px; border-radius: 8px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
@@ -1370,7 +1384,6 @@ function exportPDF() {
         .financials { background: #f8fafc; border-radius: 8px; padding: 15px; }
         .financials-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e5e7eb; }
         .financials-row.total { background: #0f172a; color: #fff; margin: 10px -15px -15px -15px; padding: 12px 15px; border-radius: 0 0 8px 8px; }
-        .plant-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
         .plant-card { background: #f8fafc; padding: 10px 12px; border-radius: 6px; border-left: 3px solid #00AAFF; margin-bottom:5px;}
         .footer { margin-top: 30px; padding-top: 15px; border-top: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; font-size: 8pt; color: #94a3b8; }
         @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
@@ -1380,7 +1393,6 @@ function exportPDF() {
     <div class="header">
         <div class="header-left">
             <h1>OEE <span>${t('pdfTitle')}</span></h1>
-            <div class="company">${companyName}</div>
         </div>
         <div class="header-right">
             <div class="brand">Decide4Action</div>
@@ -1442,7 +1454,6 @@ function exportPDF() {
             <div class="section">
                 <div class="section-title">${t('pdfCompanyDetails')}</div>
                 <table class="info-table">
-                    <tr><td class="label">${t('pdfCompany')}</td><td class="value">${companyName}</td></tr>
                     <tr><td class="label">${t('pdfSector')}</td><td class="value">${data.name}</td></tr>
                     <tr><td class="label">${t('pdfValuePerHour')}</td><td class="value">${formatCurrency(avgAddedValue)}</td></tr>
                     <tr><td class="label">${t('pdfNumPlants')}</td><td class="value">${numPlants}</td></tr>
@@ -1453,7 +1464,7 @@ function exportPDF() {
                 <div class="section-title">${t('pdfOeeImprovementSection')}</div>
                 <table class="info-table">
                     <tr><td class="label">${t('pdfCurrentOee')}</td><td class="value">${(avgStartOEE * 100).toFixed(0)}%</td></tr>
-                    <tr><td class="label">${t('pdfExpectedImprov')}</td><td class="value">+${formatPercentage(results[selectedScenario].oeeIncrease)}</td></tr>
+                    <tr><td class="label">${t('pdfExpectedImprov')}</td><td class="value">+${formatPercentage(activeRes.oeeIncrease)}</td></tr>
                 </table>
             </div>
         </div>
@@ -1466,17 +1477,6 @@ function exportPDF() {
                     <div class="financials-row total"><span class="label">${t('pdfNetBenefitExpected')}</span><span class="value">${formatCurrency(netBenefit)}</span></div>
                 </div>
             </div>
-            <div class="section">
-                <div class="section-title">${t('pdfPlantsLines')}</div>
-                <div class="plant-grid">
-                    ${Object.keys(plantData).map(p => `
-                        <div class="plant-card">
-                            <strong>Plant ${p}</strong><br>
-                            ${plantData[p].lines.length} ${t('pdfTotalLines')}
-                        </div>
-                    `).join('')}
-                </div>
-            </div>
         </div>
     </div>
     <div class="footer">
@@ -1486,11 +1486,18 @@ function exportPDF() {
 </body>
 </html>`;
 
+    // Open window and print
     const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+        alert("Pop-up geblokkeerd! Sta pop-ups toe om de PDF te openen.");
+        return;
+    }
     printWindow.document.write(printContent);
     printWindow.document.close();
     printWindow.focus();
-    setTimeout(() => { printWindow.print(); }, 500);
+    setTimeout(() => {
+        printWindow.print();
+    }, 500);
 }
 
 // ==========================================
