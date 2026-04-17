@@ -629,11 +629,18 @@ function onSectorChange() {
 // ==========================================
 function selectScenario(scenario) {
     selectedScenario = scenario;
+    
+    // UI Update: Highlight the selected card
     document.querySelectorAll('.scenario-card').forEach(card => {
         card.classList.remove('selected');
     });
+    
     const selectedCard = document.querySelector(`.scenario-card[data-scenario="${scenario}"]`);
-    if (selectedCard) selectedCard.classList.add('selected');
+    if (selectedCard) {
+        selectedCard.classList.add('selected');
+    }
+
+    // Trigger the calculation with the new state
     calculate();
 }
 
@@ -955,7 +962,6 @@ function calculate() {
 
     // Update Scenario Cards UI
     for (const scenario of scenarios) {
-        // IMPORTANT: Map 'aangepast' to the 'custom' ID used in your HTML
         const idPrefix = scenario === 'aangepast' ? 'custom' : scenario;
         const annualEl = document.getElementById(idPrefix + 'Annual');
         const threeYearEl = document.getElementById(idPrefix + 'ThreeYear');
@@ -963,8 +969,6 @@ function calculate() {
 
         if (annualEl) annualEl.textContent = formatCurrency(results[scenario].annual);
         if (threeYearEl) threeYearEl.textContent = formatCurrency(results[scenario].threeYear);
-        
-        // Only update the improvement % text for the first 3 cards
         if (oeeEl && scenario !== 'aangepast') {
             oeeEl.textContent = '+' + formatPercentage(results[scenario].avgImprov);
         }
@@ -973,12 +977,10 @@ function calculate() {
     const avgOEE = totalLines > 0 ? totalWeightedOEE / totalLines : data.oeeStart;
     const activeRes = results[selectedScenario] || results['expected'];
 
-    // Update Sector Info Display
     document.getElementById('addedValueDisplay').textContent = formatCurrency(totalLines > 0 ? totalAddedValue / totalLines : 0) + t('perHourSuffix');
     document.getElementById('oeeStartDisplay').textContent = formatPercentage(avgOEE);
     document.getElementById('oeeImprovementDisplay').textContent = '+' + formatPercentage(activeRes.avgImprov);
     
-    // Update Comparison Bars
     const currentBar = document.getElementById('currentBar');
     const potentialBar = document.getElementById('potentialBar');
     const gapLabel = document.getElementById('gapLabel');
@@ -993,11 +995,9 @@ function calculate() {
     }
     if (gapLabel) gapLabel.textContent = '+' + formatPercentage(activeRes.avgImprov);
 
-    // Refresh breakdown and graph using the SELECTED scenario (works for aangepast now!)
     renderCalcBreakdown(breakdownRows, activeRes.annual);
     renderGraph(calculateBreakEven(activeRes.annual, totalFixedCost, variableCost));
 
-    // Update Break-even Note
     const scenarioLabels = { 
         conservative: t('conservative'), 
         expected: t('expected'), 

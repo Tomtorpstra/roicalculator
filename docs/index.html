@@ -201,20 +201,19 @@
                             <div class="scenario-oee-label" data-i18n="oeeImprovement">OEE verbetering</div>
                         </div>
 
-                        <div class="scenario-card" data-scenario="custom" onclick="selectScenario('custom')">
-                            <div class="scenario-label" data-i18n="custom">Aangepast</div>
-                            <div class="scenario-annual" id="customAnnual">-</div>
-                            <div class="scenario-annual-label" data-i18n="perYear">per jaar</div>
-                            <div class="scenario-divider"></div>
-                            <div class="scenario-three-year" id="customThreeYear">-</div>
-                            <div class="scenario-three-year-label" data-i18n="overThreeYears">over 3 jaar</div>
-                            <div class="scenario-divider"></div>
-                            <div class="custom-oee-input-wrapper">
-                                <input type="number" id="customOEEInput" class="custom-oee-input" min="0" max="100" step="0.1" placeholder="%" onclick="event.stopPropagation()" onchange="calculate()" oninput="calculate()">
-                            </div>
-                            <div class="scenario-oee-label" data-i18n="oeeImprovement">OEE verbetering</div>
-                        </div>
-                    </div>
+                        <div class="scenario-card" data-scenario="aangepast" onclick="selectScenario('aangepast')">
+    <div class="scenario-label" data-i18n="custom">Aangepast</div>
+    <div class="scenario-annual" id="customAnnual">-</div>
+    <div class="scenario-annual-label" data-i18n="perYear">per jaar</div>
+    <div class="scenario-divider"></div>
+    <div class="scenario-three-year" id="customThreeYear">-</div>
+    <div class="scenario-three-year-label" data-i18n="overThreeYears">over 3 jaar</div>
+    <div class="scenario-divider"></div>
+    <div class="custom-oee-input-wrapper">
+        <input type="number" id="customOEEInput" class="custom-oee-input" min="0" max="100" step="0.1" placeholder="%" oninput="calculate()">
+    </div>
+    <div class="scenario-oee-label" data-i18n="oeeImprovement">OEE verbetering</div>
+</div>
                 </div>
 
                 <!-- Calculation Breakdown Card -->
