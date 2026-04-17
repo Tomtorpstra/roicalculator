@@ -1261,6 +1261,7 @@ function exportPDF() {
     const results = {};
     let totalLines = 0;
     let totalAddedValue = 0;
+    let totalStartOEE = 0;
 
     for (let p = 1; p <= numPlants; p++) {
         totalLines += plantData[p].lines.length;
@@ -1284,7 +1285,10 @@ function exportPDF() {
                 const costFactor = line.calcModel === 'cost' ? { conservative: 0.20, expected: 0.30, optimistic: 0.40 }[scenario] : 1;
                 totalAnnual += (lineOutput * lineMargin * lineOEE) * improvement * hours * costFactor;
                 
-                if (scenario === 'conservative') totalAddedValue += (lineOutput * lineMargin);
+                if (scenario === 'conservative') {
+                    totalAddedValue += (lineOutput * lineMargin);
+                    totalStartOEE += lineOEE;
+                }
             }
         }
 
@@ -1296,41 +1300,33 @@ function exportPDF() {
     }
 
     const avgAddedValue = totalLines > 0 ? totalAddedValue / totalLines : 0;
-    const selectedAnnual = results[selectedScenario].annual;
+    const avgStartOEE = totalLines > 0 ? totalStartOEE / totalLines : data.oeeStart;
+    const selectedAnnual = results[selectedScenario] ? results[selectedScenario].annual : results['expected'].annual;
     const totalCost3Years = totalFixedCost + (variableCost * 3);
-    const netBenefit = results[selectedScenario].threeYear - totalCost3Years;
-    const roi = totalCost3Years > 0 ? ((results[selectedScenario].threeYear / totalCost3Years) * 100).toFixed(0) : '0';
+    const netBenefit = (results[selectedScenario] ? results[selectedScenario].threeYear : results['expected'].threeYear) - totalCost3Years;
+    const roi = totalCost3Years > 0 ? (((results[selectedScenario] ? results[selectedScenario].threeYear : results['expected'].threeYear) / totalCost3Years) * 100).toFixed(0) : '0';
 
-    // Break-even in months (using selected scenario)
+    // Break-even in months
     let breakEvenMonths = 0;
     let cumulativeBenefit = 0;
     let cumulativeCost = totalFixedCost;
-    for (let year = 1; year <= 20; year++) {
-        // OEE improvement ramps over 3 years: 1/3, 2/3, then full from year 3+
+    for (let year = 1; year <= 10; year++) {
         const rampFactor = year <= 3 ? year / 3 : 1;
         const yearBenefit = selectedAnnual * rampFactor;
         cumulativeBenefit += yearBenefit;
         cumulativeCost += variableCost;
         if (cumulativeBenefit >= cumulativeCost) {
-            if (year === 1) {
-                const prevGap = totalFixedCost;
-                const gapChange = yearBenefit - variableCost;
-                const fraction = prevGap / gapChange;
-                breakEvenMonths = Math.ceil(fraction * 12);
-            } else {
-                const prevBenefit = cumulativeBenefit - yearBenefit;
-                const prevCost = cumulativeCost - variableCost;
-                const prevGap = prevCost - prevBenefit;
-                const gapChange = yearBenefit - variableCost;
-                const fraction = prevGap / gapChange;
-                breakEvenMonths = Math.ceil(((year - 1) + fraction) * 12);
-            }
+            const prevBenefit = cumulativeBenefit - yearBenefit;
+            const prevCost = cumulativeCost - variableCost;
+            const prevGap = prevCost - prevBenefit;
+            const gapChange = yearBenefit - variableCost;
+            const fraction = gapChange > 0 ? prevGap / gapChange : 0;
+            breakEvenMonths = Math.ceil(((year - 1) + fraction) * 12);
             break;
         }
     }
 
-    const situationLabel = situation === 'noOEE' ? t('situationLabelNoOEE') : t('situationLabelBlue');
-    const outputLabels = { min: t('outputLabelLow'), avg: t('outputLabelAvg'), max: t('outputLabelHigh'), custom: t('optionCustom') };
+    const outputLabels = { min: t('optionLow'), avg: t('optionAvg'), max: t('optionHigh'), custom: t('optionCustom') };
     const scenarioLabels = { conservative: t('conservative'), expected: t('expected'), optimistic: t('optimistic') };
     const dateLocale = currentLang === 'nl' ? 'nl-NL' : 'en-GB';
 
@@ -1341,210 +1337,151 @@ function exportPDF() {
     <meta charset="UTF-8">
     <title>${t('pdfTitle')} - ${companyName}</title>
     <style>
-@page { margin: 15mm; size: A4; }
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Segoe UI', Arial, sans-serif; color: #1e293b; line-height: 1.5; font-size: 11pt; }
-
-.header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 15px; border-bottom: 3px solid #00AAFF; margin-bottom: 25px; }
-.header-left h1 { font-size: 22pt; font-weight: 800; color: #0f172a; }
-.header-left h1 span { color: #00AAFF; }
-.header-left .company { font-size: 14pt; color: #0f172a; font-weight: 600; margin-top: 3px; }
-.header-right { text-align: right; font-size: 9pt; color: #64748b; }
-.header-right .brand { font-weight: 700; color: #0f172a; font-size: 10pt; }
-
-.exec-summary { background: #0f172a; color: #ffffff; padding: 20px 25px; border-radius: 8px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
-.exec-summary .main-value .label { font-size: 9pt; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.8; }
-.exec-summary .main-value .number { font-size: 28pt; font-weight: 800; color: #00AAFF; }
-.exec-summary .metrics { display: flex; gap: 30px; }
-.exec-summary .metric { text-align: center; }
-.exec-summary .metric .value { font-size: 16pt; font-weight: 700; }
-.exec-summary .metric .label { font-size: 8pt; text-transform: uppercase; opacity: 0.7; }
-.exec-summary .metric.green .value { color: #4ade80; }
-.exec-summary .metric.cyan .value { color: #00AAFF; }
-
-.content-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 25px; }
-.section { margin-bottom: 20px; }
-.section-title { font-size: 11pt; font-weight: 700; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; margin-bottom: 12px; }
-
-.info-table { width: 100%; }
-.info-table tr td { padding: 6px 0; border-bottom: 1px solid #f1f5f9; font-size: 10pt; }
-.info-table tr:last-child td { border-bottom: none; }
-.info-table .label { color: #64748b; width: 50%; }
-.info-table .value { font-weight: 600; color: #0f172a; text-align: right; }
-
-.scenario-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
-.scenario-table th { text-align: center; padding: 10px; font-size: 9pt; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b; border-bottom: 2px solid #e5e7eb; }
-.scenario-table th.expected { color: #00AAFF; background: #f0f9ff; border-radius: 6px 6px 0 0; }
-.scenario-table td { text-align: center; padding: 8px; font-size: 10pt; border-bottom: 1px solid #f1f5f9; }
-.scenario-table td.expected { background: #f0f9ff; }
-.scenario-table .row-label { text-align: left; color: #64748b; font-size: 9pt; }
-.scenario-table .value-row td { font-weight: 700; font-size: 12pt; color: #0f172a; }
-.scenario-table .value-row td.expected { color: #0284c7; }
-
-.financials { background: #f8fafc; border-radius: 8px; padding: 15px; }
-.financials-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e5e7eb; }
-.financials-row:last-child { border-bottom: none; }
-.financials-row .label { color: #64748b; font-size: 10pt; }
-.financials-row .value { font-weight: 600; font-size: 10pt; }
-.financials-row.total { background: #0f172a; color: #fff; margin: 10px -15px -15px -15px; padding: 12px 15px; border-radius: 0 0 8px 8px; }
-.financials-row.total .label { color: #fff; font-weight: 600; }
-.financials-row.total .value { color: #4ade80; font-size: 12pt; }
-
-.plant-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
-.plant-card { background: #f8fafc; padding: 10px 12px; border-radius: 6px; border-left: 3px solid #00AAFF; }
-.plant-card .plant-name { font-weight: 600; font-size: 10pt; color: #0f172a; margin-bottom: 4px; }
-.plant-card .plant-lines { font-size: 9pt; color: #64748b; }
-
-.footer { margin-top: 30px; padding-top: 15px; border-top: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; font-size: 8pt; color: #94a3b8; }
-.footer-brand { font-weight: 600; color: #64748b; }
-
-@media print {
-    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-}
+        @page { margin: 15mm; size: A4; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; color: #1e293b; line-height: 1.5; font-size: 11pt; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 15px; border-bottom: 3px solid #00AAFF; margin-bottom: 25px; }
+        .header-left h1 { font-size: 22pt; font-weight: 800; color: #0f172a; }
+        .header-left h1 span { color: #00AAFF; }
+        .header-left .company { font-size: 14pt; color: #0f172a; font-weight: 600; margin-top: 3px; }
+        .header-right { text-align: right; font-size: 9pt; color: #64748b; }
+        .header-right .brand { font-weight: 700; color: #0f172a; font-size: 10pt; }
+        .exec-summary { background: #0f172a; color: #ffffff; padding: 20px 25px; border-radius: 8px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
+        .exec-summary .main-value .label { font-size: 9pt; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.8; }
+        .exec-summary .main-value .number { font-size: 28pt; font-weight: 800; color: #00AAFF; }
+        .exec-summary .metrics { display: flex; gap: 30px; }
+        .exec-summary .metric { text-align: center; }
+        .exec-summary .metric .value { font-size: 16pt; font-weight: 700; }
+        .exec-summary .metric .label { font-size: 8pt; text-transform: uppercase; opacity: 0.7; }
+        .exec-summary .metric.green .value { color: #4ade80; }
+        .exec-summary .metric.cyan .value { color: #00AAFF; }
+        .content-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 25px; }
+        .section { margin-bottom: 20px; }
+        .section-title { font-size: 11pt; font-weight: 700; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; margin-bottom: 12px; }
+        .info-table { width: 100%; }
+        .info-table tr td { padding: 6px 0; border-bottom: 1px solid #f1f5f9; font-size: 10pt; }
+        .info-table .label { color: #64748b; width: 50%; }
+        .info-table .value { font-weight: 600; color: #0f172a; text-align: right; }
+        .scenario-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+        .scenario-table th { text-align: center; padding: 10px; font-size: 9pt; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b; border-bottom: 2px solid #e5e7eb; }
+        .scenario-table td { text-align: center; padding: 8px; font-size: 10pt; border-bottom: 1px solid #f1f5f9; }
+        .scenario-table .row-label { text-align: left; color: #64748b; font-size: 9pt; }
+        .scenario-table .value-row td { font-weight: 700; font-size: 12pt; color: #0f172a; }
+        .financials { background: #f8fafc; border-radius: 8px; padding: 15px; }
+        .financials-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e5e7eb; }
+        .financials-row.total { background: #0f172a; color: #fff; margin: 10px -15px -15px -15px; padding: 12px 15px; border-radius: 0 0 8px 8px; }
+        .plant-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        .plant-card { background: #f8fafc; padding: 10px 12px; border-radius: 6px; border-left: 3px solid #00AAFF; margin-bottom:5px;}
+        .footer { margin-top: 30px; padding-top: 15px; border-top: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; font-size: 8pt; color: #94a3b8; }
+        @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
     </style>
 </head>
 <body>
     <div class="header">
-<div class="header-left">
-    <h1>OEE <span>${t('pdfTitle')}</span></h1>
-    <div class="company">${companyName}</div>
-</div>
-<div class="header-right">
-    <div class="brand">Decide4Action</div>
-    ${new Date().toLocaleDateString(dateLocale, { day: 'numeric', month: 'long', year: 'numeric' })}
-</div>
+        <div class="header-left">
+            <h1>OEE <span>${t('pdfTitle')}</span></h1>
+            <div class="company">${companyName}</div>
+        </div>
+        <div class="header-right">
+            <div class="brand">Decide4Action</div>
+            ${new Date().toLocaleDateString(dateLocale, { day: 'numeric', month: 'long', year: 'numeric' })}
+        </div>
     </div>
 
     <div class="exec-summary">
-<div class="main-value">
-    <div class="label">${scenarioLabels[selectedScenario]} - ${t('pdfExpectedSavings')}</div>
-    <div class="number">${formatCurrency(selectedAnnual)}</div>
-</div>
-<div class="metrics">
-    <div class="metric green">
-        <div class="value">${breakEvenMonths > 0 ? breakEvenMonths : '0'}</div>
-        <div class="label">${t('pdfMonthsBreakEven')}</div>
-    </div>
-    <div class="metric cyan">
-        <div class="value">${roi}%</div>
-        <div class="label">${t('pdfRoi3Year')}</div>
-    </div>
-    <div class="metric green">
-        <div class="value">${formatCurrency(netBenefit)}</div>
-        <div class="label">${t('pdfNetBenefit3Year')}</div>
-    </div>
-</div>
+        <div class="main-value">
+            <div class="label">${scenarioLabels[selectedScenario]} - ${t('pdfExpectedSavings')}</div>
+            <div class="number">${formatCurrency(selectedAnnual)}</div>
+        </div>
+        <div class="metrics">
+            <div class="metric green">
+                <div class="value">${breakEvenMonths > 0 ? breakEvenMonths : '0'}</div>
+                <div class="label">${t('pdfMonthsBreakEven')}</div>
+            </div>
+            <div class="metric cyan">
+                <div class="value">${roi}%</div>
+                <div class="label">${t('pdfRoi3Year')}</div>
+            </div>
+            <div class="metric green">
+                <div class="value">${formatCurrency(netBenefit)}</div>
+                <div class="label">${t('pdfNetBenefit3Year')}</div>
+            </div>
+        </div>
     </div>
 
     <div class="section">
-<div class="section-title">${t('pdfScenarioAnalysis')}</div>
-<table class="scenario-table">
-    <thead>
-        <tr>
-            <th></th>
-            <th${selectedScenario === 'conservative' ? ' class="expected"' : ''}>${t('conservative')}</th>
-            <th${selectedScenario === 'expected' ? ' class="expected"' : ''}>${t('expected')}</th>
-            <th${selectedScenario === 'optimistic' ? ' class="expected"' : ''}>${t('optimistic')}</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr class="value-row">
-            <td class="row-label">${t('pdfPerYear')}</td>
-            <td${selectedScenario === 'conservative' ? ' class="expected"' : ''}>${formatCurrency(results.conservative.annual)}</td>
-            <td${selectedScenario === 'expected' ? ' class="expected"' : ''}>${formatCurrency(results.expected.annual)}</td>
-            <td${selectedScenario === 'optimistic' ? ' class="expected"' : ''}>${formatCurrency(results.optimistic.annual)}</td>
-        </tr>
-        <tr class="value-row">
-            <td class="row-label">${t('pdfOver3Years')}</td>
-            <td${selectedScenario === 'conservative' ? ' class="expected"' : ''}>${formatCurrency(results.conservative.threeYear)}</td>
-            <td${selectedScenario === 'expected' ? ' class="expected"' : ''}>${formatCurrency(results.expected.threeYear)}</td>
-            <td${selectedScenario === 'optimistic' ? ' class="expected"' : ''}>${formatCurrency(results.optimistic.threeYear)}</td>
-        </tr>
-        <tr>
-            <td class="row-label">${t('pdfOeeImprovement')}</td>
-            <td${selectedScenario === 'conservative' ? ' class="expected"' : ''}>+${formatPercentage(results.conservative.oeeIncrease)}</td>
-            <td${selectedScenario === 'expected' ? ' class="expected"' : ''}>+${formatPercentage(results.expected.oeeIncrease)}</td>
-            <td${selectedScenario === 'optimistic' ? ' class="expected"' : ''}>+${formatPercentage(results.optimistic.oeeIncrease)}</td>
-        </tr>
-    </tbody>
-</table>
+        <div class="section-title">${t('pdfScenarioAnalysis')}</div>
+        <table class="scenario-table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>${t('conservative')}</th>
+                    <th>${t('expected')}</th>
+                    <th>${t('optimistic')}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="value-row">
+                    <td class="row-label">${t('pdfPerYear')}</td>
+                    <td>${formatCurrency(results.conservative.annual)}</td>
+                    <td>${formatCurrency(results.expected.annual)}</td>
+                    <td>${formatCurrency(results.optimistic.annual)}</td>
+                </tr>
+                <tr>
+                    <td class="row-label">${t('pdfOeeImprovement')}</td>
+                    <td>+${formatPercentage(results.conservative.oeeIncrease)}</td>
+                    <td>+${formatPercentage(results.expected.oeeIncrease)}</td>
+                    <td>+${formatPercentage(results.optimistic.oeeIncrease)}</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
     <div class="content-grid">
-<div>
-    <div class="section">
-        <div class="section-title">${t('pdfCompanyDetails')}</div>
-        <table class="info-table">
-            <tr><td class="label">${t('pdfCompany')}</td><td class="value">${companyName}</td></tr>
-            <tr><td class="label">${t('pdfSector')}</td><td class="value">${data.name}</td></tr>
-            <tr><td class="label">${t('pdfOeeSituation')}</td><td class="value">${situationLabel}</td></tr>
-            <tr><td class="label">${t('pdfValuePerHour')}</td><td class="value">${formatCurrency(avgAddedValue)}</td></tr>
-            <tr><td class="label">${t('breakEvenNotePrefix')} scenario</td><td class="value">${scenarioLabels[selectedScenario]}</td></tr>
-            <tr><td class="label">${t('pdfNumPlants')}</td><td class="value">${numPlants}</td></tr>
-            <tr><td class="label">${t('pdfTotalLines')}</td><td class="value">${totalLines}</td></tr>
-        </table>
-    </div>
-
-    <div class="section">
-        <div class="section-title">${t('pdfOeeImprovementSection')}</div>
-        <table class="info-table">
-            <tr><td class="label">${t('pdfCurrentOee')}</td><td class="value">${(data.oeeStart * 100).toFixed(0)}%</td></tr>
-            <tr><td class="label">${t('pdfExpectedImprov')}</td><td class="value">+${formatPercentage(oeeData[selectedScenario])}</td></tr>
-            <tr><td class="label">${t('pdfPotentialOee')}</td><td class="value">${Math.min(95, (data.oeeStart + oeeData[selectedScenario]) * 100).toFixed(0)}%</td></tr>
-        </table>
-    </div>
-</div>
-
-<div>
-    <div class="section">
-        <div class="section-title">${t('pdfInvestment')}</div>
-        <div class="financials">
-            <div class="financials-row">
-                <span class="label">${t('pdfFixedCosts')}</span>
-                <span class="value">${formatCurrency(fixedFee)}</span>
+        <div>
+            <div class="section">
+                <div class="section-title">${t('pdfCompanyDetails')}</div>
+                <table class="info-table">
+                    <tr><td class="label">${t('pdfCompany')}</td><td class="value">${companyName}</td></tr>
+                    <tr><td class="label">${t('pdfSector')}</td><td class="value">${data.name}</td></tr>
+                    <tr><td class="label">${t('pdfValuePerHour')}</td><td class="value">${formatCurrency(avgAddedValue)}</td></tr>
+                    <tr><td class="label">${t('pdfNumPlants')}</td><td class="value">${numPlants}</td></tr>
+                    <tr><td class="label">${t('pdfTotalLines')}</td><td class="value">${totalLines}</td></tr>
+                </table>
             </div>
-            ${internalCost > 0 ? `<div class="financials-row">
-                <span class="label">${t('pdfInternalCosts')}</span>
-                <span class="value">${formatCurrency(internalCost)}</span>
-            </div>` : ''}
-            <div class="financials-row">
-                <span class="label">${t('pdfVariableCosts')}</span>
-                <span class="value">${formatCurrency(variableCost)}</span>
-            </div>
-            <div class="financials-row">
-                <span class="label">${t('pdfTotalCosts3yr')}</span>
-                <span class="value">${formatCurrency(totalCost3Years)}</span>
-            </div>
-            <div class="financials-row total">
-                <span class="label">${t('pdfNetBenefitExpected')} (${scenarioLabels[selectedScenario]})</span>
-                <span class="value">${formatCurrency(netBenefit)}</span>
+            <div class="section">
+                <div class="section-title">${t('pdfOeeImprovementSection')}</div>
+                <table class="info-table">
+                    <tr><td class="label">${t('pdfCurrentOee')}</td><td class="value">${(avgStartOEE * 100).toFixed(0)}%</td></tr>
+                    <tr><td class="label">${t('pdfExpectedImprov')}</td><td class="value">+${formatPercentage(results[selectedScenario].oeeIncrease)}</td></tr>
+                </table>
             </div>
         </div>
-    </div>
-
-    <div class="section">
-        <div class="section-title">${t('pdfPlantsLines')}</div>
-        <div class="plant-grid">
-            ${Array.from({length: numPlants}, (_, i) => i + 1).map(p => `
-                <div class="plant-card">
-                    <div class="plant-name">Plant ${p}</div>
-                    <div class="plant-lines">${plantData[p].lines.map((l, j) => {
-                        const lineName = l.name || (t('pdfLine') + ' ' + (j+1));
-                        const outputText = l.outputLevel === 'custom' ? t('optionCustom') + ' (' + formatOutputValue(l.customOutput || 0) + ')' : outputLabels[l.outputLevel || 'avg'];
-                        const marginText = l.marginLevel === 'custom' ? t('optionCustom') + ' (' + formatMarginValue(l.customMargin || 0) + ')' : outputLabels[l.marginLevel || 'avg'];
-                        const modelText = l.calcModel === 'cost' ? t('modelCost') : t('modelDemand');
-                        return `${lineName}: ${l.shifts} ${l.shifts > 1 ? t('shifts') : t('shift')} | ${t('thOutput')}: ${outputText} | ${t('thMargin')}: ${marginText} | ${t('thModel')}: ${modelText}`;
-                    }).join('<br>')}</div>
+        <div>
+            <div class="section">
+                <div class="section-title">${t('pdfInvestment')}</div>
+                <div class="financials">
+                    <div class="financials-row"><span class="label">${t('pdfFixedCosts')}</span><span class="value">${formatCurrency(fixedFee)}</span></div>
+                    <div class="financials-row"><span class="label">${t('pdfVariableCosts')}</span><span class="value">${formatCurrency(variableCost)}</span></div>
+                    <div class="financials-row total"><span class="label">${t('pdfNetBenefitExpected')}</span><span class="value">${formatCurrency(netBenefit)}</span></div>
                 </div>
-            `).join('')}
+            </div>
+            <div class="section">
+                <div class="section-title">${t('pdfPlantsLines')}</div>
+                <div class="plant-grid">
+                    ${Object.keys(plantData).map(p => `
+                        <div class="plant-card">
+                            <strong>Plant ${p}</strong><br>
+                            ${plantData[p].lines.length} ${t('pdfTotalLines')}
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
         </div>
     </div>
-</div>
-    </div>
-
     <div class="footer">
-<div class="footer-brand">Decide4Action OEE ROI Calculator</div>
-<div>${t('pdfFooterData')}</div>
+        <div>Decide4Action OEE ROI Calculator</div>
+        <div>${t('pdfFooterData')}</div>
     </div>
 </body>
 </html>`;
@@ -1553,9 +1490,7 @@ body { font-family: 'Segoe UI', Arial, sans-serif; color: #1e293b; line-height: 
     printWindow.document.write(printContent);
     printWindow.document.close();
     printWindow.focus();
-    setTimeout(() => {
-        printWindow.print();
-    }, 250);
+    setTimeout(() => { printWindow.print(); }, 500);
 }
 
 // ==========================================
