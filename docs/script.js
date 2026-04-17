@@ -1535,4 +1535,15 @@ document.addEventListener('DOMContentLoaded', async function() {
     await loadSectorData();
     initSearchableSelect();
     updatePlantTabs();
+
+    // ADD THIS PART: Link the custom OEE input to the calculation engine
+    const customOeeInput = document.getElementById('customOEEInput');
+    if (customOeeInput) {
+        // 'input' fires on every keystroke, 'change' fires when you click away
+        customOeeInput.addEventListener('input', () => {
+            if (selectedScenario === 'aangepast') {
+                calculate();
+            }
+        });
+    }
 });
