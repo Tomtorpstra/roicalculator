@@ -883,7 +883,7 @@ function calculate() {
     if (exportBtn) exportBtn.style.display = 'inline-flex';
 
     const data = sectorData[sector];
-    const scenarios = ['conservative', 'expected', 'optimistic'];
+    const scenarios = ['conservative', 'expected', 'optimistic', 'aangepast'];
     const results = {};
 
     let totalLines = 0;
@@ -909,9 +909,21 @@ function calculate() {
                 const oeeStart = line.currentOEE !== null ? line.currentOEE : data.oeeStart;
                 
                 const lineSit = line.situation || 'blueUpgrade';
-                const improvement = lineSit === 'noOEE' ? data.oeeNothingToT4A[scenario] : data.oeeBlueToT4A[scenario];
                 
-                const costFactor = line.calcModel === 'cost' ? { conservative: 0.20, expected: 0.30, optimistic: 0.40 }[scenario] : 1;
+                // --- FIXED IMPROVEMENT LOGIC FOR AANGEPAST ---
+                let improvement;
+                if (scenario === 'aangepast') {
+                    const customInput = document.getElementById('customOEEInput');
+                    // Get value from blue box (0.3) and convert to decimal if needed, 
+                    // or use as decimal if user typed 0.3
+                    let val = customInput ? parseFloat(customInput.value.replace(',', '.')) : 0;
+                    improvement = val > 1 ? val / 100 : val; 
+                } else {
+                    improvement = lineSit === 'noOEE' ? data.oeeNothingToT4A[scenario] : data.oeeBlueToT4A[scenario];
+                }
+                
+                const costFactor = line.calcModel === 'cost' ? 
+                    { conservative: 0.20, expected: 0.30, optimistic: 0.40, aangepast: 0.30 }[scenario] : 1;
                 
                 const annual = (output * margin) * oeeStart * improvement * hours * costFactor;
                 totalAnnual += annual;
@@ -941,12 +953,19 @@ function calculate() {
 
     // Update Scenario Cards & Averages
     for (const scenario of scenarios) {
-        document.getElementById(scenario + 'Annual').textContent = formatCurrency(results[scenario].annual);
-        document.getElementById(scenario + 'ThreeYear').textContent = formatCurrency(results[scenario].threeYear);
+        const annualEl = document.getElementById(scenario + 'Annual');
+        const threeYearEl = document.getElementById(scenario + 'ThreeYear');
+        const oeeEl = document.getElementById(scenario + 'OEE');
+
+        if (annualEl) annualEl.textContent = formatCurrency(results[scenario].annual);
+        if (threeYearEl) threeYearEl.textContent = formatCurrency(results[scenario].threeYear);
         
-        let totalImprov = 0;
-        for(let p=1; p<=numPlants; p++) plantData[p].lines.forEach(l => totalImprov += (l.situation === 'noOEE' ? data.oeeNothingToT4A[scenario] : data.oeeBlueToT4A[scenario]));
-        document.getElementById(scenario + 'OEE').textContent = '+' + formatPercentage(totalImprov / totalLines);
+        // Update OEE improvement text labels (skip for Aangepast box itself)
+        if (oeeEl && scenario !== 'aangepast') {
+            let totalImprov = 0;
+            for(let p=1; p<=numPlants; p++) plantData[p].lines.forEach(l => totalImprov += (l.situation === 'noOEE' ? data.oeeNothingToT4A[scenario] : data.oeeBlueToT4A[scenario]));
+            oeeEl.textContent = '+' + formatPercentage(totalImprov / totalLines);
+        }
     }
 
     const avgOEE = totalLines > 0 ? totalWeightedOEE / totalLines : data.oeeStart;
