@@ -973,9 +973,17 @@ function calculate() {
         if (annualEl) annualEl.textContent = formatCurrency(results[scenario].annual);
         if (threeYearEl) threeYearEl.textContent = formatCurrency(results[scenario].threeYear);
         
-        // CRITICAL CHANGE: Remove the percentage text from cards
-        if (oeeEl) {
-            oeeEl.textContent = ""; 
+        // Find the label text (OEE Verbetering) inside this specific card
+        const card = document.querySelector(`.scenario-card[data-scenario="${scenario}"]`);
+        const labelEl = card ? card.querySelector('.scenario-oee-label') : null;
+
+        if (scenario === 'aangepast') {
+            // Keep the label for the Custom card so the user knows what the input field is
+            if (labelEl) labelEl.style.display = 'block';
+        } else {
+            // Hide both the percentage and the "OEE verbetering" text for benchmark cards
+            if (oeeEl) oeeEl.textContent = ""; 
+            if (labelEl) labelEl.style.display = 'none';
         }
     }
 
