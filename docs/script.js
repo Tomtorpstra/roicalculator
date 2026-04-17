@@ -892,8 +892,6 @@ function calculate() {
     const results = {};
 
     let totalLines = 0;
-    let totalWeightedOEE = 0;
-
     for (let p = 1; p <= numPlants; p++) {
         totalLines += plantData[p].lines.length;
     }
@@ -912,7 +910,6 @@ function calculate() {
                 const output = line.outputLevel === 'custom' ? (line.customOutput || 0) : data.outputPerHour[line.outputLevel || 'avg'];
                 const margin = line.marginLevel === 'custom' ? (line.customMargin || 0) : data.marginPerUnit[line.marginLevel || 'avg'];
                 const oeeStart = line.currentOEE !== null ? line.currentOEE : data.oeeStart;
-                
                 const lineSit = line.situation || 'blueUpgrade';
                 
                 let improvement;
@@ -931,10 +928,6 @@ function calculate() {
                 
                 const annual = (output * margin) * oeeStart * improvement * hours * costFactor;
                 totalAnnual += annual;
-
-                if (scenario === 'conservative') {
-                    totalWeightedOEE += oeeStart;
-                }
 
                 if (scenario === selectedScenario) {
                     breakdownRows.push({
@@ -980,7 +973,7 @@ function calculate() {
 
     const activeRes = results[selectedScenario] || results['expected'];
 
-    // Refresh remaining components
+    // Refresh components
     renderCalcBreakdown(breakdownRows, activeRes.annual);
     renderGraph(calculateBreakEven(activeRes.annual, totalFixedCost, variableCost));
 
