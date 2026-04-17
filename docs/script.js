@@ -899,6 +899,7 @@ function calculate() {
     for (const scenario of scenarios) {
         let totalAnnual = 0;
         let lineCounter = 0;
+        let totalScenarioImprovement = 0;
 
         for (let p = 1; p <= numPlants; p++) {
             for (const line of plantData[p].lines) {
@@ -912,13 +913,14 @@ function calculate() {
                 let improvement;
                 if (scenario === 'aangepast') {
                     const customInput = document.getElementById('customOEEInput');
-                    // FIX: Ensure val is at least 0 to avoid NaN if field is empty
                     let val = (customInput && customInput.value !== "") ? parseFloat(customInput.value.replace(',', '.')) : 0;
                     improvement = val > 1 ? val / 100 : val; 
                 } else {
                     improvement = lineSit === 'noOEE' ? data.oeeNothingToT4A[scenario] : data.oeeBlueToT4A[scenario];
                 }
                 
+                totalScenarioImprovement += improvement;
+
                 const costFactor = line.calcModel === 'cost' ? 
                     { conservative: 0.20, expected: 0.30, optimistic: 0.40, aangepast: 0.30 }[scenario] : 1;
                 
@@ -944,7 +946,11 @@ function calculate() {
                 }
             }
         }
-        results[scenario] = { annual: totalAnnual, threeYear: totalAnnual * 2 };
+        results[scenario] = { 
+            annual: totalAnnual, 
+            threeYear: totalAnnual * 2,
+            avgImprov: totalLines > 0 ? totalScenarioImprovement / totalLines : 0
+        };
     }
 
     // Update Scenario Cards UI
@@ -956,28 +962,40 @@ function calculate() {
 
         if (annualEl) annualEl.textContent = formatCurrency(results[scenario].annual);
         if (threeYearEl) threeYearEl.textContent = formatCurrency(results[scenario].threeYear);
-        
         if (oeeEl && scenario !== 'aangepast') {
-            let totalImprov = 0;
-            for(let p = 1; p <= numPlants; p++) {
-                plantData[p].lines.forEach(l => {
-                    totalImprov += (l.situation === 'noOEE' ? data.oeeNothingToT4A[scenario] : data.oeeBlueToT4A[scenario]);
-                });
-            }
-            oeeEl.textContent = '+' + formatPercentage(totalImprov / totalLines);
+            oeeEl.textContent = '+' + formatPercentage(results[scenario].avgImprov);
         }
     }
 
+    // Update Sector Info Display
     const avgOEE = totalLines > 0 ? totalWeightedOEE / totalLines : data.oeeStart;
+    const activeRes = results[selectedScenario] || results['expected'];
+
+    // Update the "Verwachte Verbetering" text and Bars
     document.getElementById('addedValueDisplay').textContent = formatCurrency(totalLines > 0 ? totalAddedValue / totalLines : 0) + t('perHourSuffix');
     document.getElementById('oeeStartDisplay').textContent = formatPercentage(avgOEE);
-
-    // FIX: Use active results for the current selection
-    const activeResults = results[selectedScenario] || results['expected'];
+    document.getElementById('oeeImprovementDisplay').textContent = '+' + formatPercentage(activeRes.avgImprov);
     
-    renderCalcBreakdown(breakdownRows, activeResults.annual);
-    renderGraph(calculateBreakEven(activeResults.annual, totalFixedCost, variableCost));
+    // Update Comparison Bars
+    const currentBar = document.getElementById('currentBar');
+    const potentialBar = document.getElementById('potentialBar');
+    const gapLabel = document.getElementById('gapLabel');
+    if (currentBar) {
+        currentBar.style.width = (avgOEE * 100) + '%';
+        currentBar.textContent = Math.round(avgOEE * 100) + '%';
+    }
+    if (potentialBar) {
+        const potOEE = Math.min(1, avgOEE + activeRes.avgImprov);
+        potentialBar.style.width = (potOEE * 100) + '%';
+        potentialBar.textContent = Math.round(potOEE * 100) + '%';
+    }
+    if (gapLabel) gapLabel.textContent = '+' + formatPercentage(activeRes.avgImprov);
 
+    // Refresh breakdown and graph based on selection
+    renderCalcBreakdown(breakdownRows, activeRes.annual);
+    renderGraph(calculateBreakEven(activeRes.annual, totalFixedCost, variableCost));
+
+    // Update Break-even Note
     const scenarioLabels = { 
         conservative: t('conservative'), 
         expected: t('expected'), 
