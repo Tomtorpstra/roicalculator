@@ -422,56 +422,58 @@ body {
 /* Lines Table */
 #plantContents {
     width: 100%;
-    overflow-x: auto; /* Re-enables the horizontal scrollbar */
+    overflow-x: auto; 
     margin-top: 10px;
     background: #fff;
     border-radius: 8px;
+    border: 1px solid #e5e7eb;
 }
 
 .lines-table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 1200px; /* This is the key: it forces the table to stay wide */
-    table-layout: auto;
+    min-width: 1300px; /* Increased to ensure everything fits on one line */
+    table-layout: fixed; /* This allows us to set exact column widths */
 }
+
+/* Set exact column widths to prevent squashing */
+.lines-table th:nth-child(1) { width: 80px; }  /* Lijn # */
+.lines-table th:nth-child(2) { width: 160px; } /* Naam */
+.lines-table th:nth-child(3) { width: 220px; } /* Huidige OEE */
+.lines-table th:nth-child(4) { width: 180px; } /* Max Output */
+.lines-table th:nth-child(5) { width: 180px; } /* Marge */
+.lines-table th:nth-child(6) { width: 150px; } /* Model */
+.lines-table th:nth-child(7) { width: 180px; } /* Toegevoegde Waarde */
+.lines-table th:nth-child(8) { width: 150px; } /* Actie */
 
 .lines-table th {
     text-align: left;
-    padding: 14px 12px;
+    padding: 16px 12px;
     font-size: 0.72rem;
     font-weight: 700;
     text-transform: uppercase;
     color: #64748b;
     border-bottom: 2px solid #e5e7eb;
-    white-space: nowrap; /* Prevents "MAX OUTPUT" from splitting into two lines */
+    white-space: nowrap; /* Forces text to stay on one line */
     position: relative;
-    overflow: visible !important;
 }
 
-/* Grey Rounded Input styling */
+.lines-table td {
+    padding: 12px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+}
+
+/* Ensure inputs fill their column space */
 .lines-table select, 
 .lines-table .line-name-input,
 .lines-table .oee-input {
+    width: 100%;
     background-color: #ffffff;
     border: 1px solid #d1d5db; 
-    border-radius: 8px; /* Rounded Edges */
-    padding: 8px 12px;
-    font-family: inherit;
+    border-radius: 8px;
+    padding: 8px 10px;
     font-size: 0.85rem;
-    color: #1e293b;
-    transition: all 0.2s;
-}
-
-.lines-table select:focus, 
-.lines-table input:focus {
-    outline: none;
-    border-color: #00AAFF;
-    box-shadow: 0 0 0 3px rgba(0, 170, 255, 0.1);
-}
-
-.lines-table td.added-value-cell {
-    font-weight: 700;
-    color: #00AAFF; 
 }
 
 /* OEE Input */
@@ -1006,6 +1008,12 @@ body {
     border-width: 5px;
     border-style: solid;
     border-color: #0f172a transparent transparent transparent;
+}
+.th-tooltip .tooltip-text {
+    bottom: 140%; /* Slightly higher */
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: normal; /* Important: this lets text inside the box wrap */
 }
 
 /* Calculation Modal */
