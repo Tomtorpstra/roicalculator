@@ -409,6 +409,15 @@ body {
     color: #00AAFF;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
+/* --- TAB VISIBILITY FIX (Prevents Stacking) --- */
+
+.plant-content {
+    display: none !important; /* This hides the plants that aren't selected */
+}
+
+.plant-content.active {
+    display: block !important; /* This shows only the selected plant */
+}
 
 /* Lines Table */
 #plantContents {
@@ -419,6 +428,7 @@ body {
     padding-bottom: 15px; 
     border-radius: 0 0 16px 16px;
 }
+
 
 .lines-table {
     width: 100%;
