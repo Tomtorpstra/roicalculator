@@ -386,8 +386,8 @@ body {
     display: flex;
     gap: 4px;
     margin-bottom: 20px;
-    background: #f1f5f9; /* Light grey background */
-    border-radius: 12px; /* Nice rounded corners */
+    background: #f1f5f9; 
+    border-radius: 12px; 
     padding: 6px;
     border: 1px solid #e2e8f0;
 }
@@ -396,7 +396,7 @@ body {
     flex: 1;
     text-align: center;
     padding: 10px 12px;
-    border-radius: 8px; /* Rounded buttons inside the bar */
+    border-radius: 8px; 
     font-size: 0.85rem;
     font-weight: 600;
     cursor: pointer;
@@ -416,18 +416,17 @@ body {
     overflow-x: auto; 
     -webkit-overflow-scrolling: touch;
     margin-top: 10px;
-    padding-bottom: 15px; /* Space for the scrollbar */
+    padding-bottom: 15px; 
     border-radius: 0 0 16px 16px;
 }
 
 .lines-table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 1150px; /* Keep this to prevent squashing */
+    min-width: 1150px; 
     table-layout: auto;
 }
 
-/* Headers with the grey/blue-grey look */
 .lines-table th {
     text-align: left;
     padding: 14px 12px;
@@ -435,18 +434,17 @@ body {
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: #64748b; /* Blue-grey color */
+    color: #64748b;
     border-bottom: 2px solid #e5e7eb;
 }
 
 .lines-table td {
     padding: 14px 12px;
     font-size: 0.85rem;
-    border-bottom: 1px solid #f1f5f9; /* Subtle grey separator */
+    border-bottom: 1px solid #f1f5f9; 
     vertical-align: middle;
 }
 
-/* Keep the Action/Verwijderen button aligned correctly */
 .lines-table th:last-child,
 .lines-table td:last-child {
     padding-right: 25px; 
@@ -454,18 +452,18 @@ body {
     width: 130px;
 }
 
-/* Input fields and Selects styling (The Grey Border Look) */
+/* Grey Rounded Input styling */
 .lines-table select, 
 .lines-table .line-name-input,
 .lines-table .oee-input {
     background-color: #ffffff;
-    border: 1px solid #d1d5db; /* Clean grey border */
-    border-radius: 8px;
+    border: 1px solid #d1d5db; 
+    border-radius: 8px; /* Rounded Edges */
     padding: 8px 12px;
     font-family: inherit;
     font-size: 0.85rem;
     color: #1e293b;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    transition: all 0.2s;
 }
 
 .lines-table select:focus, 
@@ -475,7 +473,6 @@ body {
     box-shadow: 0 0 0 3px rgba(0, 170, 255, 0.1);
 }
 
-/* The blue value text */
 .lines-table td.added-value-cell {
     font-weight: 700;
     color: #00AAFF; 
