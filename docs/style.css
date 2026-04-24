@@ -452,6 +452,60 @@ body {
     vertical-align: middle;
 }
 
+/* Master styling for ALL table inputs to ensure rounded edges */
+.lines-table select, 
+.lines-table input,
+.lines-table .line-name-input,
+.lines-table .oee-input,
+.lines-table .custom-value-input {
+    background-color: #ffffff;
+    border: 2px solid #e5e7eb; 
+    border-radius: 8px !important; /* Forces the 8px rounded corners */
+    padding: 8px 12px;
+    font-family: inherit;
+    font-size: 0.85rem;
+    color: #1e293b;
+    width: 100%;
+    transition: border-color 0.2s;
+}
+
+.lines-table select:focus, 
+.lines-table input:focus {
+    outline: none;
+    border-color: #00AAFF;
+}
+
+/* Tooltip */
+.th-tooltip {
+    position: relative;
+    cursor: help;
+    border-bottom: 1px dashed #94a3b8;
+    display: inline-block;
+    margin-left: 4px;
+}
+
+.th-tooltip .tooltip-text {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    width: 320px;
+    background: #0f172a;
+    color: #f1f5f9;
+    font-size: 0.78rem;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: normal;
+    line-height: 1.6;
+    padding: 14px 16px;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    z-index: 100;
+    transition: opacity 0.2s, visibility 0.2s;
+    pointer-events: none;
+}
+
 /* Calculation Breakdown */
 .calc-breakdown-formula {
     background: #f0f9ff;
