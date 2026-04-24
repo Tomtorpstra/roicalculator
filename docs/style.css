@@ -972,40 +972,47 @@ body {
 }
 
 /* Tooltip */
+.lines-table th {
+    white-space: nowrap;      /* Keeps headers on one line */
+    padding: 12px 8px;
+    vertical-align: middle;
+    position: relative;       /* Anchor for the tooltip */
+    overflow: visible !important; 
+    height: 45px;             /* Standardized height */
+}
+
 .th-tooltip {
-    position: relative;
     cursor: help;
     border-bottom: 1px dashed #94a3b8;
-    /* This prevents the header from getting taller */
-    display: inline; 
+    position: relative;
+    display: inline-block;
 }
 
 .th-tooltip .tooltip-text {
     visibility: hidden;
     opacity: 0;
     position: absolute;
-    /* Positioned ABOVE the text without pushing the row down */
-    bottom: 30px; 
+    /* Pops UP without pushing the header down */
+    bottom: 100%;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translate(-50%, -10px); /* Centers it and adds a small gap */
     
-    width: 260px;
+    width: 240px;
     background: #0f172a;
-    color: #f1f5f9;
+    color: #fff;
     font-size: 0.75rem;
     font-weight: 400;
-    text-transform: none;
     line-height: 1.4;
-    padding: 10px 12px;
+    padding: 10px;
     border-radius: 6px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-    /* High z-index to float over the scroll container */
-    z-index: 10000 !important; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    z-index: 10000;
     pointer-events: none;
-    transition: opacity 0.2s;
+    transition: all 0.2s ease;
+    white-space: normal; /* Allows text INSIDE tooltip to wrap */
 }
 
-/* Small triangle arrow */
+/* Arrow pointing down */
 .th-tooltip .tooltip-text::after {
     content: "";
     position: absolute;
@@ -1020,15 +1027,7 @@ body {
 .th-tooltip:hover .tooltip-text {
     visibility: visible;
     opacity: 1;
-}
-
-/* Fix the table headers that got messed up */
-.lines-table th {
-    white-space: nowrap; /* Prevents text from wrapping into two lines */
-    vertical-align: bottom;
-    padding: 12px 8px !important;
-    height: 50px; /* Forces a consistent header height */
-    overflow: visible !important;
+    transform: translate(-50%, -5px); /* Slight hover animation */
 }
 
 .tooltip-title {
