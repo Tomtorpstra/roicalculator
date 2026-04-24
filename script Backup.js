@@ -629,11 +629,18 @@ function onSectorChange() {
 // ==========================================
 function selectScenario(scenario) {
     selectedScenario = scenario;
+    
+    // UI Update: Highlight the selected card
     document.querySelectorAll('.scenario-card').forEach(card => {
         card.classList.remove('selected');
     });
+    
     const selectedCard = document.querySelector(`.scenario-card[data-scenario="${scenario}"]`);
-    if (selectedCard) selectedCard.classList.add('selected');
+    if (selectedCard) {
+        selectedCard.classList.add('selected');
+    }
+
+    // Trigger the calculation with the new state
     calculate();
 }
 
@@ -860,16 +867,14 @@ function calculate() {
 
     const placeholderCard = document.getElementById('placeholderCard');
     const scenarioCard = document.getElementById('scenarioCard');
-    const sectorCard = document.getElementById('sectorCard');
     const breakEvenCard = document.getElementById('breakEvenCard');
     const exportBtn = document.getElementById('exportBtn');
     const calcBreakdownCard = document.getElementById('calcBreakdownCard');
 
-    // Only hide if sector is missing
+    // UI Toggle logic
     if (!sector || !sectorData[sector]) {
         if (placeholderCard) placeholderCard.style.display = 'block';
         if (scenarioCard) scenarioCard.style.display = 'none';
-        if (sectorCard) sectorCard.style.display = 'none';
         if (breakEvenCard) breakEvenCard.style.display = 'none';
         if (calcBreakdownCard) calcBreakdownCard.style.display = 'none';
         if (exportBtn) exportBtn.style.display = 'none';
@@ -878,7 +883,6 @@ function calculate() {
 
     if (placeholderCard) placeholderCard.style.display = 'none';
     if (scenarioCard) scenarioCard.style.display = 'block';
-    if (sectorCard) sectorCard.style.display = 'block';
     if (breakEvenCard) breakEvenCard.style.display = 'block';
     if (calcBreakdownCard) calcBreakdownCard.style.display = 'block';
     if (exportBtn) exportBtn.style.display = 'inline-flex';
@@ -888,9 +892,6 @@ function calculate() {
     const results = {};
 
     let totalLines = 0;
-    let totalAddedValue = 0;
-    let totalWeightedOEE = 0;
-
     for (let p = 1; p <= numPlants; p++) {
         totalLines += plantData[p].lines.length;
     }
@@ -900,6 +901,7 @@ function calculate() {
     for (const scenario of scenarios) {
         let totalAnnual = 0;
         let lineCounter = 0;
+        let totalScenarioImprovement = 0;
 
         for (let p = 1; p <= numPlants; p++) {
             for (const line of plantData[p].lines) {
@@ -913,23 +915,19 @@ function calculate() {
                 let improvement;
                 if (scenario === 'aangepast') {
                     const customInput = document.getElementById('customOEEInput');
-                    let val = customInput ? parseFloat(customInput.value.replace(',', '.')) : 0;
-                    // Auto-convert percentage (e.g., 30) to decimal (0.3)
-                    improvement = val > 1 ? val / 100 : val; 
+                    let val = (customInput && customInput.value !== "") ? parseFloat(customInput.value.replace(',', '.')) : 0;
+                    improvement = val / 100; 
                 } else {
                     improvement = lineSit === 'noOEE' ? data.oeeNothingToT4A[scenario] : data.oeeBlueToT4A[scenario];
                 }
                 
+                totalScenarioImprovement += improvement;
+
                 const costFactor = line.calcModel === 'cost' ? 
                     { conservative: 0.20, expected: 0.30, optimistic: 0.40, aangepast: 0.30 }[scenario] : 1;
                 
                 const annual = (output * margin) * oeeStart * improvement * hours * costFactor;
                 totalAnnual += annual;
-
-                if (scenario === 'conservative') {
-                    totalAddedValue += (output * margin);
-                    totalWeightedOEE += oeeStart;
-                }
 
                 if (scenario === selectedScenario) {
                     breakdownRows.push({
@@ -945,14 +943,16 @@ function calculate() {
                 }
             }
         }
-        results[scenario] = { annual: totalAnnual, threeYear: totalAnnual * 2 };
+        results[scenario] = { 
+            annual: totalAnnual, 
+            threeYear: totalAnnual * 2,
+            avgImprov: totalLines > 0 ? totalScenarioImprovement / totalLines : 0
+        };
     }
 
     // Update Scenario Cards UI
     for (const scenario of scenarios) {
-        // Map 'aangepast' scenario name to the 'custom' element IDs in your HTML
         const idPrefix = scenario === 'aangepast' ? 'custom' : scenario;
-        
         const annualEl = document.getElementById(idPrefix + 'Annual');
         const threeYearEl = document.getElementById(idPrefix + 'ThreeYear');
         const oeeEl = document.getElementById(idPrefix + 'OEE');
@@ -960,24 +960,34 @@ function calculate() {
         if (annualEl) annualEl.textContent = formatCurrency(results[scenario].annual);
         if (threeYearEl) threeYearEl.textContent = formatCurrency(results[scenario].threeYear);
         
-        // Update OEE improvement text for standard scenarios
-        if (oeeEl && scenario !== 'aangepast') {
-            let totalImprov = 0;
-            for(let p = 1; p <= numPlants; p++) {
-                plantData[p].lines.forEach(l => {
-                    totalImprov += (l.situation === 'noOEE' ? data.oeeNothingToT4A[scenario] : data.oeeBlueToT4A[scenario]);
-                });
-            }
-            oeeEl.textContent = '+' + formatPercentage(totalImprov / totalLines);
+        const card = document.querySelector(`.scenario-card[data-scenario="${scenario}"]`);
+        const labelEl = card ? card.querySelector('.scenario-oee-label') : null;
+
+        if (scenario === 'aangepast') {
+            if (labelEl) labelEl.style.display = 'block';
+        } else {
+            if (oeeEl) oeeEl.textContent = ""; 
+            if (labelEl) labelEl.style.display = 'none';
         }
     }
 
-    const avgOEE = totalLines > 0 ? totalWeightedOEE / totalLines : data.oeeStart;
-    document.getElementById('addedValueDisplay').textContent = formatCurrency(totalLines > 0 ? totalAddedValue / totalLines : 0) + t('perHourSuffix');
-    document.getElementById('oeeStartDisplay').textContent = formatPercentage(avgOEE);
+    const activeRes = results[selectedScenario] || results['expected'];
 
-    renderCalcBreakdown(breakdownRows, results[selectedScenario].annual);
-    renderGraph(calculateBreakEven(results[selectedScenario].annual, totalFixedCost, variableCost));
+    // Refresh components
+    renderCalcBreakdown(breakdownRows, activeRes.annual);
+    renderGraph(calculateBreakEven(activeRes.annual, totalFixedCost, variableCost));
+
+    // Update Graph Note
+    const scenarioLabels = { 
+        conservative: t('conservative'), 
+        expected: t('expected'), 
+        optimistic: t('optimistic'), 
+        aangepast: t('optionCustom') 
+    };
+    const beNote = document.querySelector('.break-even-note');
+    if (beNote) {
+        beNote.textContent = `${t('breakEvenNotePrefix')} ${scenarioLabels[selectedScenario]} ${t('breakEvenNoteSuffix')}`;
+    }
 }
 
 // ==========================================
@@ -1507,4 +1517,15 @@ document.addEventListener('DOMContentLoaded', async function() {
     await loadSectorData();
     initSearchableSelect();
     updatePlantTabs();
+
+    // ADD THIS PART: Link the custom OEE input to the calculation engine
+    const customOeeInput = document.getElementById('customOEEInput');
+    if (customOeeInput) {
+        // 'input' fires on every keystroke, 'change' fires when you click away
+        customOeeInput.addEventListener('input', () => {
+            if (selectedScenario === 'aangepast') {
+                calculate();
+            }
+        });
+    }
 });

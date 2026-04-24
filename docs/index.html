@@ -143,26 +143,28 @@
                 </div>
 
                 <!-- Scenario Results Card -->
-                <div class="card" id="scenarioCard" style="display: none;">
-                    <div class="card-header">
-                        <div class="card-icon green">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
-                        </div>
-                        <div style="flex:1;">
-                            <h2>
-                                <span data-i18n="cardSavingsTitle">Besparingspotentieel</span>
-                                <span id="savingPotentialInfo" class="th-tooltip saving-potential-tooltip" style="display:none; border-bottom:none; margin-left:6px;">
-                                    <span style="font-size:0.7rem; opacity:0.6; cursor:help;">&#9432;</span>
-                                    <span class="tooltip-text" style="width:360px;" data-i18n="savingPotentialTooltip">Dit besparingspotentieel is gebaseerd op de upgrade van OEE Blue naar T4A/P4A</span>
-                                </span>
-                            </h2>
-                            <p class="card-subtitle" id="savingsSubtitle"><span id="totalLinesDisplay">0</span> <span data-i18n="linesAcross">lijnen over</span> <span id="totalPlantsDisplay">0</span> plants</p>
-                        </div>
-                        <button class="btn-calc-info" onclick="openCalcModal()" title="Hoe berekenen wij dit?">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                            <span data-i18n="calcInfoBtn">Berekening</span>
-                        </button>
-                    </div>
+<div class="card-header">
+    <div class="card-icon green">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
+    </div>
+    <div style="flex:1;">
+        <h2 class="th-tooltip" style="border-bottom: none; cursor: help; display: inline-flex; align-items: center;">
+            <span data-i18n="cardSavingsTitle">Besparingspotentieel</span>
+            <span style="font-size:0.8rem; opacity:0.6; margin-left:6px;">&#9432;</span>
+            <div class="tooltip-text" style="width:360px; white-space: normal; font-weight: 400;">
+                <span class="tooltip-title" data-i18n="cardSavingsTitle">Besparingspotentieel</span>
+                <span data-i18n="savingPotentialTooltip"></span>
+            </div>
+        </h2>
+        <p class="card-subtitle" id="savingsSubtitle">
+            <span id="totalLinesDisplay">0</span> <span data-i18n="linesAcross">lijnen over</span> <span id="totalPlantsDisplay">0</span> plants
+        </p>
+    </div>
+    <button class="btn-calc-info" onclick="openCalcModal()" title="Hoe berekenen wij dit?">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <span data-i18n="calcInfoBtn">Berekening</span>
+    </button>
+</div>
 
                     <div class="scenario-grid">
                         <div class="scenario-card" data-scenario="conservative" onclick="selectScenario('conservative')">

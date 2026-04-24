@@ -72,15 +72,6 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="currentSituation" data-i18n="currentSituationLabel">Huidige OEE Situatie</label>
-                        <select id="currentSituation" onchange="calculate()">
-                            <option value="" data-i18n="situationDefault">-- Selecteer uw huidige situatie --</option>
-                            <option value="noOEE" data-i18n="situationNoOEE">Nieuwe klant - Geen OEE registratie (naar T4A/P4A)</option>
-                            <option value="blueUpgrade" data-i18n="situationBlue">OEE Blue upgrade (naar T4A/P4A)</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
                         <label for="numPlants" data-i18n="numPlantsLabel">Aantal Plants</label>
                         <div class="slider-input">
                             <input type="range" id="numPlantsSlider" min="1" max="10" value="1" oninput="syncPlantSlider(this.value)">
@@ -210,20 +201,19 @@
                             <div class="scenario-oee-label" data-i18n="oeeImprovement">OEE verbetering</div>
                         </div>
 
-                        <div class="scenario-card" data-scenario="custom" onclick="selectScenario('custom')">
-                            <div class="scenario-label" data-i18n="custom">Aangepast</div>
-                            <div class="scenario-annual" id="customAnnual">-</div>
-                            <div class="scenario-annual-label" data-i18n="perYear">per jaar</div>
-                            <div class="scenario-divider"></div>
-                            <div class="scenario-three-year" id="customThreeYear">-</div>
-                            <div class="scenario-three-year-label" data-i18n="overThreeYears">over 3 jaar</div>
-                            <div class="scenario-divider"></div>
-                            <div class="custom-oee-input-wrapper">
-                                <input type="number" id="customOEEInput" class="custom-oee-input" min="0" max="100" step="0.1" placeholder="%" onclick="event.stopPropagation()" onchange="onCustomOEEChange(this.value)" oninput="onCustomOEEChange(this.value)">
-                            </div>
-                            <div class="scenario-oee-label" data-i18n="oeeImprovement">OEE verbetering</div>
-                        </div>
-                    </div>
+                        <div class="scenario-card" data-scenario="aangepast" onclick="selectScenario('aangepast')">
+    <div class="scenario-label" data-i18n="custom">Aangepast</div>
+    <div class="scenario-annual" id="customAnnual">-</div>
+    <div class="scenario-annual-label" data-i18n="perYear">per jaar</div>
+    <div class="scenario-divider"></div>
+    <div class="scenario-three-year" id="customThreeYear">-</div>
+    <div class="scenario-three-year-label" data-i18n="overThreeYears">over 3 jaar</div>
+    <div class="scenario-divider"></div>
+    <div class="custom-oee-input-wrapper">
+        <input type="number" id="customOEEInput" class="custom-oee-input" min="0" max="100" step="0.1" placeholder="%" oninput="calculate()">
+    </div>
+    <div class="scenario-oee-label" data-i18n="oeeImprovement">OEE verbetering</div>
+</div>
                 </div>
 
                 <!-- Calculation Breakdown Card -->
@@ -240,52 +230,10 @@
                 </div>
 
                 <!-- Sector & Production Details Card -->
-                <div class="card" id="sectorCard" style="display: none;">
-                    <div class="card-header">
-                        <div class="card-icon blue">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-                        </div>
-                        <div>
-                            <h2 data-i18n="cardSectorTitle">Sector & Productie Gegevens</h2>
-                            <p class="card-subtitle" id="sectorNameDisplay">-</p>
-                        </div>
-                    </div>
 
-                    <div class="sector-info-grid">
-                        <div class="sector-info-item th-tooltip" style="border-bottom:none;">
-                            <div class="sector-info-value" id="addedValueDisplay">-</div>
-                            <div class="sector-info-label" data-i18n="valuePerHour">Waarde / Uur</div>
-                            <div class="tooltip-text tooltip-above"><span class="tooltip-title" data-i18n="valuePerHourTooltipTitle">Waarde per uur bij 100% OEE</span><span data-i18n="valuePerHourTooltipBody">Dit is de maximale toegevoegde waarde per uur, berekend alsof de lijn op 100% OEE draait (zonder verlies van beschikbaarheid, prestatie en kwaliteit).</span></div>
-                        </div>
-                        <div class="sector-info-item">
-                            <div class="sector-info-value" id="oeeStartDisplay">-</div>
-                            <div class="sector-info-label" data-i18n="startOee">Start OEE</div>
-                        </div>
-                        <div class="sector-info-item">
-                            <div class="sector-info-value" id="oeeImprovementDisplay">-</div>
-                            <div class="sector-info-label" data-i18n="expectedImprovement">Verwachte Verbetering</div>
-                        </div>
-                    </div>
+        
 
-                    <div class="value-bar-container">
-                        <div class="value-bar-title" data-i18n="oeePotentialComparison">OEE Potentieel Vergelijking</div>
-                        <div class="value-bar-wrapper">
-                            <div class="value-bar-item">
-                                <span class="value-bar-label" data-i18n="current">Huidige</span>
-                                <div class="value-bar-track">
-                                    <div class="value-bar-fill current" id="currentBar" style="width: 65%;">65%</div>
-                                </div>
-                            </div>
-                            <div class="value-bar-item">
-                                <span class="value-bar-label" data-i18n="withT4A">Met T4A/P4A</span>
-                                <div class="value-bar-track">
-                                    <div class="value-bar-fill potential" id="potentialBar" style="width: 85%;">85%</div>
-                                    <span class="value-bar-gap" id="gapLabel">+20%</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                
 
                 <!-- Break-even Card -->
                 <div class="card" id="breakEvenCard" style="display: none;">
