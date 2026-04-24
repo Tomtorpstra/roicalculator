@@ -422,70 +422,40 @@ body {
 /* Lines Table */
 #plantContents {
     width: 100%;
-    overflow-x: auto; /* This creates the scrollbar if needed */
+    overflow-x: auto; 
     margin-top: 10px;
     background: #fff;
     border-radius: 8px;
-    border: 1px solid #e5e7eb;
 }
 
 .lines-table {
     width: 100%;
     border-collapse: collapse;
-    /* This is the most important line: it forces the table to stay wide 
-       so the columns don't squash each other. */
-    min-width: 1400px; 
+    /* This ensures the table stays wide enough for one line */
+    min-width: 1300px; 
     table-layout: auto;
 }
 
 .lines-table th {
+    /* RESET: Back to standard table cell behavior */
+    display: table-cell !important; 
     text-align: left;
-    padding: 16px 12px;
+    padding: 14px 12px;
     font-size: 0.72rem;
     font-weight: 700;
     text-transform: uppercase;
     color: #64748b;
     border-bottom: 2px solid #e5e7eb;
-    /* Forces the header text to stay on ONE line */
-    white-space: nowrap !important;
-    position: relative;
-    overflow: visible !important;
-}
-
-.lines-table td {
-    padding: 12px;
-    border-bottom: 1px solid #f1f5f9;
+    /* Fix: Prevent text stacking */
+    white-space: nowrap !important; 
     vertical-align: middle;
 }
 
-/* Grey Rounded Input styling */
-.lines-table select, 
-.lines-table .line-name-input,
-.lines-table .oee-input {
-    background-color: #ffffff;
-    border: 1px solid #d1d5db; 
-    border-radius: 8px;
-    padding: 8px 12px;
-    font-family: inherit;
-    font-size: 0.85rem;
-    color: #1e293b;
-    transition: all 0.2s;
-    width: 100%;
+.lines-table td {
+    padding: 14px 12px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
 }
-
-.lines-table select:focus, 
-.lines-table input:focus {
-    outline: none;
-    border-color: #00AAFF;
-    box-shadow: 0 0 0 3px rgba(0, 170, 255, 0.1);
-}
-
-.lines-table td.added-value-cell {
-    font-weight: 700;
-    color: #00AAFF; 
-    white-space: nowrap;
-}
-
 /* OEE Input */
 .oee-input {
     padding: 6px 10px;
@@ -973,18 +943,19 @@ body {
 .th-tooltip {
     position: relative;
     cursor: help;
-    display: inline-block;
+    /* Use 'inline' so it doesn't create a 'box' that pushes text */
+    display: inline; 
     margin-left: 4px;
-    vertical-align: middle;
 }
 
 .th-tooltip .tooltip-text {
     visibility: hidden;
     opacity: 0;
     position: absolute;
-    bottom: 100%; /* Position above the text */
+    /* Position ABOVE the text */
+    bottom: 120%; 
     left: 50%;
-    transform: translate(-50%, -10px);
+    transform: translateX(-50%);
     
     width: 250px;
     background: #0f172a;
@@ -995,20 +966,15 @@ body {
     font-weight: 400;
     text-transform: none;
     line-height: 1.4;
-    white-space: normal; /* Allows text inside box to wrap */
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    z-index: 9999;
+    /* Allow text inside the box to wrap, but not the header */
+    white-space: normal; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    z-index: 99999;
     pointer-events: none;
-    transition: all 0.2s ease;
+    transition: opacity 0.2s;
 }
 
-.th-tooltip:hover .tooltip-text {
-    visibility: visible;
-    opacity: 1;
-    transform: translate(-50%, -5px);
-}
-
-/* Small arrow pointing down */
+/* Arrow pointing down */
 .th-tooltip .tooltip-text::after {
     content: "";
     position: absolute;
@@ -1019,11 +985,23 @@ body {
     border-style: solid;
     border-color: #0f172a transparent transparent transparent;
 }
-.th-tooltip .tooltip-text {
-    bottom: 140%; /* Slightly higher */
-    left: 50%;
-    transform: translateX(-50%);
-    white-space: normal; /* Important: this lets text inside the box wrap */
+
+.th-tooltip:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* --- 3. INPUT STYLING (Original Grey Look) --- */
+.lines-table select, 
+.lines-table .line-name-input,
+.lines-table .oee-input {
+    background-color: #ffffff;
+    border: 1px solid #d1d5db; 
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-family: inherit;
+    font-size: 0.85rem;
+    color: #1e293b;
 }
 
 /* Calculation Modal */
