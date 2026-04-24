@@ -161,7 +161,9 @@ const translations = {
         situationLabelBlue: 'OEE Blue upgrade',
         outputLabelLow: 'Laag',
         outputLabelAvg: 'Gemiddeld',
-        outputLabelHigh: 'Hoog'
+        outputLabelHigh: 'Hoog',
+        rampUpTitle: "Geleidelijke Besparingsopbouw (Ramp-up)",
+        rampUpDesc: "De ROI houdt rekening met een realistisch adoptieproces. We bouwen de resultaten stapsgewijs op (Jaar 1: 33%, Jaar 2: 67%, Jaar 3: 100%) om rekening te houden met de tijd die nodig is voor training, procesoptimalisatie en gedragsverandering binnen uw team.",
     },
     en: {
         pageTitle: 'OEE ROI Calculator - D4A Savings Calculation',
@@ -322,7 +324,9 @@ const translations = {
         situationLabelBlue: 'OEE Blue upgrade',
         outputLabelLow: 'Low',
         outputLabelAvg: 'Average',
-        outputLabelHigh: 'High'
+        outputLabelHigh: 'High',
+        rampUpTitle: "Gradual Savings Realization (Ramp-up)",
+        rampUpDesc: "The ROI accounts for a realistic adoption process. Results are built up in stages (Year 1: 33%, Year 2: 67%, Year 3: 100%) to reflect the time required for staff training, process optimization, and cultural change within your organization.",
     }
 };
 
