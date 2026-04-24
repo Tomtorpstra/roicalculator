@@ -950,7 +950,7 @@ function calculate() {
         };
     }
 
-    // Update Scenario Cards UI
+// Update Scenario Cards UI
     for (const scenario of scenarios) {
         const idPrefix = scenario === 'aangepast' ? 'custom' : scenario;
         const annualEl = document.getElementById(idPrefix + 'Annual');
@@ -960,14 +960,33 @@ function calculate() {
         if (annualEl) annualEl.textContent = formatCurrency(results[scenario].annual);
         if (threeYearEl) threeYearEl.textContent = formatCurrency(results[scenario].threeYear);
         
+        // --- NEW: BANDWIDTH LOGIC ---
+        if (oeeEl && scenario !== 'aangepast') {
+            const improvements = [];
+            for (let p = 1; p <= numPlants; p++) {
+                for (const line of plantData[p].lines) {
+                    const lineSit = line.situation || 'blueUpgrade';
+                    const imp = lineSit === 'noOEE' ? data.oeeNothingToT4A[scenario] : data.oeeBlueToT4A[scenario];
+                    improvements.push(imp);
+                }
+            }
+            const minImp = Math.min(...improvements);
+            const maxImp = Math.max(...improvements);
+
+            // Show single value if all lines are the same, otherwise show the range
+            oeeEl.textContent = minImp === maxImp 
+                ? `+${formatPercentage(minImp)}` 
+                : `+${formatPercentage(minImp)} - ${formatPercentage(maxImp)}`;
+        }
+        // -----------------------------
+
         const card = document.querySelector(`.scenario-card[data-scenario="${scenario}"]`);
         const labelEl = card ? card.querySelector('.scenario-oee-label') : null;
 
         if (scenario === 'aangepast') {
             if (labelEl) labelEl.style.display = 'block';
         } else {
-            if (oeeEl) oeeEl.textContent = ""; 
-            if (labelEl) labelEl.style.display = 'none';
+            if (labelEl) labelEl.style.display = 'block'; // Keep label visible for bandwidth
         }
     }
 
