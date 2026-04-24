@@ -976,37 +976,44 @@ body {
     position: relative;
     cursor: help;
     border-bottom: 1px dashed #94a3b8;
+    display: inline-block;
 }
 
 .th-tooltip .tooltip-text {
     visibility: hidden;
     opacity: 0;
     position: absolute;
-    top: calc(100% + 8px);
-    left: 0;
-    width: 320px;
+    /* This forces the box to appear ABOVE the header */
+    bottom: 150%; 
+    left: 50%;
+    transform: translateX(-50%);
+    
+    width: 280px;
     background: #0f172a;
     color: #f1f5f9;
-    font-size: 0.78rem;
+    font-size: 0.75rem;
     font-weight: 400;
     text-transform: none;
-    letter-spacing: normal;
-    line-height: 1.6;
-    padding: 14px 16px;
-    border-radius: 10px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-    z-index: 100;
-    transition: opacity 0.2s, visibility 0.2s;
+    line-height: 1.5;
+    padding: 12px;
+    border-radius: 8px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    /* Very high z-index to stay on top of everything */
+    z-index: 99999 !important; 
     pointer-events: none;
+    transition: opacity 0.2s;
 }
 
-.th-tooltip .tooltip-text::before {
-    content: '';
+/* The little arrow pointing DOWN at the text */
+.th-tooltip .tooltip-text::after {
+    content: "";
     position: absolute;
-    bottom: 100%;
-    left: 20px;
-    border: 6px solid transparent;
-    border-bottom-color: #0f172a;
+    top: 100%; 
+    left: 50%;
+    margin-left: -6px;
+    border-width: 6px;
+    border-style: solid;
+    border-color: #0f172a transparent transparent transparent;
 }
 
 .th-tooltip:hover .tooltip-text {
@@ -1014,26 +1021,10 @@ body {
     opacity: 1;
 }
 
-/* Tooltip appearing above the element */
-.tooltip-above {
-    top: auto !important;
-    bottom: calc(100% + 8px) !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-}
-
-.tooltip-above::before {
-    top: 100% !important;
-    bottom: auto !important;
-    left: 50% !important;
-    transform: translateX(-50%);
-    border-bottom-color: transparent !important;
-    border-top-color: #0f172a !important;
-}
-
-/* Saving potential tooltip inline icon */
-.saving-potential-tooltip {
-    vertical-align: middle;
+/* This allows the tooltip to "leak" out of the table header container */
+.lines-table th {
+    overflow: visible !important;
+    position: relative;
 }
 
 .tooltip-title {
