@@ -420,6 +420,7 @@ body {
 }
 
 /* Lines Table */
+/* Lines Table */
 #plantContents {
     width: 100%;
     overflow-x: auto; 
@@ -443,22 +444,13 @@ body {
     text-transform: uppercase;
     color: #64748b;
     border-bottom: 2px solid #e5e7eb;
-    white-space: nowrap; /* Forces one single line */
+    white-space: nowrap;
 }
 
-/* Rounded Input styling */
-.lines-table select, 
-.lines-table .line-name-input,
-.lines-table .oee-input,
-.lines-table .custom-value-input {
-    background-color: #ffffff;
-    border: 1px solid #d1d5db; 
-    border-radius: 8px;
-    padding: 8px 12px;
-    font-family: inherit;
-    font-size: 0.85rem;
-    color: #1e293b;
-    width: 100%;
+.lines-table td {
+    padding: 14px 12px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
 }
 
 /* Calculation Breakdown */
@@ -932,23 +924,37 @@ body {
     position: relative;
     cursor: help;
     border-bottom: 1px dashed #94a3b8;
-    display: inline-block;
-    margin-left: 4px;
 }
 
 .th-tooltip .tooltip-text {
     visibility: hidden;
     opacity: 0;
     position: absolute;
-    top: 100%;
+    top: calc(100% + 8px);
     left: 0;
-    width: 280px;
+    width: 320px;
     background: #0f172a;
     color: #f1f5f9;
     font-size: 0.78rem;
-    padding: 12px;
-    border-radius: 8px;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: normal;
+    line-height: 1.6;
+    padding: 14px 16px;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
     z-index: 100;
+    transition: opacity 0.2s, visibility 0.2s;
+    pointer-events: none;
+}
+
+.th-tooltip .tooltip-text::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 20px;
+    border: 6px solid transparent;
+    border-bottom-color: #0f172a;
 }
 
 .th-tooltip:hover .tooltip-text {
