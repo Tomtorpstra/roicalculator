@@ -420,17 +420,19 @@ body {
 /* Lines Table */
 #plantContents {
     width: 100%;
-    overflow-x: auto; /* Allows horizontal scroll on small screens */
-    -webkit-overflow-scrolling: touch;
-    margin-bottom: 16px;
-    padding-bottom: 8px; /* Space for the scrollbar */
+    overflow-x: auto; /* Enable horizontal scroll */
+    background: #fff;
+    border-radius: 0 0 16px 16px; /* Match bottom card corners */
+    margin-top: 10px;
+    padding-bottom: 10px;
 }
 
 .lines-table {
     width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 16px;
-    min-width: 1000px; /* Prevents the Dutch text from squashing */
+    border-collapse: separate; /* Use separate to prevent border issues */
+    border-spacing: 0;
+    min-width: 1100px; /* Forces space for all Dutch headers */
+    table-layout: auto;
 }
 
 .lines-table th {
@@ -439,10 +441,12 @@ body {
     font-size: 0.75rem;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
     color: #64748b;
     border-bottom: 2px solid #e5e7eb;
-    white-space: nowrap; /* Keeps headers on one line */
+    white-space: nowrap;
+    background: #fff;
+    position: sticky; /* Keeps headers visible while scrolling */
+    top: 0;
 }
 
 .lines-table td {
@@ -452,37 +456,23 @@ body {
     vertical-align: middle;
 }
 
-/* Fix for the Verwijderen button touching the side */
+/* Fix for the ACTIE/Verwijderen column */
 .lines-table th:last-child,
 .lines-table td:last-child {
-    padding-right: 28px; /* Pushes the button away from the card edge */
+    padding-right: 20px; /* Spacing from the edge */
     text-align: right;
-    width: 130px; /* Ensures space for the longer Dutch word */
+    width: 120px;
+    min-width: 120px;
 }
 
-.lines-table td.added-value-cell {
-    font-weight: 600;
-    color: #0891b2;
-    white-space: nowrap;
-}
-
-.lines-table select {
-    padding: 6px 10px;
-    border: 2px solid #e5e7eb;
-    border-radius: 6px;
-    font-family: inherit;
-    font-size: 0.85rem;
-    width: 100%;
-    min-width: 140px;
-}
-
+/* Ensure buttons don't wrap */
 .btn-remove {
     background: #fee2e2;
     color: #dc2626;
-    padding: 8px 14px;
+    padding: 8px 12px;
     font-size: 0.8rem;
     border-radius: 6px;
-    white-space: nowrap; /* Prevents button text from wrapping */
+    white-space: nowrap;
     display: inline-block;
 }
 
