@@ -891,10 +891,15 @@ function calculate() {
     const scenarios = ['conservative', 'expected', 'optimistic', 'aangepast'];
     const results = {};
 
+    // 1. Calculate total lines and update the subtitle counters
     let totalLines = 0;
     for (let p = 1; p <= numPlants; p++) {
         totalLines += plantData[p].lines.length;
     }
+    
+    // Push values to the "X lijnen over Y plants" subtitle
+    document.getElementById('totalLinesDisplay').textContent = totalLines;
+    document.getElementById('totalPlantsDisplay').textContent = numPlants;
 
     const breakdownRows = [];
 
@@ -918,6 +923,7 @@ function calculate() {
                     let val = (customInput && customInput.value !== "") ? parseFloat(customInput.value.replace(',', '.')) : 0;
                     improvement = val / 100; 
                 } else {
+                    // Pull improvement based on specific line situation (Blue vs New)
                     improvement = lineSit === 'noOEE' ? data.oeeNothingToT4A[scenario] : data.oeeBlueToT4A[scenario];
                 }
                 
@@ -950,7 +956,7 @@ function calculate() {
         };
     }
 
-// Update Scenario Cards UI
+    // Update Scenario Cards UI
     for (const scenario of scenarios) {
         const idPrefix = scenario === 'aangepast' ? 'custom' : scenario;
         const annualEl = document.getElementById(idPrefix + 'Annual');
@@ -960,7 +966,7 @@ function calculate() {
         if (annualEl) annualEl.textContent = formatCurrency(results[scenario].annual);
         if (threeYearEl) threeYearEl.textContent = formatCurrency(results[scenario].threeYear);
         
-        // --- NEW: BANDWIDTH LOGIC ---
+        // --- BANDWIDTH LOGIC FOR OEE IMPROVEMENT ---
         if (oeeEl && scenario !== 'aangepast') {
             const improvements = [];
             for (let p = 1; p <= numPlants; p++) {
@@ -973,12 +979,11 @@ function calculate() {
             const minImp = Math.min(...improvements);
             const maxImp = Math.max(...improvements);
 
-            // Show single value if all lines are the same, otherwise show the range
+            // If all lines have the same improvement, show one value; otherwise show the range
             oeeEl.textContent = minImp === maxImp 
                 ? `+${formatPercentage(minImp)}` 
                 : `+${formatPercentage(minImp)} - ${formatPercentage(maxImp)}`;
         }
-        // -----------------------------
 
         const card = document.querySelector(`.scenario-card[data-scenario="${scenario}"]`);
         const labelEl = card ? card.querySelector('.scenario-oee-label') : null;
@@ -986,13 +991,13 @@ function calculate() {
         if (scenario === 'aangepast') {
             if (labelEl) labelEl.style.display = 'block';
         } else {
-            if (labelEl) labelEl.style.display = 'block'; // Keep label visible for bandwidth
+            if (labelEl) labelEl.style.display = 'block'; 
         }
     }
 
     const activeRes = results[selectedScenario] || results['expected'];
 
-    // Refresh components
+    // Refresh Breakdown and Graph
     renderCalcBreakdown(breakdownRows, activeRes.annual);
     renderGraph(calculateBreakEven(activeRes.annual, totalFixedCost, variableCost));
 
