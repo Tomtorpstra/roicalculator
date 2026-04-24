@@ -942,36 +942,42 @@ body {
 /* Tooltip */
 .th-tooltip {
     position: relative;
-    cursor: help;
-    /* Use 'inline' so it doesn't create a 'box' that pushes text */
-    display: inline; 
+    cursor: pointer; /* Changed from help to pointer (the hand icon) */
+    display: inline-flex;
+    align-items: center;
     margin-left: 4px;
+    vertical-align: middle;
+    /* This ensures the icon stays clickable */
+    pointer-events: auto !important; 
 }
 
 .th-tooltip .tooltip-text {
     visibility: hidden;
     opacity: 0;
     position: absolute;
-    /* Position ABOVE the text */
-    bottom: 120%; 
+    bottom: 140%; 
     left: 50%;
     transform: translateX(-50%);
-    
     width: 250px;
     background: #0f172a;
     color: #fff;
-    padding: 10px;
-    border-radius: 6px;
+    padding: 12px;
+    border-radius: 8px;
     font-size: 0.75rem;
     font-weight: 400;
     text-transform: none;
     line-height: 1.4;
-    /* Allow text inside the box to wrap, but not the header */
-    white-space: normal; 
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    white-space: normal;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
     z-index: 99999;
-    pointer-events: none;
-    transition: opacity 0.2s;
+    /* This prevents the tooltip box itself from blocking clicks */
+    pointer-events: none; 
+    transition: all 0.2s ease;
+}
+
+.th-tooltip:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
 }
 
 /* Arrow pointing down */
@@ -980,28 +986,10 @@ body {
     position: absolute;
     top: 100%;
     left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
+    margin-left: -6px;
+    border-width: 6px;
     border-style: solid;
     border-color: #0f172a transparent transparent transparent;
-}
-
-.th-tooltip:hover .tooltip-text {
-    visibility: visible;
-    opacity: 1;
-}
-
-/* --- 3. INPUT STYLING (Original Grey Look) --- */
-.lines-table select, 
-.lines-table .line-name-input,
-.lines-table .oee-input {
-    background-color: #ffffff;
-    border: 1px solid #d1d5db; 
-    border-radius: 8px;
-    padding: 8px 12px;
-    font-family: inherit;
-    font-size: 0.85rem;
-    color: #1e293b;
 }
 
 /* Calculation Modal */
