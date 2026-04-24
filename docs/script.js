@@ -964,16 +964,26 @@ function calculate() {
     }
 
     // Update Scenario Cards UI
-    for (const scenario of scenarios) {
+for (const scenario of scenarios) {
         const idPrefix = scenario === 'aangepast' ? 'custom' : scenario;
-        const annualEl = document.getElementById(idPrefix + 'Annual');
-        const threeYearEl = document.getElementById(idPrefix + 'ThreeYear');
+        const annual = results[scenario].annual;
+        
+        // Target all the new display elements from your updated HTML
+        const y3TotalEl = document.getElementById(idPrefix + 'ThreeYear');
+        const y1El = document.getElementById(idPrefix + 'Year1');
+        const y2El = document.getElementById(idPrefix + 'Year2');
+        const y3El = document.getElementById(idPrefix + 'Year3');
         const oeeEl = document.getElementById(idPrefix + 'OEE');
 
-        if (annualEl) annualEl.textContent = formatCurrency(results[scenario].annual);
-        if (threeYearEl) threeYearEl.textContent = formatCurrency(results[scenario].threeYear);
+        // 1. Big Total (Over 3 years cumulative: 1/3 + 2/3 + 1 = 2x annual)
+        if (y3TotalEl) y3TotalEl.textContent = formatCurrency(annual * 2);
+
+        // 2. Individual Years (The 3 small numbers at the bottom)
+        if (y1El) y1El.textContent = formatCurrency(annual * (1/3));
+        if (y2El) y2El.textContent = formatCurrency(annual * (2/3));
+        if (y3El) y3El.textContent = formatCurrency(annual);
         
-        // --- BANDWIDTH LOGIC FOR OEE IMPROVEMENT ---
+        // 3. --- BANDWIDTH LOGIC FOR OEE IMPROVEMENT ---
         if (oeeEl && scenario !== 'aangepast') {
             const improvements = [];
             for (let p = 1; p <= numPlants; p++) {
@@ -986,7 +996,6 @@ function calculate() {
             const minImp = Math.min(...improvements);
             const maxImp = Math.max(...improvements);
 
-            // If all lines have the same improvement, show one value; otherwise show the range
             oeeEl.textContent = minImp === maxImp 
                 ? `+${formatPercentage(minImp)}` 
                 : `+${formatPercentage(minImp)} - ${formatPercentage(maxImp)}`;

@@ -1284,3 +1284,52 @@ footer {
     color: #94a3b8;
     font-size: 0.8rem;
 }
+/* --- NEW SCENARIO CARD GRID STYLING --- */
+
+.scenario-years-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr; /* Creates 3 equal columns */
+    gap: 8px;
+    margin: 15px 0;
+    padding: 0 5px;
+}
+
+.year-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.year-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #94a3b8;
+    margin-bottom: 4px;
+}
+
+.year-value {
+    font-size: 0.85rem; 
+    font-weight: 800;
+    color: #475569;
+    white-space: nowrap;
+}
+
+/* Color changes when a card is selected */
+.scenario-card.selected .year-value {
+    color: #0369a1;
+}
+
+.scenario-card.selected .year-label {
+    color: #00AAFF;
+}
+
+/* Adjust the big 3-year total spacing */
+.scenario-three-year {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-top: 8px;
+    line-height: 1.2;
+}

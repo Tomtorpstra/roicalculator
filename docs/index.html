@@ -167,56 +167,116 @@
 </div>
 
                     <div class="scenario-grid">
-                        <div class="scenario-card" data-scenario="conservative" onclick="selectScenario('conservative')">
-                            <div class="scenario-label" data-i18n="conservative">Conservatief</div>
-                            <div class="scenario-annual" id="conservativeAnnual">-</div>
-                            <div class="scenario-annual-label" data-i18n="perYear">per jaar</div>
-                            <div class="scenario-divider"></div>
-                            <div class="scenario-three-year" id="conservativeThreeYear">-</div>
-                            <div class="scenario-three-year-label" data-i18n="overThreeYears">over 3 jaar</div>
-                            <div class="scenario-divider"></div>
-                            <div class="scenario-oee" id="conservativeOEE">-</div>
-                            <div class="scenario-oee-label" data-i18n="oeeImprovement">OEE verbetering</div>
-                        </div>
+    <div class="scenario-card" data-scenario="conservative" onclick="selectScenario('conservative')">
+        <div class="scenario-label" data-i18n="conservative">Conservatief</div>
+        <div class="scenario-three-year" id="conservativeThreeYear">-</div>
+        <div class="scenario-three-year-label" data-i18n="overThreeYears">over 3 jaar</div>
+        
+        <div class="scenario-divider"></div>
 
-                        <div class="scenario-card selected" data-scenario="expected" onclick="selectScenario('expected')">
-                            <div class="scenario-badge" data-i18n="expected">Verwacht</div>
-                            <div class="scenario-annual" id="expectedAnnual">-</div>
-                            <div class="scenario-annual-label" data-i18n="perYear">per jaar</div>
-                            <div class="scenario-divider"></div>
-                            <div class="scenario-three-year" id="expectedThreeYear">-</div>
-                            <div class="scenario-three-year-label" data-i18n="overThreeYears">over 3 jaar</div>
-                            <div class="scenario-divider"></div>
-                            <div class="scenario-oee" id="expectedOEE">-</div>
-                            <div class="scenario-oee-label" data-i18n="oeeImprovement">OEE verbetering</div>
-                        </div>
+        <div class="scenario-years-grid">
+            <div class="year-col">
+                <span class="year-label">Jaar 1</span>
+                <span class="year-value" id="conservativeYear1">-</span>
+            </div>
+            <div class="year-col">
+                <span class="year-label">Jaar 2</span>
+                <span class="year-value" id="conservativeYear2">-</span>
+            </div>
+            <div class="year-col">
+                <span class="year-label">Jaar 3</span>
+                <span class="year-value" id="conservativeYear3">-</span>
+            </div>
+        </div>
 
-                        <div class="scenario-card" data-scenario="optimistic" onclick="selectScenario('optimistic')">
-                            <div class="scenario-label" data-i18n="optimistic">Optimistisch</div>
-                            <div class="scenario-annual" id="optimisticAnnual">-</div>
-                            <div class="scenario-annual-label" data-i18n="perYear">per jaar</div>
-                            <div class="scenario-divider"></div>
-                            <div class="scenario-three-year" id="optimisticThreeYear">-</div>
-                            <div class="scenario-three-year-label" data-i18n="overThreeYears">over 3 jaar</div>
-                            <div class="scenario-divider"></div>
-                            <div class="scenario-oee" id="optimisticOEE">-</div>
-                            <div class="scenario-oee-label" data-i18n="oeeImprovement">OEE verbetering</div>
-                        </div>
-
-                        <div class="scenario-card" data-scenario="aangepast" onclick="selectScenario('aangepast')">
-    <div class="scenario-label" data-i18n="custom">Aangepast</div>
-    <div class="scenario-annual" id="customAnnual">-</div>
-    <div class="scenario-annual-label" data-i18n="perYear">per jaar</div>
-    <div class="scenario-divider"></div>
-    <div class="scenario-three-year" id="customThreeYear">-</div>
-    <div class="scenario-three-year-label" data-i18n="overThreeYears">over 3 jaar</div>
-    <div class="scenario-divider"></div>
-    <div class="custom-oee-input-wrapper">
-        <input type="number" id="customOEEInput" class="custom-oee-input" min="0" max="100" step="0.1" placeholder="%" oninput="calculate()">
+        <div class="scenario-divider"></div>
+        <div class="scenario-oee" id="conservativeOEE">-</div>
+        <div class="scenario-oee-label" data-i18n="oeeImprovement">OEE verbetering</div>
     </div>
-    <div class="scenario-oee-label" data-i18n="oeeImprovement">OEE verbetering</div>
+
+    <div class="scenario-card selected" data-scenario="expected" onclick="selectScenario('expected')">
+        <div class="scenario-badge" data-i18n="expected">Verwacht</div>
+        <div class="scenario-three-year" id="expectedThreeYear">-</div>
+        <div class="scenario-three-year-label" data-i18n="overThreeYears">over 3 jaar</div>
+        
+        <div class="scenario-divider"></div>
+
+        <div class="scenario-years-grid">
+            <div class="year-col">
+                <span class="year-label">Jaar 1</span>
+                <span class="year-value" id="expectedYear1">-</span>
+            </div>
+            <div class="year-col">
+                <span class="year-label">Jaar 2</span>
+                <span class="year-value" id="expectedYear2">-</span>
+            </div>
+            <div class="year-col">
+                <span class="year-label">Jaar 3</span>
+                <span class="year-value" id="expectedYear3">-</span>
+            </div>
+        </div>
+
+        <div class="scenario-divider"></div>
+        <div class="scenario-oee" id="expectedOEE">-</div>
+        <div class="scenario-oee-label" data-i18n="oeeImprovement">OEE verbetering</div>
+    </div>
+
+    <div class="scenario-card" data-scenario="optimistic" onclick="selectScenario('optimistic')">
+        <div class="scenario-label" data-i18n="optimistic">Optimistisch</div>
+        <div class="scenario-three-year" id="optimisticThreeYear">-</div>
+        <div class="scenario-three-year-label" data-i18n="overThreeYears">over 3 jaar</div>
+        
+        <div class="scenario-divider"></div>
+
+        <div class="scenario-years-grid">
+            <div class="year-col">
+                <span class="year-label">Jaar 1</span>
+                <span class="year-value" id="optimisticYear1">-</span>
+            </div>
+            <div class="year-col">
+                <span class="year-label">Jaar 2</span>
+                <span class="year-value" id="optimisticYear2">-</span>
+            </div>
+            <div class="year-col">
+                <span class="year-label">Jaar 3</span>
+                <span class="year-value" id="optimisticYear3">-</span>
+            </div>
+        </div>
+
+        <div class="scenario-divider"></div>
+        <div class="scenario-oee" id="optimisticOEE">-</div>
+        <div class="scenario-oee-label" data-i18n="oeeImprovement">OEE verbetering</div>
+    </div>
+
+    <div class="scenario-card" data-scenario="aangepast" onclick="selectScenario('aangepast')">
+        <div class="scenario-label" data-i18n="custom">Aangepast</div>
+        <div class="scenario-three-year" id="customThreeYear">-</div>
+        <div class="scenario-three-year-label" data-i18n="overThreeYears">over 3 jaar</div>
+        
+        <div class="scenario-divider"></div>
+
+        <div class="scenario-years-grid">
+            <div class="year-col">
+                <span class="year-label">Jaar 1</span>
+                <span class="year-value" id="customYear1">-</span>
+            </div>
+            <div class="year-col">
+                <span class="year-label">Jaar 2</span>
+                <span class="year-value" id="customYear2">-</span>
+            </div>
+            <div class="year-col">
+                <span class="year-label">Jaar 3</span>
+                <span class="year-value" id="customYear3">-</span>
+            </div>
+        </div>
+
+        <div class="scenario-divider"></div>
+        <div class="custom-oee-input-wrapper">
+            <input type="number" id="customOEEInput" class="custom-oee-input" min="0" max="100" step="0.1" placeholder="%" oninput="calculate()">
+        </div>
+        <div class="scenario-oee-label" data-i18n="oeeImprovement">OEE verbetering</div>
+    </div>
 </div>
-                </div>
 
                 <!-- Calculation Breakdown Card -->
                 <div class="card" id="calcBreakdownCard" style="display: none;">
