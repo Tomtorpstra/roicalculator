@@ -837,15 +837,22 @@ function updateLineMargin(plantNum, lineIndex, level) {
     calculate();
 }
 
-function updateLineCustomOutput(plantNum, lineIndex, value) {
-    plantData[plantNum].lines[lineIndex].customOutput = parseFloat(value) || 0;
-    renderPlantContent();
-    calculate();
+function updateLineCustomOutput(plantIndex, lineIndex, value) {
+    const numValue = parseFloat(value) || 0;
+    plantData[plantIndex].lines[lineIndex].customOutput = numValue;
+    
+    // We only call calculate() to update the totals, 
+    // NOT renderPlantContent() which breaks the focus.
+    calculate(); 
 }
 
-function updateLineCustomMargin(plantNum, lineIndex, value) {
-    plantData[plantNum].lines[lineIndex].customMargin = parseFloat(value) || 0;
-    renderPlantContent();
+function updateLineCustomMargin(plantIndex, lineIndex, value) {
+    // Replace comma with dot for European notation support
+    const normalizedValue = value.replace(',', '.');
+    const numValue = parseFloat(normalizedValue) || 0;
+    plantData[plantIndex].lines[lineIndex].customMargin = numValue;
+
+    // We only call calculate() to update the totals.
     calculate();
 }
 
