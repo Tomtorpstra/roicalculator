@@ -420,60 +420,72 @@ body {
 /* Lines Table */
 #plantContents {
     width: 100%;
-    overflow-x: auto; /* Enable horizontal scroll */
-    background: #fff;
-    border-radius: 0 0 16px 16px; /* Match bottom card corners */
+    overflow-x: auto; 
+    -webkit-overflow-scrolling: touch;
     margin-top: 10px;
-    padding-bottom: 10px;
+    padding-bottom: 15px; /* Space for the scrollbar */
+    border-radius: 0 0 16px 16px;
 }
 
 .lines-table {
     width: 100%;
-    border-collapse: separate; /* Use separate to prevent border issues */
-    border-spacing: 0;
-    min-width: 1100px; /* Forces space for all Dutch headers */
+    border-collapse: collapse;
+    min-width: 1150px; /* Keep this to prevent squashing */
     table-layout: auto;
 }
 
+/* Headers with the grey/blue-grey look */
 .lines-table th {
     text-align: left;
-    padding: 12px 10px;
-    font-size: 0.75rem;
-    font-weight: 600;
+    padding: 14px 12px;
+    font-size: 0.72rem;
+    font-weight: 700;
     text-transform: uppercase;
-    color: #64748b;
+    letter-spacing: 0.5px;
+    color: #64748b; /* Blue-grey color */
     border-bottom: 2px solid #e5e7eb;
-    white-space: nowrap;
-    background: #fff;
-    position: sticky; /* Keeps headers visible while scrolling */
-    top: 0;
 }
 
 .lines-table td {
-    padding: 12px 10px;
+    padding: 14px 12px;
     font-size: 0.85rem;
-    border-bottom: 1px solid #f1f5f9;
+    border-bottom: 1px solid #f1f5f9; /* Subtle grey separator */
     vertical-align: middle;
 }
 
-/* Fix for the ACTIE/Verwijderen column */
+/* Keep the Action/Verwijderen button aligned correctly */
 .lines-table th:last-child,
 .lines-table td:last-child {
-    padding-right: 20px; /* Spacing from the edge */
+    padding-right: 25px; 
     text-align: right;
-    width: 120px;
-    min-width: 120px;
+    width: 130px;
 }
 
-/* Ensure buttons don't wrap */
-.btn-remove {
-    background: #fee2e2;
-    color: #dc2626;
+/* Input fields and Selects styling (The Grey Border Look) */
+.lines-table select, 
+.lines-table .line-name-input,
+.lines-table .oee-input {
+    background-color: #ffffff;
+    border: 1px solid #d1d5db; /* Clean grey border */
+    border-radius: 8px;
     padding: 8px 12px;
-    font-size: 0.8rem;
-    border-radius: 6px;
-    white-space: nowrap;
-    display: inline-block;
+    font-family: inherit;
+    font-size: 0.85rem;
+    color: #1e293b;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.lines-table select:focus, 
+.lines-table input:focus {
+    outline: none;
+    border-color: #00AAFF;
+    box-shadow: 0 0 0 3px rgba(0, 170, 255, 0.1);
+}
+
+/* The blue value text */
+.lines-table td.added-value-cell {
+    font-weight: 700;
+    color: #00AAFF; 
 }
 
 /* OEE Input */
