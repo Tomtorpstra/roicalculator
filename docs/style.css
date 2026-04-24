@@ -385,36 +385,29 @@ body {
 .plant-tabs {
     display: flex;
     gap: 4px;
-    margin-bottom: 16px;
-    background: #f1f5f9;
-    border-radius: 8px;
-    padding: 4px;
+    margin-bottom: 20px;
+    background: #f1f5f9; /* Light grey background */
+    border-radius: 12px; /* Nice rounded corners */
+    padding: 6px;
+    border: 1px solid #e2e8f0;
 }
 
 .plant-tab {
     flex: 1;
     text-align: center;
-    padding: 8px 12px;
-    border-radius: 6px;
-    font-size: 0.8rem;
+    padding: 10px 12px;
+    border-radius: 8px; /* Rounded buttons inside the bar */
+    font-size: 0.85rem;
     font-weight: 600;
     cursor: pointer;
     color: #64748b;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
 }
 
 .plant-tab.active {
-    background: #fff;
+    background: #ffffff;
     color: #00AAFF;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-
-.plant-content {
-    display: none;
-}
-
-.plant-content.active {
-    display: block;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 /* Lines Table */
