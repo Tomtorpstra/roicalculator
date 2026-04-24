@@ -422,7 +422,7 @@ body {
 /* Lines Table */
 #plantContents {
     width: 100%;
-    overflow-x: auto; 
+    overflow: visible !important; /* Critical for tooltip visibility */
     margin-top: 10px;
     background: #fff;
     border-radius: 8px;
@@ -431,14 +431,11 @@ body {
 .lines-table {
     width: 100%;
     border-collapse: collapse;
-    /* This ensures the table stays wide enough for one line */
-    min-width: 1300px; 
+    min-width: 1300px;
     table-layout: auto;
 }
 
 .lines-table th {
-    /* RESET: Back to standard table cell behavior */
-    display: table-cell !important; 
     text-align: left;
     padding: 14px 12px;
     font-size: 0.72rem;
@@ -446,15 +443,27 @@ body {
     text-transform: uppercase;
     color: #64748b;
     border-bottom: 2px solid #e5e7eb;
-    /* Fix: Prevent text stacking */
-    white-space: nowrap !important; 
-    vertical-align: middle;
+    white-space: nowrap !important;
+    position: relative;
+    overflow: visible !important; /* Allows tooltip to pop out */
 }
 
-.lines-table td {
-    padding: 14px 12px;
-    border-bottom: 1px solid #f1f5f9;
-    vertical-align: middle;
+/* Forces ALL inputs (Select, Manual, Number) to be rounded */
+.lines-table select, 
+.lines-table input,
+.lines-table .line-name-input,
+.lines-table .oee-input,
+.lines-table .custom-value-input {
+    background-color: #ffffff !important;
+    border: 1px solid #d1d5db !important; 
+    border-radius: 8px !important; /* THE ROUNDED CORNERS FIX */
+    padding: 8px 12px !important;
+    font-family: inherit;
+    font-size: 0.85rem;
+    color: #1e293b;
+    height: 38px !important;
+    width: 100%;
+    box-sizing: border-box;
 }
 /* OEE Input */
 .oee-input {
@@ -942,45 +951,42 @@ body {
 /* Tooltip */
 .th-tooltip {
     position: relative;
-    cursor: pointer; /* Changed from help to pointer (the hand icon) */
+    cursor: pointer;
     display: inline-flex;
     align-items: center;
     margin-left: 4px;
     vertical-align: middle;
-    /* This ensures the icon stays clickable */
-    pointer-events: auto !important; 
 }
 
 .th-tooltip .tooltip-text {
     visibility: hidden;
     opacity: 0;
     position: absolute;
-    bottom: 140%; 
+    bottom: 150%; /* Position well ABOVE the icon */
     left: 50%;
     transform: translateX(-50%);
     width: 250px;
-    background: #0f172a;
-    color: #fff;
-    padding: 12px;
-    border-radius: 8px;
-    font-size: 0.75rem;
-    font-weight: 400;
-    text-transform: none;
-    line-height: 1.4;
-    white-space: normal;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-    z-index: 99999;
-    /* This prevents the tooltip box itself from blocking clicks */
-    pointer-events: none; 
-    transition: all 0.2s ease;
+    background: #0f172a !important; /* Dark background */
+    color: #ffffff !important; /* White text */
+    padding: 12px !important;
+    border-radius: 8px !important;
+    font-size: 0.75rem !important;
+    font-weight: 400 !important;
+    line-height: 1.4 !important;
+    white-space: normal !important; /* Allows text wrap inside box */
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3) !important;
+    z-index: 999999 !important; /* Brings it to the very front */
+    pointer-events: none;
+    transition: opacity 0.2s ease;
 }
 
+/* Show the text when hovering */
 .th-tooltip:hover .tooltip-text {
-    visibility: visible;
-    opacity: 1;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 
-/* Arrow pointing down */
+/* Small triangle pointing down */
 .th-tooltip .tooltip-text::after {
     content: "";
     position: absolute;
