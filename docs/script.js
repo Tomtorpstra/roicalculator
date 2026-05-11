@@ -735,12 +735,12 @@ function renderPlantContent() {
                             <th style="width: 35px;">#</th>
                             <th style="width: 140px;">${t('thLineName')}</th>
                             <th style="width: 110px;">Situatie</th>
-                            <th class="th-tooltip" style="width: 100px;">Output <div class="tooltip-text"><strong>${t('outputTooltipTitle')}</strong><br>${t('outputTooltipBody')}</div></th>
-                            <th class="th-tooltip" style="width: 100px;">Marge <div class="tooltip-text"><strong>${t('marginTooltipTitle')}</strong><br>${t('marginTooltipBody')}</div></th>
-                            <th style="width: 100px;">Model</th>
+                            <th class="th-tooltip" style="width: 130px;">Output <div class="tooltip-text">${t('outputTooltipBody')}</div></th>
+                            <th class="th-tooltip" style="width: 130px;">Marge <div class="tooltip-text">${t('marginTooltipBody')}</div></th>
+                            <th style="width: 110px;">Model</th>
                             <th style="width: 70px;">Ploeg</th>
                             <th style="width: 110px;">${t('thAddedValue')}</th>
-                            <th class="th-tooltip" style="width: 80px;">OEE % <div class="tooltip-text"><strong>${t('currentOEETooltipTitle')}</strong><br>${t('currentOEETooltipBody')}</div></th>
+                            <th class="th-tooltip" style="width: 110px;">OEE % <div class="tooltip-text">${t('currentOEETooltipBody')}</div></th>
                             <th style="width: 45px;"></th>
                         </tr>
                     </thead>
