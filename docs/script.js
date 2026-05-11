@@ -735,12 +735,21 @@ function renderPlantContent() {
                             <th style="width: 35px;">#</th>
                             <th style="width: 140px;">${t('thLineName')}</th>
                             <th style="width: 110px;">Situatie</th>
-                            <th class="th-tooltip" style="width: 130px;">Output <div class="tooltip-text">${t('outputTooltipBody')}</div></th>
-                            <th class="th-tooltip" style="width: 130px;">Marge <div class="tooltip-text">${t('marginTooltipBody')}</div></th>
+                            <th class="th-tooltip" style="width: 130px;">
+                                Output <span class="info-icon">ⓘ</span>
+                                <div class="tooltip-text">${t('outputTooltipBody')}</div>
+                            </th>
+                            <th class="th-tooltip" style="width: 130px;">
+                                Marge <span class="info-icon">ⓘ</span>
+                                <div class="tooltip-text">${t('marginTooltipBody')}</div>
+                            </th>
                             <th style="width: 110px;">Model</th>
                             <th style="width: 70px;">Ploeg</th>
                             <th style="width: 110px;">${t('thAddedValue')}</th>
-                            <th class="th-tooltip" style="width: 110px;">OEE % <div class="tooltip-text">${t('currentOEETooltipBody')}</div></th>
+                            <th class="th-tooltip" style="width: 110px;">
+                                OEE % <span class="info-icon">ⓘ</span>
+                                <div class="tooltip-text">${t('currentOEETooltipBody')}</div>
+                            </th>
                             <th style="width: 45px;"></th>
                         </tr>
                     </thead>
