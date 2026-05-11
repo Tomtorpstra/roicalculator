@@ -112,7 +112,7 @@
                         <div class="form-group">
                             <label for="fixedFee" data-i18n="fixedFeeLabel">Vaste Kosten (Eenmalig)</label>
                             <div class="currency-input">
-                                <input type="number" id="fixedFee" min="0" value="15000" onchange="calculate()" oninput="calculate()" data-i18n-placeholder="fixedFeePlaceholder" placeholder="Bijv. 15.000">
+                                <input type="number" id="fixedFee" min="0" onchange="calculate()" oninput="calculate()" data-i18n-placeholder="fixedFeePlaceholder" placeholder="Bijv. 15.000">
                             </div>
                         </div>
                         <div class="form-group">
@@ -124,7 +124,7 @@
                         <div class="form-group">
                             <label for="variableCost" data-i18n="variableCostLabel">Onderhoudskosten (per jaar)</label>
                             <div class="currency-input">
-                                <input type="number" id="variableCost" min="0" value="3000" onchange="calculate()" oninput="calculate()" data-i18n-placeholder="variableCostPlaceholder" placeholder="Bijv. 3.000">
+                                <input type="number" id="variableCost" min="0" onchange="calculate()" oninput="calculate()" data-i18n-placeholder="variableCostPlaceholder" placeholder="Bijv. 3.000">
                             </div>
                         </div>
                     </div>
@@ -143,78 +143,140 @@
                 </div>
 
                 <!-- Scenario Results Card -->
-                <div class="card" id="scenarioCard" style="display: none;">
-                    <div class="card-header">
-                        <div class="card-icon green">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
-                        </div>
-                        <div style="flex:1;">
-                            <h2>
-                                <span data-i18n="cardSavingsTitle">Besparingspotentieel</span>
-                                <span id="savingPotentialInfo" class="th-tooltip saving-potential-tooltip" style="display:none; border-bottom:none; margin-left:6px;">
-                                    <span style="font-size:0.7rem; opacity:0.6; cursor:help;">&#9432;</span>
-                                    <span class="tooltip-text" style="width:360px;" data-i18n="savingPotentialTooltip">Dit besparingspotentieel is gebaseerd op de upgrade van OEE Blue naar T4A/P4A</span>
-                                </span>
-                            </h2>
-                            <p class="card-subtitle" id="savingsSubtitle"><span id="totalLinesDisplay">0</span> <span data-i18n="linesAcross">lijnen over</span> <span id="totalPlantsDisplay">0</span> plants</p>
-                        </div>
-                        <button class="btn-calc-info" onclick="openCalcModal()" title="Hoe berekenen wij dit?">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                            <span data-i18n="calcInfoBtn">Berekening</span>
-                        </button>
-                    </div>
+<div class="card-header">
+    <div class="card-icon green">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
+    </div>
+    <div style="flex:1;">
+        <h2 class="th-tooltip" style="border-bottom: none; cursor: help; display: inline-flex; align-items: center;">
+            <span data-i18n="cardSavingsTitle">Besparingspotentieel</span>
+            <span style="font-size:0.8rem; opacity:0.6; margin-left:6px;">&#9432;</span>
+            <div class="tooltip-text" style="width:360px; white-space: normal; font-weight: 400;">
+                <span class="tooltip-title" data-i18n="cardSavingsTitle">Besparingspotentieel</span>
+                <span data-i18n="savingPotentialTooltip"></span>
+            </div>
+        </h2>
+        <p class="card-subtitle" id="savingsSubtitle">
+            <span id="totalLinesDisplay">0</span> <span data-i18n="linesAcross">lijnen over</span> <span id="totalPlantsDisplay">0</span> plants
+        </p>
+    </div>
+    <button class="btn-calc-info" onclick="openCalcModal()" title="Hoe berekenen wij dit?">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <span data-i18n="calcInfoBtn">Berekening</span>
+    </button>
+</div>
 
                     <div class="scenario-grid">
-                        <div class="scenario-card" data-scenario="conservative" onclick="selectScenario('conservative')">
-                            <div class="scenario-label" data-i18n="conservative">Conservatief</div>
-                            <div class="scenario-annual" id="conservativeAnnual">-</div>
-                            <div class="scenario-annual-label" data-i18n="perYear">per jaar</div>
-                            <div class="scenario-divider"></div>
-                            <div class="scenario-three-year" id="conservativeThreeYear">-</div>
-                            <div class="scenario-three-year-label" data-i18n="overThreeYears">over 3 jaar</div>
-                            <div class="scenario-divider"></div>
-                            <div class="scenario-oee" id="conservativeOEE">-</div>
-                            <div class="scenario-oee-label" data-i18n="oeeImprovement">OEE verbetering</div>
-                        </div>
+    <div class="scenario-card" data-scenario="conservative" onclick="selectScenario('conservative')">
+        <div class="scenario-label" data-i18n="conservative">Conservatief</div>
+        <div class="scenario-three-year" id="conservativeThreeYear">-</div>
+        <div class="scenario-three-year-label" data-i18n="overThreeYears">over 3 jaar</div>
+        
+        <div class="scenario-divider"></div>
 
-                        <div class="scenario-card selected" data-scenario="expected" onclick="selectScenario('expected')">
-                            <div class="scenario-badge" data-i18n="expected">Verwacht</div>
-                            <div class="scenario-annual" id="expectedAnnual">-</div>
-                            <div class="scenario-annual-label" data-i18n="perYear">per jaar</div>
-                            <div class="scenario-divider"></div>
-                            <div class="scenario-three-year" id="expectedThreeYear">-</div>
-                            <div class="scenario-three-year-label" data-i18n="overThreeYears">over 3 jaar</div>
-                            <div class="scenario-divider"></div>
-                            <div class="scenario-oee" id="expectedOEE">-</div>
-                            <div class="scenario-oee-label" data-i18n="oeeImprovement">OEE verbetering</div>
-                        </div>
+        <div class="scenario-years-grid">
+            <div class="year-col">
+                <span class="year-label">Jaar 1</span>
+                <span class="year-value" id="conservativeYear1">-</span>
+            </div>
+            <div class="year-col">
+                <span class="year-label">Jaar 2</span>
+                <span class="year-value" id="conservativeYear2">-</span>
+            </div>
+            <div class="year-col">
+                <span class="year-label">Jaar 3</span>
+                <span class="year-value" id="conservativeYear3">-</span>
+            </div>
+        </div>
 
-                        <div class="scenario-card" data-scenario="optimistic" onclick="selectScenario('optimistic')">
-                            <div class="scenario-label" data-i18n="optimistic">Optimistisch</div>
-                            <div class="scenario-annual" id="optimisticAnnual">-</div>
-                            <div class="scenario-annual-label" data-i18n="perYear">per jaar</div>
-                            <div class="scenario-divider"></div>
-                            <div class="scenario-three-year" id="optimisticThreeYear">-</div>
-                            <div class="scenario-three-year-label" data-i18n="overThreeYears">over 3 jaar</div>
-                            <div class="scenario-divider"></div>
-                            <div class="scenario-oee" id="optimisticOEE">-</div>
-                            <div class="scenario-oee-label" data-i18n="oeeImprovement">OEE verbetering</div>
-                        </div>
-
-                        <div class="scenario-card" data-scenario="aangepast" onclick="selectScenario('aangepast')">
-    <div class="scenario-label" data-i18n="custom">Aangepast</div>
-    <div class="scenario-annual" id="customAnnual">-</div>
-    <div class="scenario-annual-label" data-i18n="perYear">per jaar</div>
-    <div class="scenario-divider"></div>
-    <div class="scenario-three-year" id="customThreeYear">-</div>
-    <div class="scenario-three-year-label" data-i18n="overThreeYears">over 3 jaar</div>
-    <div class="scenario-divider"></div>
-    <div class="custom-oee-input-wrapper">
-        <input type="number" id="customOEEInput" class="custom-oee-input" min="0" max="100" step="0.1" placeholder="%" oninput="calculate()">
+        <div class="scenario-divider"></div>
+        <div class="scenario-oee" id="conservativeOEE">-</div>
+        <div class="scenario-oee-label" data-i18n="oeeImprovement">OEE verbetering</div>
     </div>
-    <div class="scenario-oee-label" data-i18n="oeeImprovement">OEE verbetering</div>
+
+    <div class="scenario-card selected" data-scenario="expected" onclick="selectScenario('expected')">
+        <div class="scenario-badge" data-i18n="expected">Verwacht</div>
+        <div class="scenario-three-year" id="expectedThreeYear">-</div>
+        <div class="scenario-three-year-label" data-i18n="overThreeYears">over 3 jaar</div>
+        
+        <div class="scenario-divider"></div>
+
+        <div class="scenario-years-grid">
+            <div class="year-col">
+                <span class="year-label">Jaar 1</span>
+                <span class="year-value" id="expectedYear1">-</span>
+            </div>
+            <div class="year-col">
+                <span class="year-label">Jaar 2</span>
+                <span class="year-value" id="expectedYear2">-</span>
+            </div>
+            <div class="year-col">
+                <span class="year-label">Jaar 3</span>
+                <span class="year-value" id="expectedYear3">-</span>
+            </div>
+        </div>
+
+        <div class="scenario-divider"></div>
+        <div class="scenario-oee" id="expectedOEE">-</div>
+        <div class="scenario-oee-label" data-i18n="oeeImprovement">OEE verbetering</div>
+    </div>
+
+    <div class="scenario-card" data-scenario="optimistic" onclick="selectScenario('optimistic')">
+        <div class="scenario-label" data-i18n="optimistic">Optimistisch</div>
+        <div class="scenario-three-year" id="optimisticThreeYear">-</div>
+        <div class="scenario-three-year-label" data-i18n="overThreeYears">over 3 jaar</div>
+        
+        <div class="scenario-divider"></div>
+
+        <div class="scenario-years-grid">
+            <div class="year-col">
+                <span class="year-label">Jaar 1</span>
+                <span class="year-value" id="optimisticYear1">-</span>
+            </div>
+            <div class="year-col">
+                <span class="year-label">Jaar 2</span>
+                <span class="year-value" id="optimisticYear2">-</span>
+            </div>
+            <div class="year-col">
+                <span class="year-label">Jaar 3</span>
+                <span class="year-value" id="optimisticYear3">-</span>
+            </div>
+        </div>
+
+        <div class="scenario-divider"></div>
+        <div class="scenario-oee" id="optimisticOEE">-</div>
+        <div class="scenario-oee-label" data-i18n="oeeImprovement">OEE verbetering</div>
+    </div>
+
+    <div class="scenario-card" data-scenario="aangepast" onclick="selectScenario('aangepast')">
+        <div class="scenario-label" data-i18n="custom">Aangepast</div>
+        <div class="scenario-three-year" id="customThreeYear">-</div>
+        <div class="scenario-three-year-label" data-i18n="overThreeYears">over 3 jaar</div>
+        
+        <div class="scenario-divider"></div>
+
+        <div class="scenario-years-grid">
+            <div class="year-col">
+                <span class="year-label">Jaar 1</span>
+                <span class="year-value" id="customYear1">-</span>
+            </div>
+            <div class="year-col">
+                <span class="year-label">Jaar 2</span>
+                <span class="year-value" id="customYear2">-</span>
+            </div>
+            <div class="year-col">
+                <span class="year-label">Jaar 3</span>
+                <span class="year-value" id="customYear3">-</span>
+            </div>
+        </div>
+
+        <div class="scenario-divider"></div>
+        <div class="custom-oee-input-wrapper">
+            <input type="number" id="customOEEInput" class="custom-oee-input" min="0" max="100" step="0.1" placeholder="%" oninput="calculate()">
+        </div>
+        <div class="scenario-oee-label" data-i18n="oeeImprovement">OEE verbetering</div>
+    </div>
 </div>
-                </div>
 
                 <!-- Calculation Breakdown Card -->
                 <div class="card" id="calcBreakdownCard" style="display: none;">
@@ -308,7 +370,12 @@
                         <div class="calc-ramp-row"><span class="calc-ramp-label" data-i18n="calcYear2">Jaar 2</span><div class="calc-ramp-bar" style="width:67%">2/3</div></div>
                         <div class="calc-ramp-row"><span class="calc-ramp-label" data-i18n="calcYear3">Jaar 3</span><div class="calc-ramp-bar" style="width:100%">3/3</div></div>
                     </div>
-                    <div class="calc-formula" data-i18n="calcStep4Formula">Totaal 3 jaar = Jaarlijks &times; (1/3 + 2/3 + 1) = Jaarlijks &times; 2</div>
+                    
+                    <p class="calc-desc" style="margin-top: 15px; border-left: 3px solid #00AAFF; padding-left: 12px;">
+                        <strong data-i18n="rampUpTitle">Geleidelijke Besparingsopbouw (Ramp-up)</strong><br>
+                        <span data-i18n="rampUpDesc">De ROI houdt rekening met een realistisch adoptieproces. We bouwen de resultaten stapsgewijs op (Jaar 1: 33%, Jaar 2: 67%, Jaar 3: 100%) om rekening te houden met de tijd die nodig is voor training, procesoptimalisatie en gedragsverandering binnen uw team.</span>
+                    </p>
+                    <div class="calc-formula" data-i18n="calcStep4Formula" style="margin-top: 15px;">Totaal 3 jaar = Jaarlijks &times; (1/3 + 2/3 + 1) = Jaarlijks &times; 2</div>
                 </div>
                 <div class="calc-section">
                     <h3 data-i18n="calcStep5Title">5. Scenario's</h3>

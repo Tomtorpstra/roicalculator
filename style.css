@@ -385,130 +385,72 @@ body {
 .plant-tabs {
     display: flex;
     gap: 4px;
-    margin-bottom: 16px;
-    background: #f1f5f9;
-    border-radius: 8px;
-    padding: 4px;
+    margin-bottom: 20px;
+    background: #f1f5f9; 
+    border-radius: 12px; 
+    padding: 6px;
+    border: 1px solid #e2e8f0;
 }
 
 .plant-tab {
     flex: 1;
     text-align: center;
-    padding: 8px 12px;
-    border-radius: 6px;
-    font-size: 0.8rem;
+    padding: 10px 12px;
+    border-radius: 8px; 
+    font-size: 0.85rem;
     font-weight: 600;
     cursor: pointer;
     color: #64748b;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
 }
 
 .plant-tab.active {
-    background: #fff;
+    background: #ffffff;
     color: #00AAFF;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
+/* --- TAB VISIBILITY FIX (Prevents Stacking) --- */
 
 .plant-content {
-    display: none;
+    display: none !important; /* This hides the plants that aren't selected */
 }
 
 .plant-content.active {
-    display: block;
+    display: block !important; /* This shows only the selected plant */
 }
 
 /* Lines Table */
+/* Lines Table */
+#plantContents {
+    width: 100%;
+    overflow-x: auto; 
+    margin-top: 10px;
+    background: #fff;
+    border-radius: 8px;
+}
+
 .lines-table {
     width: 100%;
     border-collapse: collapse;
-    margin-bottom: 16px;
+    min-width: 1200px;
+    table-layout: auto;
 }
 
 .lines-table th {
     text-align: left;
-    padding: 10px 12px;
-    font-size: 0.75rem;
-    font-weight: 600;
+    padding: 14px 12px;
+    font-size: 0.72rem;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
     color: #64748b;
     border-bottom: 2px solid #e5e7eb;
-}
-
-.lines-table td {
-    padding: 10px 12px;
-    font-size: 0.85rem;
-    border-bottom: 1px solid #f1f5f9;
-}
-
-.lines-table td.added-value-cell {
-    font-weight: 600;
-    color: #0891b2;
     white-space: nowrap;
 }
 
-.lines-table select {
-    padding: 6px 10px;
-    border: 2px solid #e5e7eb;
-    border-radius: 6px;
-    font-family: inherit;
-    font-size: 0.85rem;
-    width: 100%;
-    min-width: 150px;
-}
-
-.line-number {
-    font-weight: 700;
-    color: #00AAFF;
-}
-
-.line-name-input {
-    padding: 6px 10px;
-    border: 2px solid #e5e7eb;
-    border-radius: 6px;
-    font-family: inherit;
-    font-size: 0.85rem;
-    width: 100%;
-    min-width: 100px;
-    transition: border-color 0.2s;
-}
-
-.line-name-input:focus {
-    outline: none;
-    border-color: #00AAFF;
-}
-
-.custom-value-input {
-    margin-top: 6px;
-    padding: 6px 10px;
-    border: 2px solid #00AAFF;
-    border-radius: 6px;
-    font-family: inherit;
-    font-size: 0.85rem;
-    width: 100%;
-    background: #f0f9ff;
-}
-
-.custom-value-input:focus {
-    outline: none;
-    border-color: #0090dd;
-}
-
-/* OEE Input */
-.oee-input {
-    padding: 6px 10px;
-    border: 2px solid #e5e7eb;
-    border-radius: 6px;
-    font-family: inherit;
-    font-size: 0.85rem;
-    width: 80px;
-    text-align: center;
-    transition: border-color 0.2s;
-}
-
-.oee-input:focus {
-    outline: none;
-    border-color: #00AAFF;
+.lines-table td {
+    padding: 14px 12px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
 }
 
 /* Calculation Breakdown */
@@ -1020,59 +962,22 @@ body {
     opacity: 1;
 }
 
-/* Tooltip appearing above the element */
-.tooltip-above {
-    top: auto !important;
-    bottom: calc(100% + 8px) !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-}
-
-.tooltip-above::before {
-    top: 100% !important;
-    bottom: auto !important;
-    left: 50% !important;
-    transform: translateX(-50%);
-    border-bottom-color: transparent !important;
-    border-top-color: #0f172a !important;
-}
-
-/* Saving potential tooltip inline icon */
-.saving-potential-tooltip {
-    vertical-align: middle;
-}
-
-.tooltip-title {
-    font-weight: 700;
-    color: #00AAFF;
-    display: block;
-    margin-bottom: 6px;
-}
-
-/* Calculation Info Button */
-.btn-calc-info {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 14px;
-    border-radius: 8px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    cursor: pointer;
+/* OEE Input */
+.oee-input {
+    padding: 6px 10px;
     border: 2px solid #e5e7eb;
-    background: #fff;
-    color: #64748b;
+    border-radius: 8px;
     font-family: inherit;
-    transition: all 0.2s;
-    white-space: nowrap;
+    font-size: 0.85rem;
+    width: 80px;
+    text-align: center;
+    transition: border-color 0.2s;
 }
 
-.btn-calc-info:hover {
+.oee-input:focus {
+    outline: none;
     border-color: #00AAFF;
-    color: #00AAFF;
-    background: #f0f9ff;
 }
-
 /* Calculation Modal */
 .calc-modal-overlay {
     display: none;
@@ -1260,4 +1165,82 @@ footer {
         gap: 12px;
         align-items: flex-start;
     }
+}
+/* --- FIX FOR ROUNDED EDGES ON MANUAL INPUT BOXES --- */
+
+.lines-table .custom-value-input {
+    display: block;
+    margin-top: 8px;
+    padding: 8px 12px;
+    border: 1px solid #00AAFF !important; /* Blue border to show it's active */
+    border-radius: 8px !important;        /* THIS ADDS THE ROUNDED EDGES */
+    font-family: inherit;
+    font-size: 0.85rem;
+    width: 100%;
+    background-color: #f0f9ff !important; /* Subtle blue tint */
+    color: #1e293b;
+    transition: all 0.2s ease;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.lines-table .custom-value-input:focus {
+    outline: none;
+    border-color: #0090dd !important;
+    box-shadow: 0 0 0 3px rgba(0, 170, 255, 0.1) !important;
+    background-color: #ffffff !important;
+}
+
+/* Ensure the placeholder text looks professional */
+.lines-table .custom-value-input::placeholder {
+    color: #94a3b8;
+    font-size: 0.8rem;
+}
+/* --- NEW SCENARIO CARD GRID STYLING --- */
+
+.scenario-years-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr; /* Creates 3 equal columns */
+    gap: 8px;
+    margin: 15px 0;
+    padding: 0 5px;
+}
+
+.year-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.year-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #94a3b8;
+    margin-bottom: 4px;
+}
+
+.year-value {
+    font-size: 0.85rem; 
+    font-weight: 800;
+    color: #475569;
+    white-space: nowrap;
+}
+
+/* Color changes when a card is selected */
+.scenario-card.selected .year-value {
+    color: #0369a1;
+}
+
+.scenario-card.selected .year-label {
+    color: #00AAFF;
+}
+
+/* Adjust the big 3-year total spacing */
+.scenario-three-year {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-top: 8px;
+    line-height: 1.2;
 }

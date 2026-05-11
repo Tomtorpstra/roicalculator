@@ -33,8 +33,8 @@ const translations = {
         cardPlantsTitle: 'Plants & Lijnen Configuratie',
         cardPlantsSubtitle: 'Configureer lijnen per plant met individuele ploegen',
         thLine: 'Lijn',
-        thShiftRegime: 'Ploegen Regime',
-        thOutput: 'Max. output/uur',
+        thShiftRegime: 'Ploegen',
+        thOutput: 'Max. output',
         outputTooltipTitle: 'Maximale output per uur',
         outputTooltipBody: 'Dit getal is gebaseerd op de output zonder verlies van snelheid, beschikbaarheid en kwaliteit.',
         thMargin: 'Marge',
@@ -161,7 +161,9 @@ const translations = {
         situationLabelBlue: 'OEE Blue upgrade',
         outputLabelLow: 'Laag',
         outputLabelAvg: 'Gemiddeld',
-        outputLabelHigh: 'Hoog'
+        outputLabelHigh: 'Hoog',
+        rampUpTitle: "Geleidelijke Besparingsopbouw (Ramp-up)",
+        rampUpDesc: "De ROI houdt rekening met een realistisch adoptieproces. We bouwen de resultaten stapsgewijs op (Jaar 1: 33%, Jaar 2: 67%, Jaar 3: 100%) om rekening te houden met de tijd die nodig is voor training, procesoptimalisatie en gedragsverandering binnen uw team.",
     },
     en: {
         pageTitle: 'OEE ROI Calculator - D4A Savings Calculation',
@@ -322,7 +324,9 @@ const translations = {
         situationLabelBlue: 'OEE Blue upgrade',
         outputLabelLow: 'Low',
         outputLabelAvg: 'Average',
-        outputLabelHigh: 'High'
+        outputLabelHigh: 'High',
+        rampUpTitle: "Gradual Savings Realization (Ramp-up)",
+        rampUpDesc: "The ROI accounts for a realistic adoption process. Results are built up in stages (Year 1: 33%, Year 2: 67%, Year 3: 100%) to reflect the time required for staff training, process optimization, and cultural change within your organization.",
     }
 };
 
@@ -837,15 +841,22 @@ function updateLineMargin(plantNum, lineIndex, level) {
     calculate();
 }
 
-function updateLineCustomOutput(plantNum, lineIndex, value) {
-    plantData[plantNum].lines[lineIndex].customOutput = parseFloat(value) || 0;
-    renderPlantContent();
-    calculate();
+function updateLineCustomOutput(plantIndex, lineIndex, value) {
+    const numValue = parseFloat(value) || 0;
+    plantData[plantIndex].lines[lineIndex].customOutput = numValue;
+    
+    // We only call calculate() to update the totals, 
+    // NOT renderPlantContent() which breaks the focus.
+    calculate(); 
 }
 
-function updateLineCustomMargin(plantNum, lineIndex, value) {
-    plantData[plantNum].lines[lineIndex].customMargin = parseFloat(value) || 0;
-    renderPlantContent();
+function updateLineCustomMargin(plantIndex, lineIndex, value) {
+    // Replace comma with dot for European notation support
+    const normalizedValue = value.replace(',', '.');
+    const numValue = parseFloat(normalizedValue) || 0;
+    plantData[plantIndex].lines[lineIndex].customMargin = numValue;
+
+    // We only call calculate() to update the totals.
     calculate();
 }
 
@@ -891,10 +902,15 @@ function calculate() {
     const scenarios = ['conservative', 'expected', 'optimistic', 'aangepast'];
     const results = {};
 
+    // 1. Calculate total lines and update the subtitle counters
     let totalLines = 0;
     for (let p = 1; p <= numPlants; p++) {
         totalLines += plantData[p].lines.length;
     }
+    
+    // Push values to the "X lijnen over Y plants" subtitle
+    document.getElementById('totalLinesDisplay').textContent = totalLines;
+    document.getElementById('totalPlantsDisplay').textContent = numPlants;
 
     const breakdownRows = [];
 
@@ -918,6 +934,7 @@ function calculate() {
                     let val = (customInput && customInput.value !== "") ? parseFloat(customInput.value.replace(',', '.')) : 0;
                     improvement = val / 100; 
                 } else {
+                    // Pull improvement based on specific line situation (Blue vs New)
                     improvement = lineSit === 'noOEE' ? data.oeeNothingToT4A[scenario] : data.oeeBlueToT4A[scenario];
                 }
                 
@@ -951,29 +968,56 @@ function calculate() {
     }
 
     // Update Scenario Cards UI
-    for (const scenario of scenarios) {
+for (const scenario of scenarios) {
         const idPrefix = scenario === 'aangepast' ? 'custom' : scenario;
-        const annualEl = document.getElementById(idPrefix + 'Annual');
-        const threeYearEl = document.getElementById(idPrefix + 'ThreeYear');
+        const annual = results[scenario].annual;
+        
+        // Target all the new display elements from your updated HTML
+        const y3TotalEl = document.getElementById(idPrefix + 'ThreeYear');
+        const y1El = document.getElementById(idPrefix + 'Year1');
+        const y2El = document.getElementById(idPrefix + 'Year2');
+        const y3El = document.getElementById(idPrefix + 'Year3');
         const oeeEl = document.getElementById(idPrefix + 'OEE');
 
-        if (annualEl) annualEl.textContent = formatCurrency(results[scenario].annual);
-        if (threeYearEl) threeYearEl.textContent = formatCurrency(results[scenario].threeYear);
+        // 1. Big Total (Over 3 years cumulative: 1/3 + 2/3 + 1 = 2x annual)
+        if (y3TotalEl) y3TotalEl.textContent = formatCurrency(annual * 2);
+
+        // 2. Individual Years (The 3 small numbers at the bottom)
+        if (y1El) y1El.textContent = formatCurrency(annual * (1/3));
+        if (y2El) y2El.textContent = formatCurrency(annual * (2/3));
+        if (y3El) y3El.textContent = formatCurrency(annual);
         
+        // 3. --- BANDWIDTH LOGIC FOR OEE IMPROVEMENT ---
+        if (oeeEl && scenario !== 'aangepast') {
+            const improvements = [];
+            for (let p = 1; p <= numPlants; p++) {
+                for (const line of plantData[p].lines) {
+                    const lineSit = line.situation || 'blueUpgrade';
+                    const imp = lineSit === 'noOEE' ? data.oeeNothingToT4A[scenario] : data.oeeBlueToT4A[scenario];
+                    improvements.push(imp);
+                }
+            }
+            const minImp = Math.min(...improvements);
+            const maxImp = Math.max(...improvements);
+
+            oeeEl.textContent = minImp === maxImp 
+                ? `+${formatPercentage(minImp)}` 
+                : `+${formatPercentage(minImp)} - ${formatPercentage(maxImp)}`;
+        }
+
         const card = document.querySelector(`.scenario-card[data-scenario="${scenario}"]`);
         const labelEl = card ? card.querySelector('.scenario-oee-label') : null;
 
         if (scenario === 'aangepast') {
             if (labelEl) labelEl.style.display = 'block';
         } else {
-            if (oeeEl) oeeEl.textContent = ""; 
-            if (labelEl) labelEl.style.display = 'none';
+            if (labelEl) labelEl.style.display = 'block'; 
         }
     }
 
     const activeRes = results[selectedScenario] || results['expected'];
 
-    // Refresh components
+    // Refresh Breakdown and Graph
     renderCalcBreakdown(breakdownRows, activeRes.annual);
     renderGraph(calculateBreakEven(activeRes.annual, totalFixedCost, variableCost));
 
@@ -1515,13 +1559,15 @@ function exportPDF() {
 // ==========================================
 document.addEventListener('DOMContentLoaded', async function() {
     await loadSectorData();
+    
+    // ADD THIS LINE: This fills in the tooltips as soon as the page opens
+    applyTranslations(); 
+    
     initSearchableSelect();
     updatePlantTabs();
 
-    // ADD THIS PART: Link the custom OEE input to the calculation engine
     const customOeeInput = document.getElementById('customOEEInput');
     if (customOeeInput) {
-        // 'input' fires on every keystroke, 'change' fires when you click away
         customOeeInput.addEventListener('input', () => {
             if (selectedScenario === 'aangepast') {
                 calculate();
