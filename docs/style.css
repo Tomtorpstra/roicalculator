@@ -1312,3 +1312,100 @@ footer {
     height: 24px;
     cursor: pointer;
 }
+/* Rounded Table Container */
+.table-container-rounded {
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    overflow: visible; /* Important for tooltips */
+    background: #ffffff;
+}
+
+.lines-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed; /* Prevents stretching */
+}
+
+.lines-table th {
+    background: #f8fafc;
+    padding: 12px 8px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: #64748b;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: left;
+}
+
+.lines-table td {
+    padding: 10px 8px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+}
+
+/* Round top corners of the first/last header */
+.lines-table th:first-child { border-top-left-radius: 12px; }
+.lines-table th:last-child { border-top-right-radius: 12px; }
+
+/* Input and Select Styling to match your theme */
+.line-input, .line-select {
+    width: 100%;
+    height: 32px;
+    padding: 4px 8px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.85rem;
+    color: #1e293b;
+    background-color: #fff;
+}
+
+.oee-center { text-align: center; }
+
+/* Tooltip Fix - ensuring they appear on top of everything */
+.th-tooltip { position: relative; cursor: help; }
+
+.th-tooltip .tooltip-text {
+    visibility: hidden;
+    width: 220px;
+    background-color: #0f172a; /* Dark blue/black like your theme */
+    color: #fff;
+    text-align: left;
+    border-radius: 8px;
+    padding: 12px;
+    position: absolute;
+    z-index: 999;
+    bottom: 130%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.2s, visibility 0.2s;
+    font-size: 0.75rem;
+    line-height: 1.4;
+    white-space: normal;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.th-tooltip:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Remove button styling */
+.btn-remove-line {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: none;
+    background: #fee2e2;
+    color: #ef4444;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: background 0.2s;
+}
+
+.btn-remove-line:hover { background: #fecaca; }
+.btn-remove-line:disabled { opacity: 0.3; cursor: not-allowed; }
