@@ -732,16 +732,16 @@ function renderPlantContent() {
                 <table class="lines-table">
                     <thead>
                         <tr>
-                            <th style="width: 30px;">#</th>
-                            <th style="width: 120px;">${t('thLineName')}</th>
-                            <th style="width: 100px;">Situatie</th>
-                            <th class="th-tooltip" style="width: 70px;">Output <div class="tooltip-text"><strong>${t('outputTooltipTitle')}</strong><br>${t('outputTooltipBody')}</div></th>
-                            <th class="th-tooltip" style="width: 70px;">Marge <div class="tooltip-text"><strong>${t('marginTooltipTitle')}</strong><br>${t('marginTooltipBody')}</div></th>
-                            <th style="width: 90px;">Model</th>
-                            <th style="width: 60px;">Ploeg</th>
-                            <th style="width: 100px;">${t('thAddedValue')}</th>
-                            <th class="th-tooltip" style="width: 70px;">OEE % <div class="tooltip-text"><strong>${t('currentOEETooltipTitle')}</strong><br>${t('currentOEETooltipBody')}</div></th>
-                            <th style="width: 40px;"></th>
+                            <th style="width: 35px;">#</th>
+                            <th style="width: 140px;">${t('thLineName')}</th>
+                            <th style="width: 110px;">Situatie</th>
+                            <th class="th-tooltip" style="width: 100px;">Output <div class="tooltip-text"><strong>${t('outputTooltipTitle')}</strong><br>${t('outputTooltipBody')}</div></th>
+                            <th class="th-tooltip" style="width: 100px;">Marge <div class="tooltip-text"><strong>${t('marginTooltipTitle')}</strong><br>${t('marginTooltipBody')}</div></th>
+                            <th style="width: 100px;">Model</th>
+                            <th style="width: 70px;">Ploeg</th>
+                            <th style="width: 110px;">${t('thAddedValue')}</th>
+                            <th class="th-tooltip" style="width: 80px;">OEE % <div class="tooltip-text"><strong>${t('currentOEETooltipTitle')}</strong><br>${t('currentOEETooltipBody')}</div></th>
+                            <th style="width: 45px;"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -766,24 +766,24 @@ function renderPlantContent() {
                     </td>
                     <td>
                         <select class="line-select" onchange="updateLineOutput(${p}, ${index}, this.value)">
-                            <option value="min" ${ol === 'min' ? 'selected' : ''}>L</option>
-                            <option value="avg" ${ol === 'avg' ? 'selected' : ''}>G</option>
-                            <option value="max" ${ol === 'max' ? 'selected' : ''}>H</option>
-                            <option value="custom" ${ol === 'custom' ? 'selected' : ''}>...</option>
+                            <option value="min" ${ol === 'min' ? 'selected' : ''}>${t('optionLow')}</option>
+                            <option value="avg" ${ol === 'avg' ? 'selected' : ''}>${t('optionAvg')}</option>
+                            <option value="max" ${ol === 'max' ? 'selected' : ''}>${t('optionHigh')}</option>
+                            <option value="custom" ${ol === 'custom' ? 'selected' : ''}>${t('optionCustom')}</option>
                         </select>
                     </td>
                     <td>
                         <select class="line-select" onchange="updateLineMargin(${p}, ${index}, this.value)">
-                            <option value="min" ${ml === 'min' ? 'selected' : ''}>L</option>
-                            <option value="avg" ${ml === 'avg' ? 'selected' : ''}>G</option>
-                            <option value="max" ${ml === 'max' ? 'selected' : ''}>H</option>
-                            <option value="custom" ${ml === 'custom' ? 'selected' : ''}>...</option>
+                            <option value="min" ${ml === 'min' ? 'selected' : ''}>${t('optionLow')}</option>
+                            <option value="avg" ${ml === 'avg' ? 'selected' : ''}>${t('optionAvg')}</option>
+                            <option value="max" ${ml === 'max' ? 'selected' : ''}>${t('optionHigh')}</option>
+                            <option value="custom" ${ml === 'custom' ? 'selected' : ''}>${t('optionCustom')}</option>
                         </select>
                     </td>
                     <td>
                         <select class="line-select" onchange="updateLineModel(${p}, ${index}, this.value)">
-                            <option value="demand" ${line.calcModel === 'demand' ? 'selected' : ''}>Vraag</option>
-                            <option value="cost" ${line.calcModel === 'cost' ? 'selected' : ''}>Kosten</option>
+                            <option value="demand" ${line.calcModel === 'demand' ? 'selected' : ''}>${t('modelDemand')}</option>
+                            <option value="cost" ${line.calcModel === 'cost' ? 'selected' : ''}>${t('modelCost')}</option>
                         </select>
                     </td>
                     <td>

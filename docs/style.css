@@ -409,48 +409,115 @@ body {
     color: #00AAFF;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
-/* --- TAB VISIBILITY FIX (Prevents Stacking) --- */
 
 .plant-content {
-    display: none !important; /* This hides the plants that aren't selected */
+    display: none !important; 
 }
 
 .plant-content.active {
-    display: block !important; /* This shows only the selected plant */
+    display: block !important; 
 }
 
-/* Lines Table */
-/* Lines Table */
-#plantContents {
-    width: 100%;
-    overflow-x: auto; 
+/* Rounded Table Container & Configuration Table */
+.table-container-rounded {
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    overflow: visible !important; 
+    background: #ffffff;
     margin-top: 10px;
-    background: #fff;
-    border-radius: 8px;
 }
 
 .lines-table {
     width: 100%;
-    border-collapse: collapse;
-    min-width: 1200px;
-    table-layout: auto;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed; 
 }
 
 .lines-table th {
-    text-align: left;
-    padding: 14px 12px;
+    background: #f8fafc;
+    padding: 12px 8px;
     font-size: 0.72rem;
     font-weight: 700;
     text-transform: uppercase;
     color: #64748b;
-    border-bottom: 2px solid #e5e7eb;
-    white-space: nowrap;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: left;
 }
 
 .lines-table td {
-    padding: 14px 12px;
+    padding: 10px 8px;
     border-bottom: 1px solid #f1f5f9;
     vertical-align: middle;
+}
+
+.lines-table th:first-child { border-top-left-radius: 12px; }
+.lines-table th:last-child { border-top-right-radius: 12px; }
+
+/* Line Input/Select styling */
+.line-input, .line-select {
+    width: 100%;
+    height: 32px;
+    padding: 4px 8px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.85rem;
+    color: #1e293b;
+    background-color: #fff;
+    transition: border-color 0.2s;
+}
+
+.line-input:focus, .line-select:focus {
+    outline: none;
+    border-color: #00AAFF;
+}
+
+.oee-center { text-align: center; }
+
+/* Corrected Tooltip Styling */
+.th-tooltip {
+    position: relative;
+    cursor: help;
+}
+
+.th-tooltip .tooltip-text {
+    visibility: hidden;
+    width: 260px;
+    background-color: rgba(15, 23, 42, 0.98);
+    color: #ffffff;
+    text-align: left;
+    border-radius: 8px;
+    padding: 14px;
+    position: absolute;
+    z-index: 9999 !important;
+    bottom: 140%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    white-space: normal;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+    pointer-events: none;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.th-tooltip .tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: rgba(15, 23, 42, 0.98) transparent transparent transparent;
+}
+
+.th-tooltip:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
 }
 
 /* Calculation Breakdown */
@@ -511,66 +578,6 @@ body {
     font-size: 1rem;
 }
 
-/* Computed Value Display */
-.computed-value {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 14px 18px;
-    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-    border: 1px solid #bae6fd;
-    border-radius: 10px;
-    margin-top: 4px;
-}
-
-.computed-label {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #0369a1;
-}
-
-.computed-number {
-    font-size: 1.2rem;
-    font-weight: 800;
-    color: #0284c7;
-}
-
-.info-text {
-    font-size: 0.78rem;
-    color: #94a3b8;
-    margin-top: 12px;
-    line-height: 1.5;
-}
-
-.benchmark-note {
-    font-weight: 400;
-    color: #94a3b8;
-    font-size: 0.75rem;
-}
-
-/* Results Placeholder */
-.results-placeholder {
-    text-align: center;
-    padding: 60px 20px;
-    color: #94a3b8;
-}
-
-.results-placeholder-icon {
-    font-size: 3rem;
-    margin-bottom: 16px;
-}
-
-.results-placeholder h3 {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: #64748b;
-    margin-bottom: 8px;
-}
-
-.results-placeholder p {
-    font-size: 0.9rem;
-}
-
 /* Scenario Grid */
 .scenario-grid {
     display: grid;
@@ -627,17 +634,6 @@ body {
     margin-bottom: 8px;
 }
 
-.scenario-annual {
-    font-size: 1.5rem;
-    font-weight: 800;
-    color: #0f172a;
-}
-
-.scenario-card.selected .scenario-annual {
-    color: #0284c7;
-    font-size: 1.7rem;
-}
-
 .scenario-annual-label {
     font-size: 0.72rem;
     color: #94a3b8;
@@ -656,9 +652,11 @@ body {
 }
 
 .scenario-three-year {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: #374151;
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-top: 8px;
+    line-height: 1.2;
 }
 
 .scenario-card.selected .scenario-three-year {
@@ -683,7 +681,40 @@ body {
     margin-top: 2px;
 }
 
-/* Custom OEE Input */
+.scenario-years-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin: 15px 0;
+    padding: 0 5px;
+}
+
+.year-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.year-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #94a3b8;
+    margin-bottom: 4px;
+}
+
+.year-value {
+    font-size: 0.85rem; 
+    font-weight: 800;
+    color: #475569;
+    white-space: nowrap;
+}
+
+.scenario-card.selected .year-value { color: #0369a1; }
+.scenario-card.selected .year-label { color: #00AAFF; }
+
+/* Custom Scenario Input */
 .custom-oee-input-wrapper {
     display: flex;
     justify-content: center;
@@ -702,173 +733,9 @@ body {
     color: #16a34a;
     text-align: center;
     background: #fff;
-    transition: border-color 0.2s;
 }
 
-.custom-oee-input:focus {
-    outline: none;
-    border-color: #00AAFF;
-}
-
-.scenario-card.selected .custom-oee-input {
-    border-color: #00AAFF;
-    background: #fff;
-}
-
-/* Sector Info Grid */
-.sector-info-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-}
-
-.sector-info-item {
-    text-align: center;
-    padding: 14px;
-    background: #f8fafc;
-    border-radius: 10px;
-}
-
-.sector-info-value {
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: #0f172a;
-}
-
-.sector-info-label {
-    font-size: 0.72rem;
-    color: #64748b;
-    margin-top: 4px;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-}
-
-/* Value Bar Chart */
-.value-bar-container {
-    margin-top: 20px;
-    padding: 18px;
-    background: #f8fafc;
-    border-radius: 12px;
-}
-
-.value-bar-title {
-    font-size: 0.82rem;
-    font-weight: 600;
-    color: #374151;
-    margin-bottom: 14px;
-}
-
-.value-bar-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.value-bar-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.value-bar-label {
-    width: 90px;
-    font-size: 0.78rem;
-    color: #64748b;
-    text-align: right;
-}
-
-.value-bar-track {
-    flex: 1;
-    height: 26px;
-    background: #e5e7eb;
-    border-radius: 6px;
-    overflow: hidden;
-    position: relative;
-}
-
-.value-bar-fill {
-    height: 100%;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    padding-right: 10px;
-    justify-content: flex-end;
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: #ffffff;
-    transition: width 0.5s ease;
-}
-
-.value-bar-fill.current {
-    background: #94a3b8;
-}
-
-.value-bar-fill.potential {
-    background: linear-gradient(90deg, #10b981, #34d399);
-}
-
-.value-bar-gap {
-    position: absolute;
-    right: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 0.72rem;
-    color: #059669;
-    font-weight: 600;
-}
-
-/* Break-even Section */
-.break-even-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.break-even-result-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 18px;
-    background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
-    border: 1px solid #a7f3d0;
-    border-radius: 50px;
-}
-
-.break-even-result-badge .icon {
-    font-size: 1.1rem;
-}
-
-.break-even-result-badge .text {
-    font-size: 0.9rem;
-    color: #064e3b;
-}
-
-.break-even-result-badge .value {
-    font-weight: 700;
-    color: #047857;
-}
-
-.break-even-result-badge.warning {
-    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-    border-color: #fcd34d;
-}
-
-.break-even-result-badge.warning .text,
-.break-even-result-badge.warning .value {
-    color: #92400e;
-}
-
-.break-even-result-badge.error {
-    background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
-    border-color: #fca5a5;
-}
-
-.break-even-result-badge.error .text,
-.break-even-result-badge.error .value {
-    color: #991b1b;
-}
-
+/* Break-even Chart */
 .graph-container {
     position: relative;
     width: 100%;
@@ -903,493 +770,8 @@ body {
     border-radius: 2px;
 }
 
-.legend-color.benefit {
-    background: #10b981;
-}
-
-.legend-color.cost {
-    background: #ef4444;
-}
-
-.break-even-note {
-    text-align: center;
-    font-size: 0.75rem;
-    color: #94a3b8;
-    margin-top: 8px;
-    font-style: italic;
-}
-
-/* Tooltip */
-.th-tooltip {
-    position: relative;
-    cursor: help;
-    border-bottom: 1px dashed #94a3b8;
-}
-
-.th-tooltip .tooltip-text {
-    visibility: hidden;
-    opacity: 0;
-    position: absolute;
-    top: calc(100% + 8px);
-    left: 0;
-    width: 320px;
-    background: #0f172a;
-    color: #f1f5f9;
-    font-size: 0.78rem;
-    font-weight: 400;
-    text-transform: none;
-    letter-spacing: normal;
-    line-height: 1.6;
-    padding: 14px 16px;
-    border-radius: 10px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-    z-index: 100;
-    transition: opacity 0.2s, visibility 0.2s;
-    pointer-events: none;
-}
-
-.th-tooltip .tooltip-text::before {
-    content: '';
-    position: absolute;
-    bottom: 100%;
-    left: 20px;
-    border: 6px solid transparent;
-    border-bottom-color: #0f172a;
-}
-
-.th-tooltip:hover .tooltip-text {
-    visibility: visible;
-    opacity: 1;
-}
-
-/* OEE Input */
-.oee-input {
-    padding: 6px 10px;
-    border: 2px solid #e5e7eb;
-    border-radius: 8px;
-    font-family: inherit;
-    font-size: 0.85rem;
-    width: 80px;
-    text-align: center;
-    transition: border-color 0.2s;
-}
-
-.oee-input:focus {
-    outline: none;
-    border-color: #00AAFF;
-}
-/* Calculation Modal */
-.calc-modal-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(15, 23, 42, 0.5);
-    z-index: 1000;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-}
-
-.calc-modal-overlay.open {
-    display: flex;
-}
-
-.calc-modal {
-    background: #fff;
-    border-radius: 16px;
-    max-width: 640px;
-    width: 100%;
-    max-height: 85vh;
-    overflow-y: auto;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-    animation: modalSlideIn 0.25s ease;
-}
-
-@keyframes modalSlideIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.calc-modal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 24px 28px 16px;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-.calc-modal-header h2 {
-    font-size: 1.15rem;
-    font-weight: 700;
-    color: #0f172a;
-}
-
-.calc-modal-close {
-    background: none;
-    border: none;
-    font-size: 1.6rem;
-    color: #94a3b8;
-    cursor: pointer;
-    padding: 0 4px;
-    line-height: 1;
-    transition: color 0.2s;
-}
-
-.calc-modal-close:hover {
-    color: #374151;
-}
-
-.calc-modal-body {
-    padding: 24px 28px 28px;
-}
-
-.calc-section {
-    margin-bottom: 22px;
-}
-
-.calc-section:last-child {
-    margin-bottom: 0;
-}
-
-.calc-section h3 {
-    font-size: 0.92rem;
-    font-weight: 700;
-    color: #0f172a;
-    margin-bottom: 8px;
-}
-
-.calc-formula {
-    background: #f0f9ff;
-    border: 1px solid #bae6fd;
-    border-radius: 8px;
-    padding: 10px 14px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #0369a1;
-    font-family: 'Inter', monospace;
-    margin: 8px 0;
-}
-
-.calc-desc {
-    font-size: 0.84rem;
-    color: #475569;
-    line-height: 1.6;
-}
-
-.calc-ramp {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    margin: 12px 0;
-}
-
-.calc-ramp-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.calc-ramp-label {
-    width: 50px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: #64748b;
-}
-
-.calc-ramp-bar {
-    height: 24px;
-    background: linear-gradient(90deg, #10b981, #34d399);
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: #fff;
-    min-width: 40px;
-}
-
-/* Footer */
-footer {
-    text-align: center;
-    margin-top: 40px;
-    color: #94a3b8;
-    font-size: 0.8rem;
-}
-
-/* Responsive */
-@media (max-width: 640px) {
-    .header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 16px;
-    }
-
-    .header-left {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 16px;
-    }
-
-    .header h1 {
-        font-size: 1.6rem;
-    }
-
-    .header-right {
-        width: 100%;
-        justify-content: space-between;
-    }
-
-    .form-row,
-    .form-row-3 {
-        grid-template-columns: 1fr;
-    }
-
-    .scenario-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .scenario-card.selected {
-        transform: none;
-    }
-
-    .sector-info-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .break-even-header {
-        flex-direction: column;
-        gap: 12px;
-        align-items: flex-start;
-    }
-}
-/* --- FIX FOR ROUNDED EDGES ON MANUAL INPUT BOXES --- */
-
-.lines-table .custom-value-input {
-    display: block;
-    margin-top: 8px;
-    padding: 8px 12px;
-    border: 1px solid #00AAFF !important; /* Blue border to show it's active */
-    border-radius: 8px !important;        /* THIS ADDS THE ROUNDED EDGES */
-    font-family: inherit;
-    font-size: 0.85rem;
-    width: 100%;
-    background-color: #f0f9ff !important; /* Subtle blue tint */
-    color: #1e293b;
-    transition: all 0.2s ease;
-    box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
-}
-
-.lines-table .custom-value-input:focus {
-    outline: none;
-    border-color: #0090dd !important;
-    box-shadow: 0 0 0 3px rgba(0, 170, 255, 0.1) !important;
-    background-color: #ffffff !important;
-}
-
-/* Ensure the placeholder text looks professional */
-.lines-table .custom-value-input::placeholder {
-    color: #94a3b8;
-    font-size: 0.8rem;
-}
-/* --- NEW SCENARIO CARD GRID STYLING --- */
-
-.scenario-years-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr; /* Creates 3 equal columns */
-    gap: 8px;
-    margin: 15px 0;
-    padding: 0 5px;
-}
-
-.year-col {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-.year-label {
-    font-size: 0.65rem;
-    text-transform: uppercase;
-    font-weight: 700;
-    color: #94a3b8;
-    margin-bottom: 4px;
-}
-
-.year-value {
-    font-size: 0.85rem; 
-    font-weight: 800;
-    color: #475569;
-    white-space: nowrap;
-}
-
-/* Color changes when a card is selected */
-.scenario-card.selected .year-value {
-    color: #0369a1;
-}
-
-.scenario-card.selected .year-label {
-    color: #00AAFF;
-}
-
-/* Adjust the big 3-year total spacing */
-.scenario-three-year {
-    font-size: 1.6rem;
-    font-weight: 800;
-    color: #0f172a;
-    margin-top: 8px;
-    line-height: 1.2;
-}
-/* Fix tooltip visibility in tables */
-.table-responsive {
-    overflow: visible !important; /* Prevents tooltips from being cut off */
-}
-
-.th-tooltip {
-    position: relative;
-    cursor: help;
-}
-
-.th-tooltip .tooltip-text {
-    visibility: hidden;
-    width: 250px;
-    background-color: #1e293b;
-    color: #fff;
-    text-align: left;
-    border-radius: 6px;
-    padding: 10px;
-    position: absolute;
-    z-index: 100;
-    bottom: 125%; /* Position above the header */
-    left: 50%;
-    transform: translateX(-50%);
-    opacity: 0;
-    transition: opacity 0.2s;
-    font-size: 0.8rem;
-    line-height: 1.4;
-    white-space: normal;
-    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-}
-
-.th-tooltip:hover .tooltip-text {
-    visibility: visible;
-    opacity: 1;
-}
-
-/* Compact Inputs */
-.custom-mini-input {
-    width: 60px;
-    padding: 2px 4px;
-    font-size: 0.8rem;
-    border: 1px solid #cbd5e1;
-    border-radius: 4px;
-    margin-top: 4px;
-    display: block;
-}
-
-.oee-input-small {
-    width: 50px;
-    padding: 4px;
-    text-align: center;
-}
-
-.lines-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.85rem; /* Smaller font for table to fit screen */
-}
-
-.btn-icon-remove {
-    background: #fee2e2;
-    color: #ef4444;
-    border: none;
-    border-radius: 4px;
-    width: 24px;
-    height: 24px;
-    cursor: pointer;
-}
-/* Rounded Table Container */
-.table-container-rounded {
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    overflow: visible; /* Important for tooltips */
-    background: #ffffff;
-}
-
-.lines-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    table-layout: fixed; /* Prevents stretching */
-}
-
-.lines-table th {
-    background: #f8fafc;
-    padding: 12px 8px;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    color: #64748b;
-    border-bottom: 1px solid #e2e8f0;
-    text-align: left;
-}
-
-.lines-table td {
-    padding: 10px 8px;
-    border-bottom: 1px solid #f1f5f9;
-    vertical-align: middle;
-}
-
-/* Round top corners of the first/last header */
-.lines-table th:first-child { border-top-left-radius: 12px; }
-.lines-table th:last-child { border-top-right-radius: 12px; }
-
-/* Input and Select Styling to match your theme */
-.line-input, .line-select {
-    width: 100%;
-    height: 32px;
-    padding: 4px 8px;
-    border: 1px solid #cbd5e1;
-    border-radius: 6px;
-    font-family: inherit;
-    font-size: 0.85rem;
-    color: #1e293b;
-    background-color: #fff;
-}
-
-.oee-center { text-align: center; }
-
-/* Tooltip Fix - ensuring they appear on top of everything */
-.th-tooltip { position: relative; cursor: help; }
-
-.th-tooltip .tooltip-text {
-    visibility: hidden;
-    width: 220px;
-    background-color: #0f172a; /* Dark blue/black like your theme */
-    color: #fff;
-    text-align: left;
-    border-radius: 8px;
-    padding: 12px;
-    position: absolute;
-    z-index: 999;
-    bottom: 130%;
-    left: 50%;
-    transform: translateX(-50%);
-    opacity: 0;
-    transition: opacity 0.2s, visibility 0.2s;
-    font-size: 0.75rem;
-    line-height: 1.4;
-    white-space: normal;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-}
-
-.th-tooltip:hover .tooltip-text {
-    visibility: visible;
-    opacity: 1;
-}
+.legend-color.benefit { background: #10b981; }
+.legend-color.cost { background: #ef4444; }
 
 /* Remove button styling */
 .btn-remove-line {
@@ -1409,3 +791,72 @@ footer {
 
 .btn-remove-line:hover { background: #fecaca; }
 .btn-remove-line:disabled { opacity: 0.3; cursor: not-allowed; }
+
+/* Modal */
+.calc-modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.calc-modal-overlay.open { display: flex; }
+
+.calc-modal {
+    background: #fff;
+    border-radius: 16px;
+    max-width: 640px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+}
+
+.calc-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 28px 16px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.calc-modal-close {
+    background: none;
+    border: none;
+    font-size: 1.6rem;
+    color: #94a3b8;
+    cursor: pointer;
+}
+
+.calc-modal-body { padding: 24px 28px 28px; }
+
+.calc-formula {
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #0369a1;
+    margin: 8px 0;
+}
+
+footer {
+    text-align: center;
+    margin-top: 40px;
+    color: #94a3b8;
+    font-size: 0.8rem;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .scenario-grid { grid-template-columns: 1fr 1fr; }
+    .form-row, .form-row-3 { grid-template-columns: 1fr; }
+}
