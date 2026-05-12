@@ -347,9 +347,7 @@ function setLanguage(lang) {
 }
 
 function applyTranslations() {
-    // Keys that need innerHTML (contain HTML tags)
     const htmlKeys = new Set(['calcStep3Desc']);
-    // Update all elements with data-i18n attribute (textContent)
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (translations[currentLang][key] !== undefined) {
@@ -360,7 +358,6 @@ function applyTranslations() {
             }
         }
     });
-    // Update all elements with data-i18n-placeholder attribute
     document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
         const key = el.getAttribute('data-i18n-placeholder');
         if (translations[currentLang][key] !== undefined) {
@@ -383,7 +380,7 @@ function closeCalcModal(event) {
 }
 
 // ==========================================
-// SECTOR DATA (fallback, updated via sector-data.json from GitHub Action)
+// SECTOR DATA
 // ==========================================
 const sectorData = {
     "farmaceutische": {
@@ -492,9 +489,6 @@ const sectorData = {
     }
 };
 
-// ==========================================
-// SECTOR DATA SYNC (from sector-data.json, updated by GitHub Action)
-// ==========================================
 async function loadSectorData() {
     try {
         const resp = await fetch('sector-data.json');
@@ -503,7 +497,6 @@ async function loadSectorData() {
         for (const [key, values] of Object.entries(data)) {
             if (sectorData[key]) Object.assign(sectorData[key], values);
         }
-        console.log('Loaded sector data from sector-data.json');
     } catch (err) {
         console.warn('Failed to load sector-data.json, using fallback:', err.message);
     }
@@ -535,20 +528,6 @@ function formatPercentage(value) {
     return (value * 100).toFixed(1) + '%';
 }
 
-function formatOutputValue(value) {
-    return new Intl.NumberFormat('nl-NL').format(value);
-}
-
-function formatMarginValue(value) {
-    if (value >= 1) {
-        return '\u20AC' + new Intl.NumberFormat('nl-NL', { minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(value);
-    }
-    if (value >= 0.01) {
-        return '\u20AC' + value.toFixed(2);
-    }
-    return '\u20AC' + value.toFixed(3);
-}
-
 // ==========================================
 // SEARCHABLE SELECT
 // ==========================================
@@ -563,57 +542,40 @@ function initSearchableSelect() {
         `<div class="select-option" data-value="${opt.value}">${opt.text}</div>`
     ).join('');
 
-    // Remove old listeners by cloning
     const newSelect = select.cloneNode(true);
     select.parentNode.replaceChild(newSelect, select);
-    // Use mousedown to prevent native dropdown from opening
     newSelect.addEventListener('mousedown', (e) => {
         e.preventDefault();
         wrapper.classList.add('open', 'searching');
         search.value = '';
         search.focus();
-        filterOptions('');
     });
 
-    const newSearch = search.cloneNode(true);
-    search.parentNode.replaceChild(newSearch, search);
-    newSearch.addEventListener('input', (e) => {
-        filterOptions(e.target.value);
+    search.addEventListener('input', (e) => {
+        const q = e.target.value.toLowerCase();
+        dropdown.querySelectorAll('.select-option').forEach(opt => {
+            const match = opt.textContent.toLowerCase().includes(q);
+            opt.classList.toggle('hidden', !match);
+        });
     });
 
-    newSearch.addEventListener('blur', () => {
+    search.addEventListener('blur', () => {
         setTimeout(() => {
             wrapper.classList.remove('open', 'searching');
         }, 150);
     });
 
-    // Remove old dropdown listeners by cloning
-    const newDropdown = dropdown.cloneNode(true);
-    dropdown.parentNode.replaceChild(newDropdown, dropdown);
-    newDropdown.addEventListener('click', (e) => {
+    dropdown.addEventListener('click', (e) => {
         if (e.target.classList.contains('select-option')) {
             document.getElementById('sector').value = e.target.dataset.value;
             wrapper.classList.remove('open', 'searching');
             onSectorChange();
         }
     });
-
-    function filterOptions(query) {
-        const q = query.toLowerCase();
-        newDropdown.querySelectorAll('.select-option').forEach(opt => {
-            const match = opt.textContent.toLowerCase().includes(q);
-            opt.classList.toggle('hidden', !match);
-        });
-    }
 }
 
-// ==========================================
-// SECTOR CHANGE
-// ==========================================
 function onSectorChange() {
     const sector = document.getElementById('sector').value;
-
-    // Reset all lines to average when sector changes
     for (let p = 1; p <= numPlants; p++) {
         if (plantData[p]) {
             for (const line of plantData[p].lines) {
@@ -627,24 +589,11 @@ function onSectorChange() {
     calculate();
 }
 
-
-// ==========================================
-// SCENARIO SELECTION
-// ==========================================
 function selectScenario(scenario) {
     selectedScenario = scenario;
-    
-    // UI Update: Highlight the selected card
-    document.querySelectorAll('.scenario-card').forEach(card => {
-        card.classList.remove('selected');
-    });
-    
+    document.querySelectorAll('.scenario-card').forEach(card => card.classList.remove('selected'));
     const selectedCard = document.querySelector(`.scenario-card[data-scenario="${scenario}"]`);
-    if (selectedCard) {
-        selectedCard.classList.add('selected');
-    }
-
-    // Trigger the calculation with the new state
+    if (selectedCard) selectedCard.classList.add('selected');
     calculate();
 }
 
@@ -657,24 +606,12 @@ function syncPlantSlider(value) {
 }
 
 function updatePlantTabs() {
-    const newNumPlants = Math.min(10, Math.max(1, parseInt(document.getElementById('numPlants').value) || 1));
-    numPlants = newNumPlants;
-    document.getElementById('numPlantsSlider').value = newNumPlants;
-
+    numPlants = Math.min(10, Math.max(1, parseInt(document.getElementById('numPlants').value) || 1));
+    document.getElementById('numPlantsSlider').value = numPlants;
     for (let p = 1; p <= numPlants; p++) {
-        if (!plantData[p]) {
-            plantData[p] = { lines: [{ shifts: 3, outputLevel: 'avg', marginLevel: 'avg', calcModel: 'demand', currentOEE: null }] };
-        }
+        if (!plantData[p]) plantData[p] = { lines: [{ shifts: 3, outputLevel: 'avg', marginLevel: 'avg', calcModel: 'demand', currentOEE: null }] };
     }
-
-    for (let p = numPlants + 1; p <= 10; p++) {
-        delete plantData[p];
-    }
-
-    if (activePlant > numPlants) {
-        activePlant = numPlants;
-    }
-
+    if (activePlant > numPlants) activePlant = numPlants;
     renderPlantTabs();
     renderPlantContent();
     calculate();
@@ -683,42 +620,18 @@ function updatePlantTabs() {
 function renderPlantTabs() {
     const tabsContainer = document.getElementById('plantTabs');
     tabsContainer.innerHTML = '';
-
     for (let p = 1; p <= numPlants; p++) {
         const tab = document.createElement('div');
         tab.className = 'plant-tab' + (p === activePlant ? ' active' : '');
         tab.textContent = 'Plant ' + p;
-        tab.onclick = () => switchPlant(p);
+        tab.onclick = () => { activePlant = p; renderPlantTabs(); renderPlantContent(); };
         tabsContainer.appendChild(tab);
     }
-}
-
-function switchPlant(plantNum) {
-    activePlant = plantNum;
-    renderPlantTabs();
-    renderPlantContent();
-}
-
-function getOutputOptionText(level, data) {
-    const labels = { min: t('optionLow'), avg: t('optionAvg'), max: t('optionHigh') };
-    if (data) {
-        return labels[level] + ' (' + formatOutputValue(data.outputPerHour[level]) + ')';
-    }
-    return labels[level];
-}
-
-function getMarginOptionText(level, data) {
-    const labels = { min: t('optionLow'), avg: t('optionAvg'), max: t('optionHigh') };
-    if (data) {
-        return labels[level] + ' (' + formatMarginValue(data.marginPerUnit[level]) + ')';
-    }
-    return labels[level];
 }
 
 function renderPlantContent() {
     const container = document.getElementById('plantContents');
     container.innerHTML = '';
-
     const sector = document.getElementById('sector').value;
     const data = (sector && sectorData[sector]) ? sectorData[sector] : null;
 
@@ -735,40 +648,21 @@ function renderPlantContent() {
                             <th style="width: 35px;">#</th>
                             <th style="width: 140px;">${t('thLineName')}</th>
                             <th style="width: 110px;">Situatie</th>
-                            <th class="th-tooltip" style="width: 130px;">
-                                Output <span class="info-icon">ⓘ</span>
-                                <div class="tooltip-text">${t('outputTooltipBody')}</div>
-                            </th>
-                            <th class="th-tooltip" style="width: 130px;">
-                                Marge <span class="info-icon">ⓘ</span>
-                                <div class="tooltip-text">${t('marginTooltipBody')}</div>
-                            </th>
+                            <th class="th-tooltip" style="width: 130px;">Output <span class="info-icon">ⓘ</span><div class="tooltip-text">${t('outputTooltipBody')}</div></th>
+                            <th class="th-tooltip" style="width: 130px;">Marge <span class="info-icon">ⓘ</span><div class="tooltip-text">${t('marginTooltipBody')}</div></th>
                             <th style="width: 110px;">Model</th>
                             <th style="width: 70px;">Ploeg</th>
                             <th style="width: 110px;">${t('thAddedValue')}</th>
-                            <th class="th-tooltip" style="width: 110px;">
-                                OEE % <span class="info-icon">ⓘ</span>
-                                <div class="tooltip-text">${t('currentOEETooltipBody')}</div>
-                            </th>
+                            <th class="th-tooltip" style="width: 110px;">OEE % <span class="info-icon">ⓘ</span><div class="tooltip-text">${t('currentOEETooltipBody')}</div></th>
                             <th style="width: 45px;"></th>
                         </tr>
                     </thead>
-                    <tbody>
-        `;
+                    <tbody>`;
 
         plantData[p].lines.forEach((line, index) => {
-            const ol = line.outputLevel || 'avg';
-            const ml = line.marginLevel || 'avg';
-            const sit = line.situation || 'blueUpgrade';
-            const lineOutput = ol === 'custom' ? (line.customOutput || 0) : (data ? data.outputPerHour[ol] : 0);
-            const lineMargin = ml === 'custom' ? (line.customMargin || 0) : (data ? data.marginPerUnit[ml] : 0);
-
-            // --- OEE LOGIC FIX START ---
-            // If line.currentOEE is null, use the sector benchmark (data.oeeStart)
             const displayOEE = line.currentOEE !== null 
                 ? Math.round(line.currentOEE * 100) 
                 : (data ? Math.round(data.oeeStart * 100) : '');
-            // --- OEE LOGIC FIX END ---
 
             tableHTML += `
                 <tr>
@@ -776,24 +670,22 @@ function renderPlantContent() {
                     <td><input type="text" class="line-input" value="${line.name || ''}" onchange="updateLineName(${p}, ${index}, this.value)" placeholder="Lijn.."></td>
                     <td>
                         <select class="line-select" onchange="plantData[${p}].lines[${index}].situation=this.value; calculate();">
-                            <option value="blueUpgrade" ${sit === 'blueUpgrade' ? 'selected' : ''}>Blue</option>
-                            <option value="noOEE" ${sit === 'noOEE' ? 'selected' : ''}>Nieuw</option>
+                            <option value="blueUpgrade" ${line.situation === 'blueUpgrade' ? 'selected' : ''}>Blue</option>
+                            <option value="noOEE" ${line.situation === 'noOEE' ? 'selected' : ''}>Nieuw</option>
                         </select>
                     </td>
                     <td>
                         <select class="line-select" onchange="updateLineOutput(${p}, ${index}, this.value)">
-                            <option value="min" ${ol === 'min' ? 'selected' : ''}>${t('optionLow')}</option>
-                            <option value="avg" ${ol === 'avg' ? 'selected' : ''}>${t('optionAvg')}</option>
-                            <option value="max" ${ol === 'max' ? 'selected' : ''}>${t('optionHigh')}</option>
-                            <option value="custom" ${ol === 'custom' ? 'selected' : ''}>${t('optionCustom')}</option>
+                            <option value="min" ${line.outputLevel === 'min' ? 'selected' : ''}>${t('optionLow')}</option>
+                            <option value="avg" ${line.outputLevel === 'avg' ? 'selected' : ''}>${t('optionAvg')}</option>
+                            <option value="max" ${line.outputLevel === 'max' ? 'selected' : ''}>${t('optionHigh')}</option>
                         </select>
                     </td>
                     <td>
                         <select class="line-select" onchange="updateLineMargin(${p}, ${index}, this.value)">
-                            <option value="min" ${ml === 'min' ? 'selected' : ''}>${t('optionLow')}</option>
-                            <option value="avg" ${ml === 'avg' ? 'selected' : ''}>${t('optionAvg')}</option>
-                            <option value="max" ${ml === 'max' ? 'selected' : ''}>${t('optionHigh')}</option>
-                            <option value="custom" ${ml === 'custom' ? 'selected' : ''}>${t('optionCustom')}</option>
+                            <option value="min" ${line.marginLevel === 'min' ? 'selected' : ''}>${t('optionLow')}</option>
+                            <option value="avg" ${line.marginLevel === 'avg' ? 'selected' : ''}>${t('optionAvg')}</option>
+                            <option value="max" ${line.marginLevel === 'max' ? 'selected' : ''}>${t('optionHigh')}</option>
                         </select>
                     </td>
                     <td>
@@ -803,15 +695,19 @@ function renderPlantContent() {
                         </select>
                     </td>
                     <td>
-                        <select class="line-select" onchange="updateLineShifts(${p}, ${index}, this.value)">
+                        <select class="line-select" onchange="plantData[${p}].lines[${index}].shifts=parseInt(this.value); calculate();">
                             ${[1,2,3,4,5].map(s => `<option value="${s}" ${line.shifts === s ? 'selected' : ''}>${s}</option>`).join('')}
                         </select>
                     </td>
-                    <td class="added-value-cell">${formatCurrency(lineOutput * lineMargin)}</td>
-                    <td><input type="number" class="line-input oee-center" value="${displayOEE}" oninput="updateLineOEE(${p}, ${index}, this.value)" placeholder="%"></td>
+                    <td class="added-value-cell">${formatCurrency((line.outputLevel === 'custom' ? (line.customOutput || 0) : (data ? data.outputPerHour[line.outputLevel || 'avg'] : 0)) * (line.marginLevel === 'custom' ? (line.customMargin || 0) : (data ? data.marginPerUnit[line.marginLevel || 'avg'] : 0)))}</td>
+                    <td>
+                        <div class="percentage-input-wrapper">
+                            <input type="number" class="line-input oee-center" value="${displayOEE}" oninput="updateLineOEE(${p}, ${index}, this.value)" placeholder="0">
+                            <span class="pct-symbol">%</span>
+                        </div>
+                    </td>
                     <td><button class="btn-remove-line" onclick="removeLine(${p}, ${index})" ${plantData[p].lines.length <= 1 ? 'disabled' : ''}>&times;</button></td>
-                </tr>
-            `;
+                </tr>`;
         });
         tableHTML += `</tbody></table></div><button class="btn btn-primary" style="margin-top: 15px;" onclick="addLine(${p})">${t('addLineBtn')}</button>`;
         content.innerHTML = tableHTML;
@@ -819,73 +715,16 @@ function renderPlantContent() {
     }
 }
 
-function addLine(plantNum) {
-    plantData[plantNum].lines.push({ shifts: 3, outputLevel: 'avg', marginLevel: 'avg', name: '', customOutput: null, customMargin: null, calcModel: 'demand', currentOEE: null, situation: 'blueUpgrade' });
-    renderPlantContent();
-    calculate();
-}
-
-function removeLine(plantNum, lineIndex) {
-    if (plantData[plantNum].lines.length > 1) {
-        plantData[plantNum].lines.splice(lineIndex, 1);
-        renderPlantContent();
-        calculate();
-    }
-}
-
-function updateLineShifts(plantNum, lineIndex, shifts) {
-    plantData[plantNum].lines[lineIndex].shifts = parseInt(shifts);
-    calculate();
-}
-
-function updateLineModel(plantNum, lineIndex, value) {
-    plantData[plantNum].lines[lineIndex].calcModel = value;
-    calculate();
-}
-
-function updateLineName(plantNum, lineIndex, value) {
-    plantData[plantNum].lines[lineIndex].name = value;
-}
-
-function updateLineOutput(plantNum, lineIndex, level) {
-    plantData[plantNum].lines[lineIndex].outputLevel = level;
-    renderPlantContent();
-    calculate();
-}
-
-function updateLineMargin(plantNum, lineIndex, level) {
-    plantData[plantNum].lines[lineIndex].marginLevel = level;
-    renderPlantContent();
-    calculate();
-}
-
-function updateLineCustomOutput(plantIndex, lineIndex, value) {
-    const numValue = parseFloat(value) || 0;
-    plantData[plantIndex].lines[lineIndex].customOutput = numValue;
-    
-    // We only call calculate() to update the totals, 
-    // NOT renderPlantContent() which breaks the focus.
-    calculate(); 
-}
-
-function updateLineCustomMargin(plantIndex, lineIndex, value) {
-    // Replace comma with dot for European notation support
-    const normalizedValue = value.replace(',', '.');
-    const numValue = parseFloat(normalizedValue) || 0;
-    plantData[plantIndex].lines[lineIndex].customMargin = numValue;
-
-    // We only call calculate() to update the totals.
-    calculate();
-}
-
-function updateLineOEE(plantNum, lineIndex, value) {
-    const pct = parseFloat(value);
-    plantData[plantNum].lines[lineIndex].currentOEE = (pct > 0 && pct <= 100) ? pct / 100 : null;
-    calculate();
-}
+function addLine(p) { plantData[p].lines.push({ shifts: 3, outputLevel: 'avg', marginLevel: 'avg', name: '', calcModel: 'demand', currentOEE: null, situation: 'blueUpgrade' }); renderPlantContent(); calculate(); }
+function removeLine(p, i) { if (plantData[p].lines.length > 1) { plantData[p].lines.splice(i, 1); renderPlantContent(); calculate(); } }
+function updateLineName(p, i, v) { plantData[p].lines[i].name = v; }
+function updateLineOutput(p, i, l) { plantData[p].lines[i].outputLevel = l; renderPlantContent(); calculate(); }
+function updateLineMargin(p, i, l) { plantData[p].lines[i].marginLevel = l; renderPlantContent(); calculate(); }
+function updateLineModel(p, i, v) { plantData[p].lines[i].calcModel = v; calculate(); }
+function updateLineOEE(p, i, v) { const pct = parseFloat(v); plantData[p].lines[i].currentOEE = (pct >= 0 && pct <= 100) ? pct / 100 : null; calculate(); }
 
 // ==========================================
-// MAIN CALCULATION
+// CALCULATE
 // ==========================================
 function calculate() {
     const sector = document.getElementById('sector').value;
@@ -894,702 +733,144 @@ function calculate() {
     const internalCost = parseFloat(document.getElementById('internalCost').value) || 0;
     const totalFixedCost = fixedFee + internalCost;
 
-    const placeholderCard = document.getElementById('placeholderCard');
-    const scenarioCard = document.getElementById('scenarioCard');
-    const breakEvenCard = document.getElementById('breakEvenCard');
-    const exportBtn = document.getElementById('exportBtn');
-    const calcBreakdownCard = document.getElementById('calcBreakdownCard');
-
-    // UI Toggle logic
     if (!sector || !sectorData[sector]) {
-        if (placeholderCard) placeholderCard.style.display = 'block';
-        if (scenarioCard) scenarioCard.style.display = 'none';
-        if (breakEvenCard) breakEvenCard.style.display = 'none';
-        if (calcBreakdownCard) calcBreakdownCard.style.display = 'none';
-        if (exportBtn) exportBtn.style.display = 'none';
+        document.getElementById('placeholderCard').style.display = 'block';
+        document.getElementById('scenarioCard').style.display = 'none';
+        document.getElementById('breakEvenCard').style.display = 'none';
+        document.getElementById('calcBreakdownCard').style.display = 'none';
+        document.getElementById('exportBtn').style.display = 'none';
         return;
     }
 
-    if (placeholderCard) placeholderCard.style.display = 'none';
-    if (scenarioCard) scenarioCard.style.display = 'block';
-    if (breakEvenCard) breakEvenCard.style.display = 'block';
-    if (calcBreakdownCard) calcBreakdownCard.style.display = 'block';
-    if (exportBtn) exportBtn.style.display = 'inline-flex';
+    document.getElementById('placeholderCard').style.display = 'none';
+    document.getElementById('scenarioCard').style.display = 'block';
+    document.getElementById('breakEvenCard').style.display = 'block';
+    document.getElementById('calcBreakdownCard').style.display = 'block';
+    document.getElementById('exportBtn').style.display = 'inline-flex';
 
     const data = sectorData[sector];
     const scenarios = ['conservative', 'expected', 'optimistic', 'aangepast'];
     const results = {};
-
-    // 1. Calculate total lines and update the subtitle counters
-    let totalLines = 0;
-    for (let p = 1; p <= numPlants; p++) {
-        totalLines += plantData[p].lines.length;
-    }
-    
-    // Push values to the "X lijnen over Y plants" subtitle
-    document.getElementById('totalLinesDisplay').textContent = totalLines;
-    document.getElementById('totalPlantsDisplay').textContent = numPlants;
-
     const breakdownRows = [];
+    let totalLinesCount = 0;
 
     for (const scenario of scenarios) {
         let totalAnnual = 0;
         let lineCounter = 0;
-        let totalScenarioImprovement = 0;
+        const scenarioImproves = [];
 
         for (let p = 1; p <= numPlants; p++) {
             for (const line of plantData[p].lines) {
                 lineCounter++;
+                if (scenario === 'expected') totalLinesCount++;
+                
                 const hours = workHours[line.shifts.toString()] || 2000;
-                const output = line.outputLevel === 'custom' ? (line.customOutput || 0) : data.outputPerHour[line.outputLevel || 'avg'];
-                const margin = line.marginLevel === 'custom' ? (line.customMargin || 0) : data.marginPerUnit[line.marginLevel || 'avg'];
+                const output = data.outputPerHour[line.outputLevel || 'avg'];
+                const margin = data.marginPerUnit[line.marginLevel || 'avg'];
                 const oeeStart = line.currentOEE !== null ? line.currentOEE : data.oeeStart;
-                const lineSit = line.situation || 'blueUpgrade';
                 
                 let improvement;
                 if (scenario === 'aangepast') {
                     const customInput = document.getElementById('customOEEInput');
-                    let val = (customInput && customInput.value !== "") ? parseFloat(customInput.value.replace(',', '.')) : 0;
-                    improvement = val / 100; 
+                    improvement = (customInput && customInput.value !== "") ? parseFloat(customInput.value.replace(',', '.')) / 100 : 0;
                 } else {
-                    // Pull improvement based on specific line situation (Blue vs New)
-                    improvement = lineSit === 'noOEE' ? data.oeeNothingToT4A[scenario] : data.oeeBlueToT4A[scenario];
+                    improvement = line.situation === 'noOEE' ? data.oeeNothingToT4A[scenario] : data.oeeBlueToT4A[scenario];
                 }
-                
-                totalScenarioImprovement += improvement;
+                scenarioImproves.push(improvement);
 
-                const costFactor = line.calcModel === 'cost' ? 
-                    { conservative: 0.20, expected: 0.30, optimistic: 0.40, aangepast: 0.30 }[scenario] : 1;
-                
+                const costFactor = line.calcModel === 'cost' ? { conservative: 0.2, expected: 0.3, optimistic: 0.4, aangepast: 0.3 }[scenario] : 1;
                 const annual = (output * margin) * oeeStart * improvement * hours * costFactor;
                 totalAnnual += annual;
 
                 if (scenario === selectedScenario) {
-                    breakdownRows.push({
-                        lineName: line.name || (t('calcBreakdownLine') + ' ' + lineCounter),
-                        hours: hours,
-                        oeeIncrease: improvement,
-                        currentOEE: oeeStart,
-                        addedValue: (output * margin),
-                        model: line.calcModel || 'demand',
-                        costFactor: costFactor,
-                        annual: annual
-                    });
+                    breakdownRows.push({ lineName: line.name || (t('calcBreakdownLine') + ' ' + lineCounter), hours, oeeIncrease: improvement, currentOEE: oeeStart, addedValue: output * margin, model: line.calcModel, costFactor, annual });
                 }
             }
         }
-        results[scenario] = { 
-            annual: totalAnnual, 
-            threeYear: totalAnnual * 2,
-            avgImprov: totalLines > 0 ? totalScenarioImprovement / totalLines : 0
-        };
+        results[scenario] = { annual: totalAnnual, minImp: Math.min(...scenarioImproves), maxImp: Math.max(...scenarioImproves) };
     }
 
-    // Update Scenario Cards UI
-for (const scenario of scenarios) {
-        const idPrefix = scenario === 'aangepast' ? 'custom' : scenario;
+    document.getElementById('totalLinesDisplay').textContent = totalLinesCount;
+    document.getElementById('totalPlantsDisplay').textContent = numPlants;
+
+    for (const scenario of scenarios) {
+        const id = scenario === 'aangepast' ? 'custom' : scenario;
         const annual = results[scenario].annual;
+        document.getElementById(id + 'ThreeYear').textContent = formatCurrency(annual * 2);
+        document.getElementById(id + 'Year1').textContent = formatCurrency(annual * (1/3));
+        document.getElementById(id + 'Year2').textContent = formatCurrency(annual * (2/3));
+        document.getElementById(id + 'Year3').textContent = formatCurrency(annual);
         
-        // Target all the new display elements from your updated HTML
-        const y3TotalEl = document.getElementById(idPrefix + 'ThreeYear');
-        const y1El = document.getElementById(idPrefix + 'Year1');
-        const y2El = document.getElementById(idPrefix + 'Year2');
-        const y3El = document.getElementById(idPrefix + 'Year3');
-        const oeeEl = document.getElementById(idPrefix + 'OEE');
-
-        // 1. Big Total (Over 3 years cumulative: 1/3 + 2/3 + 1 = 2x annual)
-        if (y3TotalEl) y3TotalEl.textContent = formatCurrency(annual * 2);
-
-        // 2. Individual Years (The 3 small numbers at the bottom)
-        if (y1El) y1El.textContent = formatCurrency(annual * (1/3));
-        if (y2El) y2El.textContent = formatCurrency(annual * (2/3));
-        if (y3El) y3El.textContent = formatCurrency(annual);
-        
-        // 3. --- BANDWIDTH LOGIC FOR OEE IMPROVEMENT ---
-        if (oeeEl && scenario !== 'aangepast') {
-            const improvements = [];
-            for (let p = 1; p <= numPlants; p++) {
-                for (const line of plantData[p].lines) {
-                    const lineSit = line.situation || 'blueUpgrade';
-                    const imp = lineSit === 'noOEE' ? data.oeeNothingToT4A[scenario] : data.oeeBlueToT4A[scenario];
-                    improvements.push(imp);
-                }
-            }
-            const minImp = Math.min(...improvements);
-            const maxImp = Math.max(...improvements);
-
-            oeeEl.textContent = minImp === maxImp 
-                ? `+${formatPercentage(minImp)}` 
-                : `+${formatPercentage(minImp)} - ${formatPercentage(maxImp)}`;
-        }
-
-        const card = document.querySelector(`.scenario-card[data-scenario="${scenario}"]`);
-        const labelEl = card ? card.querySelector('.scenario-oee-label') : null;
-
-        if (scenario === 'aangepast') {
-            if (labelEl) labelEl.style.display = 'block';
-        } else {
-            if (labelEl) labelEl.style.display = 'block'; 
+        if (scenario !== 'aangepast') {
+            const oeeEl = document.getElementById(id + 'OEE');
+            oeeEl.textContent = results[scenario].minImp === results[scenario].maxImp 
+                ? `+${formatPercentage(results[scenario].minImp)}` 
+                : `+${formatPercentage(results[scenario].minImp)} - ${formatPercentage(results[scenario].maxImp)}`;
         }
     }
 
-    const activeRes = results[selectedScenario] || results['expected'];
-
-    // Refresh Breakdown and Graph
-    renderCalcBreakdown(breakdownRows, activeRes.annual);
-    renderGraph(calculateBreakEven(activeRes.annual, totalFixedCost, variableCost));
-
-    // Update Graph Note
-    const scenarioLabels = { 
-        conservative: t('conservative'), 
-        expected: t('expected'), 
-        optimistic: t('optimistic'), 
-        aangepast: t('optionCustom') 
-    };
-    const beNote = document.querySelector('.break-even-note');
-    if (beNote) {
-        beNote.textContent = `${t('breakEvenNotePrefix')} ${scenarioLabels[selectedScenario]} ${t('breakEvenNoteSuffix')}`;
-    }
+    renderCalcBreakdown(breakdownRows, results[selectedScenario].annual);
+    renderGraph(calculateBreakEven(results[selectedScenario].annual, totalFixedCost, variableCost));
 }
 
-// ==========================================
-// CALCULATION BREAKDOWN
-// ==========================================
 function renderCalcBreakdown(rows, totalAnnual) {
     const container = document.getElementById('calcBreakdownContent');
-    if (!container) return;
-
-    const modelLabels = { demand: t('modelDemand'), cost: t('modelCost') };
-
-    let html = `
-        <div class="calc-breakdown-formula">${t('calcBreakdownFormula')}</div>
-        <table class="calc-breakdown-table">
-            <thead>
-                <tr>
-                    <th>${t('calcBreakdownLine')}</th>
-                    <th>${t('calcBreakdownHours')}</th>
-                    <th>${t('calcBreakdownOEEImpr')}</th>
-                    <th>${t('calcBreakdownCurrentOEE')}</th>
-                    <th>${t('calcBreakdownValueHr')}</th>
-                    <th>${t('calcBreakdownModel')}</th>
-                    <th>${t('calcBreakdownAnnual')}</th>
-                </tr>
-            </thead>
-            <tbody>
-    `;
-
-    for (const row of rows) {
-        html += `
-            <tr>
-                <td class="line-number">${row.lineName}</td>
-                <td>${new Intl.NumberFormat('nl-NL').format(row.hours)}</td>
-                <td>${formatPercentage(row.oeeIncrease)}</td>
-                <td>${formatPercentage(row.currentOEE)}</td>
-                <td>${formatCurrency(row.addedValue)}</td>
-                <td>${modelLabels[row.model] || row.model}${row.costFactor < 1 ? ' (' + Math.round(row.costFactor * 100) + '%)' : ''}</td>
-                <td class="annual-value">${formatCurrency(row.annual)}</td>
-            </tr>
-        `;
-    }
-
-    html += `
-            </tbody>
-            <tfoot>
-                <tr class="calc-breakdown-total">
-                    <td colspan="6">${t('calcBreakdownTotal')}</td>
-                    <td class="annual-value">${formatCurrency(totalAnnual)}</td>
-                </tr>
-            </tfoot>
-        </table>
-    `;
-
+    let html = `<div class="calc-breakdown-formula">${t('calcBreakdownFormula')}</div><table class="calc-breakdown-table"><thead><tr><th>${t('calcBreakdownLine')}</th><th>${t('calcBreakdownHours')}</th><th>${t('calcBreakdownOEEImpr')}</th><th>${t('calcBreakdownCurrentOEE')}</th><th>${t('calcBreakdownValueHr')}</th><th>${t('calcBreakdownModel')}</th><th>${t('calcBreakdownAnnual')}</th></tr></thead><tbody>`;
+    rows.forEach(row => { html += `<tr><td class="line-number">${row.lineName}</td><td>${new Intl.NumberFormat('nl-NL').format(row.hours)}</td><td>${formatPercentage(row.oeeIncrease)}</td><td>${formatPercentage(row.currentOEE)}</td><td>${formatCurrency(row.addedValue)}</td><td>${t('model' + row.model.charAt(0).toUpperCase() + row.model.slice(1))}${row.costFactor < 1 ? ' (' + Math.round(row.costFactor * 100) + '%)' : ''}</td><td class="annual-value">${formatCurrency(row.annual)}</td></tr>`; });
+    html += `</tbody><tfoot><tr class="calc-breakdown-total"><td colspan="6">${t('calcBreakdownTotal')}</td><td class="annual-value">${formatCurrency(totalAnnual)}</td></tr></tfoot></table>`;
     container.innerHTML = html;
 }
 
-// ==========================================
-// BREAK-EVEN
-// ==========================================
 function calculateBreakEven(annualBenefit, fixedFee, variableCost) {
-    const MIN_YEARS = 5;
-    let yearData = [];
-
-    // Year 0: upfront investment, no benefit yet
-    yearData.push({ year: 0, cumulativeBenefit: 0, cumulativeCost: fixedFee });
-
-    let cumulativeBenefit = 0;
-    let cumulativeCost = fixedFee;
-    let breakEvenReached = false;
-
-    for (let year = 1; year <= 20; year++) {
-        // OEE improvement ramps over 3 years: 1/3, 2/3, then full from year 3+
-        const rampFactor = year <= 3 ? year / 3 : 1;
-        cumulativeBenefit += annualBenefit * rampFactor;
+    let yearData = [{ year: 0, cumulativeBenefit: 0, cumulativeCost: fixedFee }];
+    let cumulativeBenefit = 0, cumulativeCost = fixedFee;
+    for (let year = 1; year <= 10; year++) {
+        cumulativeBenefit += annualBenefit * (year <= 3 ? year / 3 : 1);
         cumulativeCost += variableCost;
-
-        yearData.push({
-            year: year,
-            cumulativeBenefit: cumulativeBenefit,
-            cumulativeCost: cumulativeCost
-        });
-
-        if (cumulativeBenefit >= cumulativeCost && !breakEvenReached) {
-            breakEvenReached = true;
-        }
-
-        if (year >= MIN_YEARS) {
-            if (breakEvenReached) {
-                const beYear = yearData.find(d => d.year > 0 && d.cumulativeBenefit >= d.cumulativeCost).year;
-                if (year >= beYear + 2) break;
-            }
-            if (fixedFee === 0 && variableCost === 0) break;
-        }
+        yearData.push({ year, cumulativeBenefit, cumulativeCost });
+        if (cumulativeBenefit >= cumulativeCost && year >= 5) break;
     }
-
     return yearData;
 }
 
-// Realistic OEE curve: implementation dip, quick wins, plateau, bumpy climb, diminishing returns
-function generateRealisticCurvePoints(yearData, annualBenefit) {
-    if (yearData.length < 2) return yearData;
-
-    // Fallback: If annualBenefit isn't passed, derive it from the last year's data
-    // to ensure the line always renders.
-    const effectiveAnnualBenefit = annualBenefit || 
-        (yearData[yearData.length - 1].cumulativeBenefit / (yearData.length - 1));
-
-    const maxYear = yearData[yearData.length - 1].year;
-    const totalMonths = maxYear * 12;
-    const points = [];
-
-    points.push({ year: 0, cumulativeBenefit: 0, cumulativeCost: yearData[0].cumulativeCost });
-
-    let currentCumulativeBenefit = 0;
-
-    const getCostAtYear = (yearFrac) => {
-        for (let i = 0; i < yearData.length - 1; i++) {
-            if (yearFrac >= yearData[i].year && yearFrac <= yearData[i + 1].year) {
-                const span = yearData[i + 1].year - yearData[i].year;
-                const frac = span > 0 ? (yearFrac - yearData[i].year) / span : 0;
-                return yearData[i].cumulativeCost + frac * (yearData[i + 1].cumulativeCost - yearData[i].cumulativeCost);
-            }
-        }
-        return yearData[yearData.length - 1].cumulativeCost;
-    };
-
-    for (let m = 1; m <= totalMonths; m++) {
-        const yearFrac = m / 12;
-        
-        // Match your Break-even logic (1/3, 2/3, 1)
-        let currentRamp;
-        if (yearFrac <= 1) currentRamp = 1 / 3;
-        else if (yearFrac <= 2) currentRamp = 2 / 3;
-        else currentRamp = 1;
-
-        const monthlyBenefit = (effectiveAnnualBenefit * currentRamp) / 12;
-        currentCumulativeBenefit += monthlyBenefit;
-
-        points.push({
-            year: yearFrac,
-            cumulativeBenefit: currentCumulativeBenefit,
-            cumulativeCost: getCostAtYear(yearFrac)
-        });
-    }
-
-    return points;
-}
-
-function renderGraph(yearData, fixedFee, variableCost) {
+function renderGraph(yearData) {
     const canvas = document.getElementById('breakEvenCanvas');
     const ctx = canvas.getContext('2d');
-    const badge = document.getElementById('breakEvenBadge');
-    const breakEvenYear = document.getElementById('breakEvenYear');
-
     const dpr = window.devicePixelRatio || 1;
     const rect = canvas.getBoundingClientRect();
-    canvas.width = rect.width * dpr;
-    canvas.height = rect.height * dpr;
+    canvas.width = rect.width * dpr; canvas.height = rect.height * dpr;
     ctx.scale(dpr, dpr);
-
-    const width = rect.width;
-    const height = rect.height;
     const padding = { top: 30, right: 30, bottom: 50, left: 80 };
-    const graphWidth = width - padding.left - padding.right;
-    const graphHeight = height - padding.top - padding.bottom;
-
-    ctx.clearRect(0, 0, width, height);
-    if (!yearData || yearData.length < 2) return;
-
-    // 1. MATH: DERIVE ANNUAL BENEFIT & GENERATE POINTS
+    const graphWidth = rect.width - padding.left - padding.right;
+    const graphHeight = rect.height - padding.top - padding.bottom;
     const last = yearData[yearData.length - 1];
-    const prev = yearData[yearData.length - 2];
-    const annualBenefit = last.cumulativeBenefit - prev.cumulativeBenefit;
-    const maxYear = last.year;
-    const totalMonths = maxYear * 12;
-    const realisticPoints = [];
-    
-    realisticPoints.push({ year: 0, cumulativeBenefit: 0, cumulativeCost: yearData[0].cumulativeCost });
+    const maxVal = Math.max(...yearData.map(d => Math.max(d.cumulativeBenefit, d.cumulativeCost)));
+    const xScale = (y) => padding.left + (y / last.year) * graphWidth;
+    const yScale = (v) => padding.top + graphHeight - (v / maxVal) * graphHeight;
 
-    let runningBenefit = 0;
-    let beFound = false;
-    let finalBreakEvenMonth = null;
-
-    for (let m = 1; m <= totalMonths; m++) {
-        const yearFrac = m / 12;
-        let ramp = yearFrac <= 1 ? 1/3 : (yearFrac <= 2 ? 2/3 : 1);
-        runningBenefit += (annualBenefit * ramp) / 12;
-
-        const targetY = Math.floor(yearFrac);
-        const idx = yearData.findIndex(d => d.year === targetY);
-        let cost = (idx !== -1 && yearData[idx+1]) 
-            ? yearData[idx].cumulativeCost + (yearData[idx+1].cumulativeCost - yearData[idx].cumulativeCost) * (yearFrac - targetY)
-            : last.cumulativeCost;
-
-        realisticPoints.push({ year: yearFrac, cumulativeBenefit: runningBenefit, cumulativeCost: cost });
-
-        if (runningBenefit >= cost && !beFound) {
-            finalBreakEvenMonth = m;
-            beFound = true;
-        }
-    }
-
-    // 2. SCALING HELPERS
-    const maxValue = Math.max(...yearData.map(d => Math.max(d.cumulativeBenefit, d.cumulativeCost)));
-    const xScale = (y) => padding.left + (y / maxYear) * graphWidth;
-    const yScale = (v) => padding.top + graphHeight - (v / maxValue) * graphHeight;
-
-    // 3. DRAW GRID & Y-AXIS LABELS
-    ctx.strokeStyle = '#e5e7eb';
-    ctx.lineWidth = 1;
-    ctx.font = '11px Inter, sans-serif';
+    ctx.clearRect(0,0, rect.width, rect.height);
+    ctx.strokeStyle = '#e5e7eb'; ctx.font = '11px Inter';
     for (let i = 0; i <= 5; i++) {
-        const y = padding.top + (i / 5) * graphHeight;
-        ctx.beginPath(); ctx.moveTo(padding.left, y); ctx.lineTo(width - padding.right, y); ctx.stroke();
-        ctx.fillStyle = '#64748b'; ctx.textAlign = 'right';
-        ctx.fillText(formatCurrency(maxValue * (1 - i / 5)), padding.left - 10, y + 4);
+        let y = padding.top + (i/5) * graphHeight;
+        ctx.beginPath(); ctx.moveTo(padding.left, y); ctx.lineTo(rect.width-padding.right, y); ctx.stroke();
+        ctx.fillStyle = '#64748b'; ctx.textAlign = 'right'; ctx.fillText(formatCurrency(maxVal * (1 - i/5)), padding.left-10, y+4);
     }
-
-    // --- NEW: DRAW X-AXIS LABELS (JAAR 1 - JAAR 5) ---
-    for (let year = 1; year <= maxYear; year++) {
-        const x = xScale(year);
-        ctx.beginPath();
-        ctx.strokeStyle = '#e5e7eb';
-        ctx.moveTo(x, padding.top);
-        ctx.lineTo(x, height - padding.bottom);
-        ctx.stroke();
-
-        ctx.fillStyle = '#64748b';
-        ctx.textAlign = 'center';
-        // Use your translation function t() or hardcode 'Jaar'
-        ctx.fillText(t('yearLabel') + ' ' + year, x, height - padding.bottom + 20);
+    for (let y = 1; y <= last.year; y++) {
+        let x = xScale(y); ctx.textAlign = 'center'; ctx.fillText(t('yearLabel') + ' ' + y, x, rect.height-padding.bottom+20);
     }
-    // ------------------------------------------------
-
-    // 4. DRAW COST LINE (Red)
     ctx.beginPath(); ctx.strokeStyle = '#ef4444'; ctx.lineWidth = 3;
-    yearData.forEach((d, i) => { i === 0 ? ctx.moveTo(xScale(d.year), yScale(d.cumulativeCost)) : ctx.lineTo(xScale(d.year), yScale(d.cumulativeCost)); });
+    yearData.forEach((d, i) => i === 0 ? ctx.moveTo(xScale(d.year), yScale(d.cumulativeCost)) : ctx.lineTo(xScale(d.year), yScale(d.cumulativeCost)));
     ctx.stroke();
-
-    // 5. DRAW BENEFIT LINE (Green)
-    ctx.beginPath(); ctx.strokeStyle = '#10b981'; ctx.lineWidth = 3;
-    realisticPoints.forEach((d, i) => { i === 0 ? ctx.moveTo(xScale(d.year), yScale(d.cumulativeBenefit)) : ctx.lineTo(xScale(d.year), yScale(d.cumulativeBenefit)); });
+    ctx.beginPath(); ctx.strokeStyle = '#10b981';
+    yearData.forEach((d, i) => i === 0 ? ctx.moveTo(xScale(d.year), yScale(d.cumulativeBenefit)) : ctx.lineTo(xScale(d.year), yScale(d.cumulativeBenefit)));
     ctx.stroke();
-
-    // 6. UPDATE BADGE & DRAW YELLOW DOT
-    badge.classList.remove('warning', 'error');
-    if (beFound) {
-        breakEvenYear.textContent = finalBreakEvenMonth + ' ' + t('months');
-        const pt = realisticPoints.find(p => p.year * 12 === finalBreakEvenMonth);
-        if (pt) {
-            ctx.beginPath(); ctx.fillStyle = '#fbbf24';
-            ctx.arc(xScale(pt.year), yScale(pt.cumulativeBenefit), 8, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke();
-        }
-    } else if (last.cumulativeCost > last.cumulativeBenefit) {
-        breakEvenYear.textContent = t('overMonths');
-        badge.classList.add('error');
-    }
 }
 
-// ==========================================
-// PDF EXPORT
-// ==========================================
-function exportPDF() {
-    // 1. Removed companyName check and situation dropdown check to prevent crashes
-    const sector = document.getElementById('sector').value;
+function exportPDF() { window.print(); }
 
-    if (!sector) {
-        alert(t('alertFillIn'));
-        return;
-    }
-
-    const data = sectorData[sector];
-    const fixedFee = parseFloat(document.getElementById('fixedFee').value) || 0;
-    const variableCost = parseFloat(document.getElementById('variableCost').value) || 0;
-    const internalCost = parseFloat(document.getElementById('internalCost').value) || 0;
-    const totalFixedCost = fixedFee + internalCost;
-
-    // Include all 4 scenarios so the PDF works regardless of which card is selected
-    const scenarios = ['conservative', 'expected', 'optimistic', 'aangepast'];
-    const results = {};
-    let totalLines = 0;
-    let totalAddedValue = 0;
-    let totalStartOEE = 0;
-
-    for (let p = 1; p <= numPlants; p++) {
-        totalLines += plantData[p].lines.length;
-    }
-
-    for (const scenario of scenarios) {
-        let totalAnnual = 0;
-        let totalImprovement = 0;
-
-        for (let p = 1; p <= numPlants; p++) {
-            for (const line of plantData[p].lines) {
-                const hours = workHours[line.shifts.toString()] || 2000;
-                const lineOutput = line.outputLevel === 'custom' ? (line.customOutput || 0) : data.outputPerHour[line.outputLevel || 'avg'];
-                const lineMargin = line.marginLevel === 'custom' ? (line.customMargin || 0) : data.marginPerUnit[line.marginLevel || 'avg'];
-                const lineOEE = line.currentOEE !== null ? line.currentOEE : data.oeeStart;
-                
-                const lineSit = line.situation || 'blueUpgrade';
-                
-                let improvement;
-                if (scenario === 'aangepast') {
-                    const customInput = document.getElementById('customOEEInput');
-                    let val = customInput ? parseFloat(customInput.value.replace(',', '.')) : 0;
-                    improvement = val > 1 ? val / 100 : val; 
-                } else {
-                    improvement = lineSit === 'noOEE' ? data.oeeNothingToT4A[scenario] : data.oeeBlueToT4A[scenario];
-                }
-                
-                totalImprovement += improvement;
-
-                const costFactor = line.calcModel === 'cost' ? 
-                    { conservative: 0.20, expected: 0.30, optimistic: 0.40, aangepast: 0.30 }[scenario] : 1;
-                
-                totalAnnual += (lineOutput * lineMargin * lineOEE) * improvement * hours * costFactor;
-                
-                if (scenario === 'conservative') {
-                    totalAddedValue += (lineOutput * lineMargin);
-                    totalStartOEE += lineOEE;
-                }
-            }
-        }
-
-        results[scenario] = {
-            annual: totalAnnual,
-            threeYear: totalAnnual * 2,
-            oeeIncrease: totalImprovement / totalLines
-        };
-    }
-
-    const avgAddedValue = totalLines > 0 ? totalAddedValue / totalLines : 0;
-    const avgStartOEE = totalLines > 0 ? totalStartOEE / totalLines : data.oeeStart;
-    
-    // Safety: use selectedScenario or fallback to expected
-    const activeRes = results[selectedScenario] || results['expected'];
-    const selectedAnnual = activeRes.annual;
-    const totalCost3Years = totalFixedCost + (variableCost * 3);
-    const netBenefit = activeRes.threeYear - totalCost3Years;
-    const roi = totalCost3Years > 0 ? ((activeRes.threeYear / totalCost3Years) * 100).toFixed(0) : '0';
-
-    // Break-even Calculation
-    let breakEvenMonths = 0;
-    let cumulativeBenefit = 0;
-    let cumulativeCost = totalFixedCost;
-    for (let year = 1; year <= 10; year++) {
-        const rampFactor = year <= 3 ? year / 3 : 1;
-        const yearBenefit = selectedAnnual * rampFactor;
-        cumulativeBenefit += yearBenefit;
-        cumulativeCost += variableCost;
-        if (cumulativeBenefit >= cumulativeCost) {
-            const prevBenefit = cumulativeBenefit - yearBenefit;
-            const prevCost = cumulativeCost - variableCost;
-            const prevGap = Math.max(0, prevCost - prevBenefit);
-            const gapChange = yearBenefit - variableCost;
-            const fraction = gapChange > 0 ? prevGap / gapChange : 0;
-            breakEvenMonths = Math.ceil(((year - 1) + fraction) * 12);
-            break;
-        }
-    }
-
-    const scenarioLabels = { conservative: t('conservative'), expected: t('expected'), optimistic: t('optimistic'), aangepast: t('optionCustom') };
-    const dateLocale = currentLang === 'nl' ? 'nl-NL' : 'en-GB';
-
-    // Generate the HTML for the PDF (Removed Company Name references)
-    const printContent = `
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>${t('pdfTitle')}</title>
-    <style>
-        @page { margin: 15mm; size: A4; }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; color: #1e293b; line-height: 1.5; font-size: 11pt; }
-        .header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 15px; border-bottom: 3px solid #00AAFF; margin-bottom: 25px; }
-        .header-left h1 { font-size: 22pt; font-weight: 800; color: #0f172a; }
-        .header-left h1 span { color: #00AAFF; }
-        .header-right { text-align: right; font-size: 9pt; color: #64748b; }
-        .header-right .brand { font-weight: 700; color: #0f172a; font-size: 10pt; }
-        .exec-summary { background: #0f172a; color: #ffffff; padding: 20px 25px; border-radius: 8px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
-        .exec-summary .main-value .label { font-size: 9pt; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.8; }
-        .exec-summary .main-value .number { font-size: 28pt; font-weight: 800; color: #00AAFF; }
-        .exec-summary .metrics { display: flex; gap: 30px; }
-        .exec-summary .metric { text-align: center; }
-        .exec-summary .metric .value { font-size: 16pt; font-weight: 700; }
-        .exec-summary .metric .label { font-size: 8pt; text-transform: uppercase; opacity: 0.7; }
-        .exec-summary .metric.green .value { color: #4ade80; }
-        .exec-summary .metric.cyan .value { color: #00AAFF; }
-        .content-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 25px; }
-        .section { margin-bottom: 20px; }
-        .section-title { font-size: 11pt; font-weight: 700; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; margin-bottom: 12px; }
-        .info-table { width: 100%; }
-        .info-table tr td { padding: 6px 0; border-bottom: 1px solid #f1f5f9; font-size: 10pt; }
-        .info-table .label { color: #64748b; width: 50%; }
-        .info-table .value { font-weight: 600; color: #0f172a; text-align: right; }
-        .scenario-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
-        .scenario-table th { text-align: center; padding: 10px; font-size: 9pt; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b; border-bottom: 2px solid #e5e7eb; }
-        .scenario-table td { text-align: center; padding: 8px; font-size: 10pt; border-bottom: 1px solid #f1f5f9; }
-        .scenario-table .row-label { text-align: left; color: #64748b; font-size: 9pt; }
-        .scenario-table .value-row td { font-weight: 700; font-size: 12pt; color: #0f172a; }
-        .financials { background: #f8fafc; border-radius: 8px; padding: 15px; }
-        .financials-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e5e7eb; }
-        .financials-row.total { background: #0f172a; color: #fff; margin: 10px -15px -15px -15px; padding: 12px 15px; border-radius: 0 0 8px 8px; }
-        .plant-card { background: #f8fafc; padding: 10px 12px; border-radius: 6px; border-left: 3px solid #00AAFF; margin-bottom:5px;}
-        .footer { margin-top: 30px; padding-top: 15px; border-top: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; font-size: 8pt; color: #94a3b8; }
-        @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <div class="header-left">
-            <h1>OEE <span>${t('pdfTitle')}</span></h1>
-        </div>
-        <div class="header-right">
-            <div class="brand">Decide4Action</div>
-            ${new Date().toLocaleDateString(dateLocale, { day: 'numeric', month: 'long', year: 'numeric' })}
-        </div>
-    </div>
-
-    <div class="exec-summary">
-        <div class="main-value">
-            <div class="label">${scenarioLabels[selectedScenario]} - ${t('pdfExpectedSavings')}</div>
-            <div class="number">${formatCurrency(selectedAnnual)}</div>
-        </div>
-        <div class="metrics">
-            <div class="metric green">
-                <div class="value">${breakEvenMonths > 0 ? breakEvenMonths : '0'}</div>
-                <div class="label">${t('pdfMonthsBreakEven')}</div>
-            </div>
-            <div class="metric cyan">
-                <div class="value">${roi}%</div>
-                <div class="label">${t('pdfRoi3Year')}</div>
-            </div>
-            <div class="metric green">
-                <div class="value">${formatCurrency(netBenefit)}</div>
-                <div class="label">${t('pdfNetBenefit3Year')}</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="section">
-        <div class="section-title">${t('pdfScenarioAnalysis')}</div>
-        <table class="scenario-table">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>${t('conservative')}</th>
-                    <th>${t('expected')}</th>
-                    <th>${t('optimistic')}</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="value-row">
-                    <td class="row-label">${t('pdfPerYear')}</td>
-                    <td>${formatCurrency(results.conservative.annual)}</td>
-                    <td>${formatCurrency(results.expected.annual)}</td>
-                    <td>${formatCurrency(results.optimistic.annual)}</td>
-                </tr>
-                <tr>
-                    <td class="row-label">${t('pdfOeeImprovement')}</td>
-                    <td>+${formatPercentage(results.conservative.oeeIncrease)}</td>
-                    <td>+${formatPercentage(results.expected.oeeIncrease)}</td>
-                    <td>+${formatPercentage(results.optimistic.oeeIncrease)}</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <div class="content-grid">
-        <div>
-            <div class="section">
-                <div class="section-title">${t('pdfCompanyDetails')}</div>
-                <table class="info-table">
-                    <tr><td class="label">${t('pdfSector')}</td><td class="value">${data.name}</td></tr>
-                    <tr><td class="label">${t('pdfValuePerHour')}</td><td class="value">${formatCurrency(avgAddedValue)}</td></tr>
-                    <tr><td class="label">${t('pdfNumPlants')}</td><td class="value">${numPlants}</td></tr>
-                    <tr><td class="label">${t('pdfTotalLines')}</td><td class="value">${totalLines}</td></tr>
-                </table>
-            </div>
-            <div class="section">
-                <div class="section-title">${t('pdfOeeImprovementSection')}</div>
-                <table class="info-table">
-                    <tr><td class="label">${t('pdfCurrentOee')}</td><td class="value">${(avgStartOEE * 100).toFixed(0)}%</td></tr>
-                    <tr><td class="label">${t('pdfExpectedImprov')}</td><td class="value">+${formatPercentage(activeRes.oeeIncrease)}</td></tr>
-                </table>
-            </div>
-        </div>
-        <div>
-            <div class="section">
-                <div class="section-title">${t('pdfInvestment')}</div>
-                <div class="financials">
-                    <div class="financials-row"><span class="label">${t('pdfFixedCosts')}</span><span class="value">${formatCurrency(fixedFee)}</span></div>
-                    <div class="financials-row"><span class="label">${t('pdfVariableCosts')}</span><span class="value">${formatCurrency(variableCost)}</span></div>
-                    <div class="financials-row total"><span class="label">${t('pdfNetBenefitExpected')}</span><span class="value">${formatCurrency(netBenefit)}</span></div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="footer">
-        <div>Decide4Action OEE ROI Calculator</div>
-        <div>${t('pdfFooterData')}</div>
-    </div>
-</body>
-</html>`;
-
-    // Open window and print
-    const printWindow = window.open('', '_blank');
-    if (!printWindow) {
-        alert("Pop-up geblokkeerd! Sta pop-ups toe om de PDF te openen.");
-        return;
-    }
-    printWindow.document.write(printContent);
-    printWindow.document.close();
-    printWindow.focus();
-    setTimeout(() => {
-        printWindow.print();
-    }, 500);
-}
-
-// ==========================================
-// INITIALIZE
-// ==========================================
-document.addEventListener('DOMContentLoaded', async function() {
+document.addEventListener('DOMContentLoaded', async () => {
     await loadSectorData();
-    
-    // ADD THIS LINE: This fills in the tooltips as soon as the page opens
-    applyTranslations(); 
-    
+    applyTranslations();
     initSearchableSelect();
     updatePlantTabs();
-
-    const customOeeInput = document.getElementById('customOEEInput');
-    if (customOeeInput) {
-        customOeeInput.addEventListener('input', () => {
-            if (selectedScenario === 'aangepast') {
-                calculate();
-            }
-        });
-    }
 });
