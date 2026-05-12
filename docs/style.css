@@ -1,4 +1,6 @@
-/* GLOBAL RESET & BASE STYLES */
+/* ==========================================
+   GLOBAL RESET & BASE STYLES
+   ========================================== */
 * {
     margin: 0;
     padding: 0;
@@ -18,7 +20,9 @@ body {
     margin: 0 auto;
 }
 
-/* HEADER & NAVIGATION */
+/* ==========================================
+   HEADER & NAVIGATION
+   ========================================== */
 .header {
     display: flex;
     align-items: center;
@@ -53,7 +57,7 @@ body {
     gap: 12px;
 }
 
-/* LANGUAGE SWITCHER */
+/* Language Switcher */
 .lang-switcher select {
     appearance: none;
     background: #fff;
@@ -66,25 +70,9 @@ body {
     cursor: pointer;
 }
 
-/* BUTTONS */
-.btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    border: none;
-    font-family: inherit;
-    transition: all 0.2s;
-}
-
-.btn-export { background: #0f172a; color: #fff; }
-.btn-primary { background: #00AAFF; color: #fff; }
-.btn-remove { background: #fee2e2; color: #dc2626; padding: 6px 12px; font-size: 0.8rem; }
-
-/* LAYOUT & CARDS */
+/* ==========================================
+   CARDS & LAYOUT
+   ========================================== */
 .main-layout { display: flex; flex-direction: column; gap: 0; }
 
 .card {
@@ -95,17 +83,20 @@ body {
     margin-bottom: 20px;
 }
 
+/* CRITICAL: Allow tooltips to overflow card boundaries */
 .card-header {
     display: flex;
     align-items: center;
     gap: 14px;
     margin-bottom: 24px;
+    overflow: visible !important; 
 }
 
 .card-icon {
     width: 42px; height: 42px;
     border-radius: 10px;
     display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
 }
 
 .card-icon.blue { background: #dbeafe; color: #2563eb; }
@@ -113,10 +104,81 @@ body {
 .card-icon.green { background: #dcfce7; color: #16a34a; }
 .card-icon.orange { background: #ffedd5; color: #ea580c; }
 
-/* FORM ELEMENTS */
+/* ==========================================
+   GLOBAL TOOLTIP SYSTEM (All Info Icons)
+   ========================================== */
+.th-tooltip {
+    position: relative;
+    cursor: help;
+}
+
+.info-icon {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    margin-left: 6px;
+    font-weight: normal;
+    pointer-events: none;
+}
+
+.th-tooltip .tooltip-text {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    z-index: 99999 !important; /* Forces it above all other cards */
+    background-color: #0f172a;
+    color: #ffffff;
+    text-align: left;
+    border-radius: 8px;
+    padding: 16px 20px;
+    
+    /* Box Sizing */
+    width: max-content;
+    min-width: 240px;
+    max-width: 350px;
+    
+    /* Typography */
+    font-size: 0.75rem;
+    font-weight: 400;
+    line-height: 1.6;
+    text-transform: none;
+    white-space: normal;
+    
+    /* Positioning */
+    bottom: 140%; 
+    left: 50%;
+    transform: translateX(-50%);
+    
+    /* Decoration */
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: opacity 0.2s ease, visibility 0.2s;
+    pointer-events: none;
+}
+
+/* Arrow */
+.th-tooltip .tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #0f172a transparent transparent transparent;
+}
+
+.th-tooltip:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* ==========================================
+   FORM ELEMENTS
+   ========================================== */
 .form-group { margin-bottom: 20px; }
 .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; }
 
+/* Input Wrappers (Euro and Percentage) */
 .currency-input, .percentage-input-wrapper {
     position: relative;
     display: inline-block;
@@ -140,10 +202,12 @@ body {
 .form-group input, .form-group select, .line-input, .line-select {
     width: 100%; height: 38px; padding: 8px 12px;
     border: 2px solid #e5e7eb; border-radius: 8px;
-    font-size: 0.9rem; color: #1e293b; background: #fff;
+    font-size: 0.9rem; font-family: inherit; color: #1e293b; background: #fff;
 }
 
-/* TABLE STYLING */
+/* ==========================================
+   TABLE STYLING
+   ========================================== */
 .table-container-rounded {
     border: 1px solid #e2e8f0;
     border-radius: 12px;
@@ -161,59 +225,16 @@ body {
     background: #f8fafc; padding: 14px 10px;
     font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
     color: #64748b; border-bottom: 1px solid #e2e8f0;
-    text-align: left; position: relative;
+    text-align: left;
 }
 
 .lines-table td { padding: 12px 10px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
 .lines-table th:first-child { border-top-left-radius: 12px; }
 .lines-table th:last-child { border-top-right-radius: 12px; }
 
-/* GLOBAL TOOLTIP SYSTEM */
-.th-tooltip { position: relative; cursor: help; }
-
-.info-icon { font-size: 0.8rem; color: #94a3b8; margin-left: 4px; font-weight: normal; }
-
-.th-tooltip .tooltip-text {
-    visibility: hidden;
-    opacity: 0;
-    position: absolute;
-    /* Increase z-index to stay above everything */
-    z-index: 99999 !important; 
-    background-color: #0f172a;
-    color: #ffffff;
-    text-align: left;
-    border-radius: 8px;
-    padding: 16px 20px;
-    
-    /* Ensure the box has a solid width so it doesn't collapse */
-    width: 320px; 
-    white-space: normal;
-    
-    /* Position adjustments */
-    bottom: 140%; 
-    left: 50%;
-    transform: translateX(-50%);
-    
-    /* Smooth entry */
-    transition: opacity 0.2s ease, visibility 0.2s;
-    pointer-events: none;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-}
-
-/* Add this to prevent the card from cutting off the tooltip */
-.card-header {
-    overflow: visible !important;
-}
-
-.th-tooltip .tooltip-text::after {
-    content: ""; position: absolute; top: 100%; left: 50%; margin-left: -5px;
-    border-width: 5px; border-style: solid;
-    border-color: #0f172a transparent transparent transparent;
-}
-
-.th-tooltip:hover .tooltip-text { visibility: visible; opacity: 1; }
-
-/* SCENARIO RESULTS */
+/* ==========================================
+   RESULTS & SCENARIOS
+   ========================================== */
 .scenario-grid { display: grid; grid-template-columns: 1fr 1.15fr 1fr 1fr; gap: 12px; }
 
 .scenario-card {
@@ -232,15 +253,22 @@ body {
 .year-value { font-size: 0.8rem; font-weight: 700; color: #475569; }
 .scenario-divider { height: 1px; background: #e5e7eb; margin: 10px auto; width: 80%; }
 
-/* PLANT TABS */
+/* ==========================================
+   BUTTONS & TABS
+   ========================================== */
+.btn-primary { background: #00AAFF; color: #fff; padding: 8px 16px; font-size: 0.85rem; }
+.btn-remove-line {
+    width: 28px; height: 28px; border-radius: 50%; border: none;
+    background: #fee2e2; color: #ef4444; cursor: pointer;
+    font-size: 1.2rem; display: flex; align-items: center; justify-content: center;
+}
+
 .plant-tabs { display: flex; gap: 4px; margin-bottom: 20px; background: #f1f5f9; padding: 6px; border-radius: 12px; }
-.plant-tab { flex: 1; text-align: center; padding: 8px; cursor: pointer; border-radius: 8px; font-weight: 600; color: #64748b; }
+.plant-tab { flex: 1; text-align: center; padding: 8px; cursor: pointer; border-radius: 8px; font-weight: 600; font-size: 0.85rem; color: #64748b; }
 .plant-tab.active { background: #fff; color: #00AAFF; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 
-/* MISC */
+/* ==========================================
+   GRAPH & FOOTER
+   ========================================== */
 .graph-container { width: 100%; height: 300px; margin-top: 20px; }
 footer { text-align: center; margin-top: 40px; color: #94a3b8; font-size: 0.8rem; }
-
-@media (max-width: 640px) {
-    .scenario-grid { grid-template-columns: 1fr 1fr; }
-}
