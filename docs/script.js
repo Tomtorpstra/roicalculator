@@ -780,8 +780,11 @@ function calculate() {
                 if (scenario === 'expected') totalLinesCount++;
                 
                 const hours = workHours[line.shifts.toString()] || 2000;
-                const output = data.outputPerHour[line.outputLevel || 'avg'];
-                const margin = data.marginPerUnit[line.marginLevel || 'avg'];
+                
+                // Use custom values if "Handmatig" is selected, otherwise use benchmark
+                const output = line.outputLevel === 'custom' ? (line.customOutput || 0) : data.outputPerHour[line.outputLevel || 'avg'];
+                const margin = line.marginLevel === 'custom' ? (line.customMargin || 0) : data.marginPerUnit[line.marginLevel || 'avg'];
+                
                 const oeeStart = line.currentOEE !== null ? line.currentOEE : data.oeeStart;
                 
                 let improvement;
@@ -825,6 +828,20 @@ function calculate() {
     }
 
     renderCalcBreakdown(breakdownRows, results[selectedScenario].annual);
+    
+    // --- NEW BADGE & GRAPH LOGIC ---
+    const breakEvenMonths = findBreakEvenMonth(results[selectedScenario].annual, totalFixedCost, variableCost);
+    const badge = document.getElementById('breakEvenBadge');
+    document.getElementById('breakEvenYear').textContent = breakEvenMonths;
+
+    if (breakEvenMonths === t('overMonths')) {
+        badge.classList.remove('success');
+        badge.classList.add('warning');
+    } else {
+        badge.classList.remove('warning');
+        badge.classList.add('success');
+    }
+
     renderGraph(calculateBreakEven(results[selectedScenario].annual, totalFixedCost, variableCost));
 }
 
