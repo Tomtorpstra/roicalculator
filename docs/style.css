@@ -909,3 +909,55 @@ footer {
     width: 100%;
     pointer-events: auto !important;
 }
+/* --- MANUAL INPUT & CUSTOM SCENARIO FIXES --- */
+
+/* Ensures the fourth 'Handmatig' option is visible in dropdowns */
+.line-select option[value="custom"] {
+    display: block !important;
+}
+
+/* Styles for manual numeric inputs when they appear in the table */
+.lines-table input[type="number"].line-input {
+    width: 100%;
+    pointer-events: auto !important;
+    cursor: text;
+    background-color: #fff;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 4px 10px;
+}
+
+/* Ensure the 'Aangepast' scenario card and its input are interactive */
+.scenario-card[data-scenario="aangepast"] {
+    pointer-events: auto !important;
+}
+
+.custom-oee-input-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 2px 0;
+}
+
+.custom-oee-input {
+    width: 72px;
+    padding: 4px 6px;
+    border: 2px solid #e5e7eb;
+    border-radius: 6px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #16a34a;
+    text-align: center;
+    background: #fff;
+    pointer-events: auto !important;
+    cursor: text;
+}
+
+/* Visual feedback when the manual input is focused */
+.custom-oee-input:focus, 
+.lines-table input[type="number"].line-input:focus {
+    outline: none;
+    border-color: #00AAFF;
+    box-shadow: 0 0 0 2px rgba(0, 170, 255, 0.1);
+}
