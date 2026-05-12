@@ -116,11 +116,17 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="internalCost" class="th-tooltip"><span data-i18n="internalCostLabel">Interne Kosten (Eenmalig)</span> <span style="font-size:0.7rem; opacity:0.6;">&#9432;</span><div class="tooltip-text"><span class="tooltip-title" data-i18n="internalCostTooltipTitle">Interne kosten zijn:</span> <span data-i18n="internalCostTooltipBody">implementatie-uren, trainingsuren, IT hardware, IT software.</span></div></label>
-                            <div class="currency-input">
-                                <input type="number" id="internalCost" min="0" value="0" onchange="calculate()" oninput="calculate()" data-i18n-placeholder="internalCostPlaceholder" placeholder="Bijv. 5.000">
-                            </div>
-                        </div>
+    <label for="internalCost" class="th-tooltip">
+        <span data-i18n="internalCostLabel">Interne Kosten (Eenmalig)</span> 
+        <span class="info-icon">ⓘ</span>
+        <div class="tooltip-text">
+            <span data-i18n="internalCostTooltipBody">implementatie-uren, trainingsuren, IT hardware, IT software.</span>
+        </div>
+    </label>
+    <div class="currency-input">
+        <input type="number" id="internalCost" min="0" value="0" onchange="calculate()" oninput="calculate()" data-i18n-placeholder="internalCostPlaceholder" placeholder="Bijv. 5.000">
+    </div>
+</div>
                         <div class="form-group">
                             <label for="variableCost" data-i18n="variableCostLabel">Onderhoudskosten (per jaar)</label>
                             <div class="currency-input">
