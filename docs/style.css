@@ -427,83 +427,93 @@ body {
     border-radius: 12px;
     background: #ffffff;
     margin-top: 10px;
-    overflow-x: auto; /* Allows horizontal scrolling */
+    overflow-x: auto; /* Scrollable if the screen is too narrow */
     width: 100%;
 }
 
 .lines-table {
     width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    table-layout: fixed; /* Ensures column widths are respected */
-    min-width: 1000px;    /* Prevents the table from squishing too much */
+    border-collapse: collapse; /* Changed to collapse for better alignment */
+    table-layout: fixed; /* Crucial for keeping headers matched to columns */
+    min-width: 1100px;   /* Enough width so inputs don't squish */
 }
+
+/* Explicitly defining column widths to force alignment */
+.lines-table th:nth-child(1), .lines-table td:nth-child(1) { width: 40px; }  /* # */
+.lines-table th:nth-child(2), .lines-table td:nth-child(2) { width: 160px; } /* Naam */
+.lines-table th:nth-child(3), .lines-table td:nth-child(3) { width: 130px; } /* Situatie */
+.lines-table th:nth-child(4), .lines-table td:nth-child(4) { width: 130px; } /* Output */
+.lines-table th:nth-child(5), .lines-table td:nth-child(5) { width: 130px; } /* Marge */
+.lines-table th:nth-child(6), .lines-table td:nth-child(6) { width: 110px; } /* Model */
+.lines-table th:nth-child(7), .lines-table td:nth-child(7) { width: 85px; }  /* Ploeg */
+.lines-table th:nth-child(8), .lines-table td:nth-child(8) { width: 115px; } /* Waarde/uur */
+.lines-table th:nth-child(9), .lines-table td:nth-child(9) { width: 100px; } /* OEE % */
+.lines-table th:nth-child(10), .lines-table td:nth-child(10) { width: 50px; } /* Delete btn */
 
 .lines-table th {
     background: #f8fafc;
-    padding: 14px 10px;
+    padding: 12px 10px;
     font-size: 0.72rem;
     font-weight: 700;
     text-transform: uppercase;
     color: #64748b;
     border-bottom: 1px solid #e2e8f0;
     text-align: left;
-    white-space: nowrap; /* Prevents text wrapping in headers */
+    white-space: nowrap;
 }
 
 .lines-table td {
-    padding: 10px;
+    padding: 12px 10px;
     border-bottom: 1px solid #f1f5f9;
     vertical-align: middle;
 }
 
-.lines-table th:first-child { border-top-left-radius: 12px; }
-.lines-table th:last-child { border-top-right-radius: 12px; }
-
-/* Line Input/Select styling */
-.line-input, .line-select {
-    width: 100%;
-    height: 36px;
-    padding: 4px 10px;
-    border: 1px solid #cbd5e1;
-    border-radius: 6px;
-    font-family: inherit;
-    font-size: 0.85rem;
-    color: #1e293b;
-    background-color: #fff;
-    transition: border-color 0.2s;
-}
-
-.line-input:focus, .line-select:focus {
-    outline: none;
-    border-color: #00AAFF;
-}
-
-/* Added formatting for Added Value and Percentage alignment */
-.added-value-cell {
-    font-family: 'Inter', monospace;
-    font-weight: 600;
-    font-size: 0.85rem;
-    color: #0f172a;
-}
-
+/* Fix for the OEE Percentage input so it aligns with title */
 .percentage-input-wrapper {
     position: relative;
     display: flex;
     align-items: center;
+    width: 100%;
 }
 
 .percentage-input-wrapper .pct-symbol {
     position: absolute;
-    right: 10px;
-    font-size: 0.85rem;
+    right: 8px;
+    font-size: 0.8rem;
     color: #94a3b8;
     pointer-events: none;
 }
 
 .line-input.oee-center {
     text-align: center;
-    padding-right: 24px;
+    padding-right: 22px !important;
+}
+
+.added-value-cell {
+    font-weight: 700;
+    color: #1e293b;
+    font-size: 0.85rem;
+    white-space: nowrap;
+}
+
+/* Line Input/Select styling */
+.line-input, .line-select {
+    width: 100%;
+    height: 38px;
+    padding: 8px 10px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 0.85rem;
+    color: #334155;
+    background-color: #fff;
+    transition: all 0.2s;
+}
+
+.line-input:focus, .line-select:focus {
+    outline: none;
+    border-color: #00AAFF;
+    box-shadow: 0 0 0 3px rgba(0, 170, 255, 0.1);
 }
 
 /* ========================================== */
