@@ -763,6 +763,13 @@ function renderPlantContent() {
             const lineOutput = ol === 'custom' ? (line.customOutput || 0) : (data ? data.outputPerHour[ol] : 0);
             const lineMargin = ml === 'custom' ? (line.customMargin || 0) : (data ? data.marginPerUnit[ml] : 0);
 
+            // --- OEE LOGIC FIX START ---
+            // If line.currentOEE is null, use the sector benchmark (data.oeeStart)
+            const displayOEE = line.currentOEE !== null 
+                ? Math.round(line.currentOEE * 100) 
+                : (data ? Math.round(data.oeeStart * 100) : '');
+            // --- OEE LOGIC FIX END ---
+
             tableHTML += `
                 <tr>
                     <td class="line-number">${index + 1}</td>
@@ -801,7 +808,7 @@ function renderPlantContent() {
                         </select>
                     </td>
                     <td class="added-value-cell">${formatCurrency(lineOutput * lineMargin)}</td>
-                    <td><input type="number" class="line-input oee-center" value="${line.currentOEE !== null ? Math.round(line.currentOEE * 100) : ''}" oninput="updateLineOEE(${p}, ${index}, this.value)" placeholder="%"></td>
+                    <td><input type="number" class="line-input oee-center" value="${displayOEE}" oninput="updateLineOEE(${p}, ${index}, this.value)" placeholder="%"></td>
                     <td><button class="btn-remove-line" onclick="removeLine(${p}, ${index})" ${plantData[p].lines.length <= 1 ? 'disabled' : ''}>&times;</button></td>
                 </tr>
             `;
