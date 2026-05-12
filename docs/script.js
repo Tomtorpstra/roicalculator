@@ -906,3 +906,54 @@ document.addEventListener('DOMContentLoaded', async () => {
     initSearchableSelect();
     updatePlantTabs();
 });
+// Add this helper function to your script to fix the missing graph issue
+function findBreakEvenMonth(annualBenefit, investment, maintenance) {
+    let cumulativeBenefit = 0;
+    let cumulativeCost = investment;
+    
+    // Check up to 120 months (10 years)
+    for (let m = 1; m <= 120; m++) {
+        let yearNum = Math.ceil(m / 12);
+        // Apply ramp-up logic: Year 1 = 33%, Year 2 = 67%, Year 3+ = 100%
+        let monthlyBenefit = (annualBenefit * (yearNum <= 3 ? (yearNum / 3) : 1)) / 12;
+        cumulativeBenefit += monthlyBenefit;
+        cumulativeCost += (maintenance / 12);
+
+        if (cumulativeBenefit >= cumulativeCost) {
+            return m < 12 ? `${m} ${t('months')}` : `${(m / 12).toFixed(1)} ${t('yearLabel').toLowerCase()}`;
+        }
+    }
+    return t('overMonths');
+}
+
+// Ensure your calculate function looks like this at the end
+function calculate() {
+    // ... (keep all your existing logic for gathering inputs and calculating scenarios) ...
+    
+    // Calculate the scenarios (looping through conservative, expected, optimistic, etc.)
+    // ...
+
+    // After results[selectedScenario] is defined, update the UI:
+    renderCalcBreakdown(breakdownRows, results[selectedScenario].annual);
+    
+    // --- BADGE & GRAPH LOGIC ---
+    // This part requires findBreakEvenMonth to exist above!
+    const breakEvenResult = findBreakEvenMonth(results[selectedScenario].annual, totalFixedCost, variableCost);
+    const badge = document.getElementById('breakEvenBadge');
+    
+    const yearDisplay = document.getElementById('breakEvenYear');
+    if (yearDisplay) yearDisplay.textContent = breakEvenResult;
+
+    if (badge) {
+        if (breakEvenResult === t('overMonths')) {
+            badge.classList.remove('success');
+            badge.classList.add('warning');
+        } else {
+            badge.classList.remove('warning');
+            badge.classList.add('success');
+        }
+    }
+
+    // This renders the visual lines in the canvas
+    renderGraph(calculateBreakEven(results[selectedScenario].annual, totalFixedCost, variableCost));
+}
