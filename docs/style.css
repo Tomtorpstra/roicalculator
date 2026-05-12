@@ -5,7 +5,6 @@
 }
 
 body {
-    /* Ensuring Inter is used globally */
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background: #f1f5f9;
     min-height: 100vh;
@@ -13,7 +12,6 @@ body {
     color: #1e293b;
 }
 
-/* Base style for all form elements to ensure font parity with headers */
 input, select, button, textarea {
     font-family: 'Inter', sans-serif;
     font-size: 0.9rem;
@@ -121,9 +119,11 @@ input, select, button, textarea {
     padding: 10px 20px;
     border-radius: 8px;
     font-weight: 600;
+    font-size: 0.9rem;
     cursor: pointer;
     border: none;
     transition: all 0.2s;
+    font-family: inherit;
 }
 
 .btn-export {
@@ -196,25 +196,10 @@ input, select, button, textarea {
     flex-shrink: 0;
 }
 
-.card-icon.blue {
-    background: #dbeafe;
-    color: #2563eb;
-}
-
-.card-icon.cyan {
-    background: #e0f7fa;
-    color: #00AAFF;
-}
-
-.card-icon.green {
-    background: #dcfce7;
-    color: #16a34a;
-}
-
-.card-icon.orange {
-    background: #ffedd5;
-    color: #ea580c;
-}
+.card-icon.blue { background: #dbeafe; color: #2563eb; }
+.card-icon.cyan { background: #e0f7fa; color: #00AAFF; }
+.card-icon.green { background: #dcfce7; color: #16a34a; }
+.card-icon.orange { background: #ffedd5; color: #ea580c; }
 
 .card-header h2 {
     font-size: 1.1rem;
@@ -428,7 +413,7 @@ input, select, button, textarea {
     margin-bottom: 20px;
     background: #f1f5f9; 
     border-radius: 12px; 
-    padding: 6px; /* FIXED from 67px */
+    padding: 6px; 
     border: 1px solid #e2e8f0;
 }
 
@@ -496,7 +481,7 @@ input, select, button, textarea {
 .lines-table th:first-child { border-top-left-radius: 12px; }
 .lines-table th:last-child { border-top-right-radius: 12px; }
 
-/* Line Input/Select styling - Force Inter and 0.9rem to match labels */
+/* Line Input/Select styling */
 .line-input, .line-select {
     width: 100%;
     height: 36px;
@@ -790,6 +775,7 @@ input, select, button, textarea {
     color: #16a34a;
     text-align: center;
     background: #fff;
+    pointer-events: auto !important;
 }
 
 /* Break-even Chart */
@@ -916,4 +902,10 @@ footer {
 @media (max-width: 640px) {
     .scenario-grid { grid-template-columns: 1fr 1fr; }
     .form-row, .form-row-3 { grid-template-columns: 1fr; }
+}
+
+/* NEW: Ensures Manual Input boxes match the dropdown style */
+.lines-table input[type="number"].line-input {
+    width: 100%;
+    pointer-events: auto !important;
 }
