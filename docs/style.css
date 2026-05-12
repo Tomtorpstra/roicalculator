@@ -433,7 +433,7 @@ body {
     margin-bottom: 20px;
     background: #f1f5f9; 
     border-radius: 12px; 
-    padding: 67px;
+    padding: 6px; /* Corrected from 67px to 6px */
     border: 1px solid #e2e8f0;
 }
 
