@@ -644,7 +644,10 @@ function renderPlantContent() {
             <div class="table-container-rounded">
                 <table class="lines-table">
                     <colgroup>
-                        <col style="width: 40px;">   <col style="width: 160px;">  <col style="width: 110px;">  <col style="width: 120px;">  <col style="width: 120px;">  <col style="width: 100px;">  <col style="width: 80px;">   <col style="width: 110px;">  <col style="width: 90px;">   <col style="width: 50px;">   </colgroup>
+                        <col style="width: 40px;"> <col style="width: 160px;"> <col style="width: 110px;"> 
+                        <col style="width: 140px;"> <col style="width: 140px;"> <col style="width: 100px;"> 
+                        <col style="width: 80px;"> <col style="width: 110px;"> <col style="width: 90px;"> <col style="width: 50px;">
+                    </colgroup>
                     <thead>
                         <tr>
                             <th>#</th>
@@ -666,7 +669,7 @@ function renderPlantContent() {
                 ? Math.round(line.currentOEE * 100) 
                 : (data ? Math.round(data.oeeStart * 100) : '');
 
-            // Calculate live value for the cell
+            // Determine values for Value/Hour cell
             const currentOutput = (line.outputLevel === 'custom' ? (line.customOutput || 0) : (data ? data.outputPerHour[line.outputLevel || 'avg'] : 0));
             const currentMargin = (line.marginLevel === 'custom' ? (line.customMargin || 0) : (data ? data.marginPerUnit[line.marginLevel || 'avg'] : 0));
 
@@ -682,17 +685,21 @@ function renderPlantContent() {
                     </td>
                     <td>
                         <select class="line-select" onchange="updateLineOutput(${p}, ${index}, this.value)">
-                            <option value="min" ${line.outputLevel === 'min' ? 'selected' : ''}>${t('optionLow')}</option>
-                            <option value="avg" ${line.outputLevel === 'avg' ? 'selected' : ''}>${t('optionAvg')}</option>
-                            <option value="max" ${line.outputLevel === 'max' ? 'selected' : ''}>${t('optionHigh')}</option>
+                            <option value="min" ${line.outputLevel === 'min' ? 'selected' : ''}>${t('optionLow')} (${data ? data.outputPerHour.min : '0'})</option>
+                            <option value="avg" ${line.outputLevel === 'avg' ? 'selected' : ''}>${t('optionAvg')} (${data ? data.outputPerHour.avg : '0'})</option>
+                            <option value="max" ${line.outputLevel === 'max' ? 'selected' : ''}>${t('optionHigh')} (${data ? data.outputPerHour.max : '0'})</option>
+                            <option value="custom" ${line.outputLevel === 'custom' ? 'selected' : ''}>${t('optionCustom')}</option>
                         </select>
+                        ${line.outputLevel === 'custom' ? `<input type="number" class="line-input" style="margin-top:5px;" value="${line.customOutput || ''}" oninput="plantData[${p}].lines[${index}].customOutput=parseFloat(this.value); calculate();" placeholder="Output/u">` : ''}
                     </td>
                     <td>
                         <select class="line-select" onchange="updateLineMargin(${p}, ${index}, this.value)">
-                            <option value="min" ${line.marginLevel === 'min' ? 'selected' : ''}>${t('optionLow')}</option>
-                            <option value="avg" ${line.marginLevel === 'avg' ? 'selected' : ''}>${t('optionAvg')}</option>
-                            <option value="max" ${line.marginLevel === 'max' ? 'selected' : ''}>${t('optionHigh')}</option>
+                            <option value="min" ${line.marginLevel === 'min' ? 'selected' : ''}>${t('optionLow')} (€${data ? data.marginPerUnit.min : '0'})</option>
+                            <option value="avg" ${line.marginLevel === 'avg' ? 'selected' : ''}>${t('optionAvg')} (€${data ? data.marginPerUnit.avg : '0'})</option>
+                            <option value="max" ${line.marginLevel === 'max' ? 'selected' : ''}>${t('optionHigh')} (€${data ? data.marginPerUnit.max : '0'})</option>
+                            <option value="custom" ${line.marginLevel === 'custom' ? 'selected' : ''}>${t('optionCustom')}</option>
                         </select>
+                        ${line.marginLevel === 'custom' ? `<input type="number" class="line-input" style="margin-top:5px;" value="${line.customMargin || ''}" oninput="plantData[${p}].lines[${index}].customMargin=parseFloat(this.value); calculate();" placeholder="Marge/st">` : ''}
                     </td>
                     <td>
                         <select class="line-select" onchange="updateLineModel(${p}, ${index}, this.value)">
