@@ -180,6 +180,8 @@ body {
     align-items: center;
     gap: 14px;
     margin-bottom: 24px;
+    /* FIX: Allow tooltips to overflow the header container */
+    overflow: visible !important;
 }
 
 .card-icon {
@@ -431,7 +433,7 @@ body {
     margin-bottom: 20px;
     background: #f1f5f9; 
     border-radius: 12px; 
-    padding: 6px;
+    padding: 67px;
     border: 1px solid #e2e8f0;
 }
 
@@ -522,6 +524,7 @@ body {
 
 /* TOOLTIP STYLING */
 .th-tooltip {
+    position: relative; /* FIX: Added relative positioning to ensure tooltip anchors correctly */
     cursor: help;
 }
 
@@ -537,7 +540,8 @@ body {
     visibility: hidden;
     opacity: 0;
     position: absolute;
-    z-index: 9999 !important;
+    /* FIX: Increased z-index significantly to stay on top of results cards */
+    z-index: 100000 !important;
     background-color: #0f172a; 
     color: #ffffff;
     text-align: left;
@@ -558,7 +562,8 @@ body {
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.1);
     
-    bottom: 120%; 
+    /* FIX: Adjusted position to clear the header icon better */
+    bottom: 130%; 
     left: 50%;
     transform: translateX(-50%);
     transition: opacity 0.2s ease, visibility 0.2s;
