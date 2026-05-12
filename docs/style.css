@@ -418,36 +418,41 @@ body {
     display: block !important; 
 }
 
-/* Rounded Table Container & Configuration Table */
+/* ========================================== */
+/* REPLACED CODE FROM POINT 1 (TABLE FIXES)   */
+/* ========================================== */
+
 .table-container-rounded {
     border: 1px solid #e2e8f0;
     border-radius: 12px;
-    overflow: visible !important; 
     background: #ffffff;
     margin-top: 10px;
+    overflow-x: auto; /* Allows horizontal scrolling */
+    width: 100%;
 }
 
 .lines-table {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
-    table-layout: auto; 
-    min-width: 1200px; 
+    table-layout: fixed; /* Ensures column widths are respected */
+    min-width: 1000px;    /* Prevents the table from squishing too much */
 }
 
 .lines-table th {
     background: #f8fafc;
-    padding: 12px 10px;
+    padding: 14px 10px;
     font-size: 0.72rem;
     font-weight: 700;
     text-transform: uppercase;
     color: #64748b;
     border-bottom: 1px solid #e2e8f0;
     text-align: left;
+    white-space: nowrap; /* Prevents text wrapping in headers */
 }
 
 .lines-table td {
-    padding: 12px 10px;
+    padding: 10px;
     border-bottom: 1px solid #f1f5f9;
     vertical-align: middle;
 }
@@ -474,9 +479,38 @@ body {
     border-color: #00AAFF;
 }
 
-.oee-center { text-align: center; }
+/* Added formatting for Added Value and Percentage alignment */
+.added-value-cell {
+    font-family: 'Inter', monospace;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #0f172a;
+}
 
-/* TABLE TOOLTIP STYLING: Dynamic Width & Icon Styling */
+.percentage-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.percentage-input-wrapper .pct-symbol {
+    position: absolute;
+    right: 10px;
+    font-size: 0.85rem;
+    color: #94a3b8;
+    pointer-events: none;
+}
+
+.line-input.oee-center {
+    text-align: center;
+    padding-right: 24px;
+}
+
+/* ========================================== */
+/* END OF REPLACED SECTION                    */
+/* ========================================== */
+
+/* TABLE TOOLTIP STYLING */
 .th-tooltip {
     position: relative;
     cursor: help;
@@ -502,23 +536,17 @@ body {
     text-align: left;
     border-radius: 8px;
     padding: 16px 20px; 
-    
-    /* DYNAMIC BOX SIZE */
     width: max-content; 
     min-width: 200px;
     max-width: 380px;
-    
-    /* Font styles matching Besparingspotentieel perfectly */
     font-family: 'Inter', sans-serif;
     font-size: 0.75rem; 
     font-weight: 400;
     line-height: 1.6;
     text-transform: none; 
     white-space: normal;
-    
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    
     bottom: 140%;
     left: 50%;
     transform: translateX(-50%);
@@ -526,7 +554,6 @@ body {
     pointer-events: none;
 }
 
-/* Arrow for the tooltip */
 .th-tooltip .tooltip-text::after {
     content: "";
     position: absolute;

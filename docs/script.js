@@ -643,18 +643,20 @@ function renderPlantContent() {
         let tableHTML = `
             <div class="table-container-rounded">
                 <table class="lines-table">
+                    <colgroup>
+                        <col style="width: 40px;">   <col style="width: 160px;">  <col style="width: 110px;">  <col style="width: 120px;">  <col style="width: 120px;">  <col style="width: 100px;">  <col style="width: 80px;">   <col style="width: 110px;">  <col style="width: 90px;">   <col style="width: 50px;">   </colgroup>
                     <thead>
                         <tr>
-                            <th style="width: 35px;">#</th>
-                            <th style="width: 140px;">${t('thLineName')}</th>
-                            <th style="width: 110px;">Situatie</th>
-                            <th class="th-tooltip" style="width: 130px;">Output <span class="info-icon">ⓘ</span><div class="tooltip-text">${t('outputTooltipBody')}</div></th>
-                            <th class="th-tooltip" style="width: 130px;">Marge <span class="info-icon">ⓘ</span><div class="tooltip-text">${t('marginTooltipBody')}</div></th>
-                            <th style="width: 110px;">Model</th>
-                            <th style="width: 70px;">Ploeg</th>
-                            <th style="width: 110px;">${t('thAddedValue')}</th>
-                            <th class="th-tooltip" style="width: 110px;">OEE % <span class="info-icon">ⓘ</span><div class="tooltip-text">${t('currentOEETooltipBody')}</div></th>
-                            <th style="width: 45px;"></th>
+                            <th>#</th>
+                            <th>${t('thLineName')}</th>
+                            <th>Situatie</th>
+                            <th class="th-tooltip">Output <span class="info-icon">ⓘ</span><div class="tooltip-text">${t('outputTooltipBody')}</div></th>
+                            <th class="th-tooltip">Marge <span class="info-icon">ⓘ</span><div class="tooltip-text">${t('marginTooltipBody')}</div></th>
+                            <th>Model</th>
+                            <th>Ploegen</th>
+                            <th>${t('thAddedValue')}</th>
+                            <th class="th-tooltip">OEE % <span class="info-icon">ⓘ</span><div class="tooltip-text">${t('currentOEETooltipBody')}</div></th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>`;
@@ -664,14 +666,18 @@ function renderPlantContent() {
                 ? Math.round(line.currentOEE * 100) 
                 : (data ? Math.round(data.oeeStart * 100) : '');
 
+            // Calculate live value for the cell
+            const currentOutput = (line.outputLevel === 'custom' ? (line.customOutput || 0) : (data ? data.outputPerHour[line.outputLevel || 'avg'] : 0));
+            const currentMargin = (line.marginLevel === 'custom' ? (line.customMargin || 0) : (data ? data.marginPerUnit[line.marginLevel || 'avg'] : 0));
+
             tableHTML += `
                 <tr>
-                    <td class="line-number">${index + 1}</td>
-                    <td><input type="text" class="line-input" value="${line.name || ''}" onchange="updateLineName(${p}, ${index}, this.value)" placeholder="Lijn.."></td>
+                    <td style="font-weight: bold; color: #94a3b8;">${index + 1}</td>
+                    <td><input type="text" class="line-input" value="${line.name || ''}" onchange="updateLineName(${p}, ${index}, this.value)" placeholder="Lijn naam.."></td>
                     <td>
                         <select class="line-select" onchange="plantData[${p}].lines[${index}].situation=this.value; calculate();">
-                            <option value="blueUpgrade" ${line.situation === 'blueUpgrade' ? 'selected' : ''}>Blue</option>
-                            <option value="noOEE" ${line.situation === 'noOEE' ? 'selected' : ''}>Nieuw</option>
+                            <option value="blueUpgrade" ${line.situation === 'blueUpgrade' ? 'selected' : ''}>Blue Upgrade</option>
+                            <option value="noOEE" ${line.situation === 'noOEE' ? 'selected' : ''}>Nieuwe Plant</option>
                         </select>
                     </td>
                     <td>
@@ -699,14 +705,16 @@ function renderPlantContent() {
                             ${[1,2,3,4,5].map(s => `<option value="${s}" ${line.shifts === s ? 'selected' : ''}>${s}</option>`).join('')}
                         </select>
                     </td>
-                    <td class="added-value-cell">${formatCurrency((line.outputLevel === 'custom' ? (line.customOutput || 0) : (data ? data.outputPerHour[line.outputLevel || 'avg'] : 0)) * (line.marginLevel === 'custom' ? (line.customMargin || 0) : (data ? data.marginPerUnit[line.marginLevel || 'avg'] : 0)))}</td>
+                    <td class="added-value-cell">${formatCurrency(currentOutput * currentMargin)}</td>
                     <td>
                         <div class="percentage-input-wrapper">
                             <input type="number" class="line-input oee-center" value="${displayOEE}" oninput="updateLineOEE(${p}, ${index}, this.value)" placeholder="0">
                             <span class="pct-symbol">%</span>
                         </div>
                     </td>
-                    <td><button class="btn-remove-line" onclick="removeLine(${p}, ${index})" ${plantData[p].lines.length <= 1 ? 'disabled' : ''}>&times;</button></td>
+                    <td style="text-align: right;">
+                        <button class="btn-remove-line" onclick="removeLine(${p}, ${index})" ${plantData[p].lines.length <= 1 ? 'disabled' : ''}>&times;</button>
+                    </td>
                 </tr>`;
         });
         tableHTML += `</tbody></table></div><button class="btn btn-primary" style="margin-top: 15px;" onclick="addLine(${p})">${t('addLineBtn')}</button>`;
