@@ -632,95 +632,136 @@ function renderPlantTabs() {
 function renderPlantContent() {
     const container = document.getElementById('plantContents');
     container.innerHTML = '';
-    const sector = document.getElementById('sector').value;
-    const data = (sector && sectorData[sector]) ? sectorData[sector] : null;
 
-    for (let p = 1; p <= numPlants; p++) {
-        const content = document.createElement('div');
-        content.className = 'plant-content' + (p === activePlant ? ' active' : '');
-        content.id = 'plant-' + p + '-content';
-
-        let tableHTML = `
+    plantData.forEach((plant, p) => {
+        const div = document.createElement('div');
+        div.className = `plant-content ${p === activePlantIndex ? 'active' : ''}`;
+        
+        let html = `
             <div class="table-container-rounded">
                 <table class="lines-table">
-                    <colgroup>
-                        <col style="width: 40px;">   <col style="width: 160px;">  <col style="width: 110px;">  <col style="width: 120px;">  <col style="width: 120px;">  <col style="width: 100px;">  <col style="width: 80px;">   <col style="width: 110px;">  <col style="width: 90px;">   <col style="width: 50px;">   </colgroup>
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>${t('thLineName')}</th>
-                            <th>Situatie</th>
-                            <th class="th-tooltip">Output <span class="info-icon">ⓘ</span><div class="tooltip-text">${t('outputTooltipBody')}</div></th>
-                            <th class="th-tooltip">Marge <span class="info-icon">ⓘ</span><div class="tooltip-text">${t('marginTooltipBody')}</div></th>
-                            <th>Model</th>
-                            <th>Ploegen</th>
-                            <th>${t('thAddedValue')}</th>
-                            <th class="th-tooltip">OEE % <span class="info-icon">ⓘ</span><div class="tooltip-text">${t('currentOEETooltipBody')}</div></th>
+                            <th data-i18n="lineName">Naam</th>
+                            <th data-i18n="situation">Situatie</th>
+                            <th class="th-tooltip">
+                                <span data-i18n="output">Output</span> <span class="info-icon">ⓘ</span>
+                                <div class="tooltip-text"><span data-i18n="outputTooltip">Aantal eenheden geproduceerd per uur (bij 100% OEE).</span></div>
+                            </th>
+                            <th class="th-tooltip">
+                                <span data-i18n="margin">Marge</span> <span class="info-icon">ⓘ</span>
+                                <div class="tooltip-text"><span data-i18n="marginTooltip">Netto marge per eenheid (Verkoopprijs - Variabele kosten).</span></div>
+                            </th>
+                            <th data-i18n="model">Model</th>
+                            <th data-i18n="shifts">Ploegen</th>
+                            <th data-i18n="valuePerHour">Waarde/uur</th>
+                            <th class="th-tooltip">
+                                <span data-i18n="oeePct">OEE %</span> <span class="info-icon">ⓘ</span>
+                                <div class="tooltip-text"><span data-i18n="oeeTooltip">Huidige Overall Equipment Effectiveness.</span></div>
+                            </th>
                             <th></th>
                         </tr>
                     </thead>
-                    <tbody>`;
+                    <tbody>
+        `;
 
-        plantData[p].lines.forEach((line, index) => {
-            const displayOEE = line.currentOEE !== null 
-                ? Math.round(line.currentOEE * 100) 
-                : (data ? Math.round(data.oeeStart * 100) : '');
-
-            // Calculate live value for the cell
-            const currentOutput = (line.outputLevel === 'custom' ? (line.customOutput || 0) : (data ? data.outputPerHour[line.outputLevel || 'avg'] : 0));
-            const currentMargin = (line.marginLevel === 'custom' ? (line.customMargin || 0) : (data ? data.marginPerUnit[line.marginLevel || 'avg'] : 0));
-
-            tableHTML += `
+        plant.lines.forEach((line, index) => {
+            html += `
                 <tr>
-                    <td style="font-weight: bold; color: #94a3b8;">${index + 1}</td>
-                    <td><input type="text" class="line-input" value="${line.name || ''}" onchange="updateLineName(${p}, ${index}, this.value)" placeholder="Lijn naam.."></td>
+                    <td>${index + 1}</td>
                     <td>
-                        <select class="line-select" onchange="plantData[${p}].lines[${index}].situation=this.value; calculate();">
-                            <option value="blueUpgrade" ${line.situation === 'blueUpgrade' ? 'selected' : ''}>Blue Upgrade</option>
-                            <option value="noOEE" ${line.situation === 'noOEE' ? 'selected' : ''}>Nieuwe Plant</option>
+                        <input type="text" class="line-input" value="${line.name}" 
+                               oninput="updateLineData(${p}, ${index}, 'name', this.value)" 
+                               data-i18n-placeholder="linePlaceholder" placeholder="Lijn naam..">
+                    </td>
+                    <td>
+                        <select class="line-select" onchange="updateLineData(${p}, ${index}, 'situation', this.value)">
+                            <option value="standard" ${line.situation === 'standard' ? 'selected' : ''}>Standard</option>
+                            <option value="upgrade" ${line.situation === 'upgrade' ? 'selected' : ''}>Blue Upgrade</option>
                         </select>
                     </td>
                     <td>
-                        <select class="line-select" onchange="updateLineOutput(${p}, ${index}, this.value)">
-                            <option value="min" ${line.outputLevel === 'min' ? 'selected' : ''}>${t('optionLow')}</option>
-                            <option value="avg" ${line.outputLevel === 'avg' ? 'selected' : ''}>${t('optionAvg')}</option>
-                            <option value="max" ${line.outputLevel === 'max' ? 'selected' : ''}>${t('optionHigh')}</option>
+                        ${line.outputLevel === 'custom' ? 
+                            `<input type="number" class="line-input" value="${line.customOutput || ''}" 
+                                    oninput="updateLineCustomValue(${p}, ${index}, 'customOutput', this.value)" placeholder="0">` : 
+                            `<select class="line-select" onchange="handleLevelChange(${p}, ${index}, 'outputLevel', this.value)">
+                                <option value="min" ${line.outputLevel === 'min' ? 'selected' : ''} data-i18n="optionLow">Laag</option>
+                                <option value="avg" ${line.outputLevel === 'avg' ? 'selected' : ''} data-i18n="optionAvg">Gemiddeld</option>
+                                <option value="max" ${line.outputLevel === 'max' ? 'selected' : ''} data-i18n="optionHigh">Hoog</option>
+                                <option value="custom" data-i18n="optionCustom">Handmatig</option>
+                            </select>`
+                        }
+                    </td>
+                    <td>
+                        ${line.marginLevel === 'custom' ? 
+                            `<input type="number" class="line-input" value="${line.customMargin || ''}" 
+                                    oninput="updateLineCustomValue(${p}, ${index}, 'customMargin', this.value)" placeholder="€">` : 
+                            `<select class="line-select" onchange="handleLevelChange(${p}, ${index}, 'marginLevel', this.value)">
+                                <option value="min" ${line.marginLevel === 'min' ? 'selected' : ''} data-i18n="optionLow">Laag</option>
+                                <option value="avg" ${line.marginLevel === 'avg' ? 'selected' : ''} data-i18n="optionAvg">Gemiddeld</option>
+                                <option value="max" ${line.marginLevel === 'max' ? 'selected' : ''} data-i18n="optionHigh">Hoog</option>
+                                <option value="custom" data-i18n="optionCustom">Handmatig</option>
+                            </select>`
+                        }
+                    </td>
+                    <td>
+                        <select class="line-select" onchange="updateLineData(${p}, ${index}, 'model', this.value)">
+                            <option value="demand" ${line.model === 'demand' ? 'selected' : ''} data-i18n="modelDemand">Vraag</option>
+                            <option value="cost" ${line.model === 'cost' ? 'selected' : ''} data-i18n="modelCost">Kosten</option>
                         </select>
                     </td>
                     <td>
-                        <select class="line-select" onchange="updateLineMargin(${p}, ${index}, this.value)">
-                            <option value="min" ${line.marginLevel === 'min' ? 'selected' : ''}>${t('optionLow')}</option>
-                            <option value="avg" ${line.marginLevel === 'avg' ? 'selected' : ''}>${t('optionAvg')}</option>
-                            <option value="max" ${line.marginLevel === 'max' ? 'selected' : ''}>${t('optionHigh')}</option>
+                        <select class="line-select" onchange="updateLineData(${p}, ${index}, 'shifts', this.value)">
+                            <option value="1" ${line.shifts == 1 ? 'selected' : ''}>1</option>
+                            <option value="2" ${line.shifts == 2 ? 'selected' : ''}>2</option>
+                            <option value="3" ${line.shifts == 3 ? 'selected' : ''}>3</option>
+                            <option value="4" ${line.shifts == 4 ? 'selected' : ''}>4</option>
+                            <option value="5" ${line.shifts == 5 ? 'selected' : ''}>5 (24/7)</option>
                         </select>
                     </td>
-                    <td>
-                        <select class="line-select" onchange="updateLineModel(${p}, ${index}, this.value)">
-                            <option value="demand" ${line.calcModel === 'demand' ? 'selected' : ''}>${t('modelDemand')}</option>
-                            <option value="cost" ${line.calcModel === 'cost' ? 'selected' : ''}>${t('modelCost')}</option>
-                        </select>
-                    </td>
-                    <td>
-                        <select class="line-select" onchange="plantData[${p}].lines[${index}].shifts=parseInt(this.value); calculate();">
-                            ${[1,2,3,4,5].map(s => `<option value="${s}" ${line.shifts === s ? 'selected' : ''}>${s}</option>`).join('')}
-                        </select>
-                    </td>
-                    <td class="added-value-cell">${formatCurrency(currentOutput * currentMargin)}</td>
+                    <td class="oee-center font-bold">€ ${line.valuePerHour || 0}</td>
                     <td>
                         <div class="percentage-input-wrapper">
-                            <input type="number" class="line-input oee-center" value="${displayOEE}" oninput="updateLineOEE(${p}, ${index}, this.value)" placeholder="0">
+                            <input type="number" class="line-input oee-center" value="${line.oee}" 
+                                   oninput="updateLineData(${p}, ${index}, 'oee', this.value)" min="0" max="100">
                             <span class="pct-symbol">%</span>
                         </div>
                     </td>
-                    <td style="text-align: right;">
-                        <button class="btn-remove-line" onclick="removeLine(${p}, ${index})" ${plantData[p].lines.length <= 1 ? 'disabled' : ''}>&times;</button>
+                    <td>
+                        <button class="btn-remove-line" onclick="removeLine(${p}, ${index})" title="Verwijder lijn">×</button>
                     </td>
-                </tr>`;
+                </tr>
+            `;
         });
-        tableHTML += `</tbody></table></div><button class="btn btn-primary" style="margin-top: 15px;" onclick="addLine(${p})">${t('addLineBtn')}</button>`;
-        content.innerHTML = tableHTML;
-        container.appendChild(content);
-    }
+
+        html += `
+                    </tbody>
+                </table>
+            </div>
+            <button class="btn btn-primary" style="margin-top: 15px;" onclick="addLine(${p})">
+                + <span data-i18n="addLineBtn">Lijn Toevoegen</span>
+            </button>
+        `;
+        
+        div.innerHTML = html;
+        container.appendChild(div);
+    });
+
+    applyTranslations();
+}
+
+// Helper function to handle picking "Handmatig"
+function handleLevelChange(pIndex, lIndex, field, value) {
+    plantData[pIndex].lines[lIndex][field] = value;
+    renderPlantContent(); // Force re-render to switch Select -> Input
+    calculate();
+}
+
+// Helper function to update the custom numbers typed by user
+function updateLineCustomValue(pIndex, lIndex, field, value) {
+    plantData[pIndex].lines[lIndex][field] = parseFloat(value) || 0;
+    calculate();
 }
 
 function addLine(p) { plantData[p].lines.push({ shifts: 3, outputLevel: 'avg', marginLevel: 'avg', name: '', calcModel: 'demand', currentOEE: null, situation: 'blueUpgrade' }); renderPlantContent(); calculate(); }
