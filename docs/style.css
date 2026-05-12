@@ -489,7 +489,7 @@ input, select, button, textarea {
     border: 1px solid #cbd5e1;
     border-radius: 6px;
     font-family: 'Inter', sans-serif;
-    font-size: 0.9rem;
+    font-size: 0.8rem; /* Changed from 0.9rem to 0.8rem for a smaller look */
     color: #1e293b;
     background-color: #fff;
     transition: border-color 0.2s;
