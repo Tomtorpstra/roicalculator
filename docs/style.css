@@ -966,3 +966,27 @@ footer {
     color: #1e293b;
     font-weight: 500;
 }
+.btn-calc-info {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #f1f5f9;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    outline: none;
+}
+
+.btn-calc-info:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+.btn-calc-info svg {
+    color: #94a3b8;
+}
