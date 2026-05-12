@@ -237,6 +237,26 @@ body {
     margin-bottom: 6px;
 }
 
+/* Label Tooltip Fix for "Interne Kosten" */
+.form-group label.th-tooltip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    position: relative;
+    cursor: help;
+    width: fit-content;
+}
+
+.form-group label.th-tooltip .tooltip-text {
+    bottom: 125%; 
+    left: 0;
+    transform: none;
+}
+
+.form-group label.th-tooltip .tooltip-text::after {
+    left: 20px;
+}
+
 .form-group input[type="text"],
 .form-group input[type="number"],
 .form-group select {
@@ -283,6 +303,29 @@ body {
 
 .currency-input input {
     padding-left: 32px !important;
+}
+
+/* Percentage Input wrapper for OEE Column */
+.percentage-input-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+.percentage-input-wrapper .pct-symbol {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-weight: 600;
+    font-size: 0.85rem;
+    pointer-events: none;
+}
+
+.percentage-input-wrapper input {
+    padding-right: 28px !important;
+    text-align: center;
 }
 
 /* Slider Input */
@@ -444,7 +487,7 @@ body {
     color: #64748b;
     border-bottom: 1px solid #e2e8f0;
     text-align: left;
-    position: relative; /* Base for tooltips */
+    position: relative;
 }
 
 .lines-table td {
@@ -477,7 +520,7 @@ body {
 
 .oee-center { text-align: center; }
 
-/* TABLE TOOLTIP STYLING */
+/* TOOLTIP STYLING */
 .th-tooltip {
     cursor: help;
 }
@@ -501,12 +544,10 @@ body {
     border-radius: 8px;
     padding: 16px 20px; 
     
-    /* DYNAMIC BOX SIZE */
     width: max-content; 
     min-width: 200px;
     max-width: 380px;
     
-    /* Font styles matching Besparingspotentieel */
     font-family: 'Inter', sans-serif;
     font-size: 0.75rem; 
     font-weight: 400;
@@ -517,14 +558,13 @@ body {
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.1);
     
-    bottom: 120%; /* Positioned above header */
+    bottom: 120%; 
     left: 50%;
     transform: translateX(-50%);
     transition: opacity 0.2s ease, visibility 0.2s;
     pointer-events: none;
 }
 
-/* Arrow for the tooltip */
 .th-tooltip .tooltip-text::after {
     content: "";
     position: absolute;
