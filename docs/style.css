@@ -5,11 +5,18 @@
 }
 
 body {
+    /* Ensuring Inter is used globally */
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background: #f1f5f9;
     min-height: 100vh;
     padding: 30px 20px;
     color: #1e293b;
+}
+
+/* Base style for all form elements to ensure font parity with headers */
+input, select, button, textarea {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
 }
 
 .container {
@@ -77,8 +84,6 @@ body {
     border: 2px solid #e5e7eb;
     border-radius: 8px;
     padding: 8px 32px 8px 12px;
-    font-family: inherit;
-    font-size: 0.85rem;
     font-weight: 600;
     color: #374151;
     cursor: pointer;
@@ -116,11 +121,9 @@ body {
     padding: 10px 20px;
     border-radius: 8px;
     font-weight: 600;
-    font-size: 0.9rem;
     cursor: pointer;
     border: none;
     transition: all 0.2s;
-    font-family: inherit;
 }
 
 .btn-export {
@@ -180,7 +183,6 @@ body {
     align-items: center;
     gap: 14px;
     margin-bottom: 24px;
-    /* FIX: Allow tooltips to overflow the header container */
     overflow: visible !important;
 }
 
@@ -266,8 +268,6 @@ body {
     padding: 10px 14px;
     border: 2px solid #e5e7eb;
     border-radius: 8px;
-    font-size: 0.9rem;
-    font-family: inherit;
     color: #1e293b;
     background: #fff;
     transition: border-color 0.2s;
@@ -363,8 +363,6 @@ body {
     padding: 8px;
     border: 2px solid #e5e7eb;
     border-radius: 8px;
-    font-size: 0.9rem;
-    font-family: inherit;
 }
 
 /* Searchable Select */
@@ -380,8 +378,6 @@ body {
     padding: 10px 14px;
     border: 2px solid #00AAFF;
     border-radius: 8px;
-    font-size: 0.9rem;
-    font-family: inherit;
     background: #fff;
     z-index: 3;
     display: none;
@@ -414,7 +410,6 @@ body {
 .select-option {
     padding: 10px 14px;
     cursor: pointer;
-    font-size: 0.9rem;
     transition: background 0.15s;
 }
 
@@ -433,7 +428,7 @@ body {
     margin-bottom: 20px;
     background: #f1f5f9; 
     border-radius: 12px; 
-    padding: 6px; /* Corrected from 67px to 6px */
+    padding: 6px; /* FIXED from 67px */
     border: 1px solid #e2e8f0;
 }
 
@@ -501,15 +496,15 @@ body {
 .lines-table th:first-child { border-top-left-radius: 12px; }
 .lines-table th:last-child { border-top-right-radius: 12px; }
 
-/* Line Input/Select styling */
+/* Line Input/Select styling - Force Inter and 0.9rem to match labels */
 .line-input, .line-select {
     width: 100%;
     height: 36px;
     padding: 4px 10px;
     border: 1px solid #cbd5e1;
     border-radius: 6px;
-    font-family: inherit;
-    font-size: 0.85rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
     color: #1e293b;
     background-color: #fff;
     transition: border-color 0.2s;
@@ -524,7 +519,7 @@ body {
 
 /* TOOLTIP STYLING */
 .th-tooltip {
-    position: relative; /* FIX: Added relative positioning to ensure tooltip anchors correctly */
+    position: relative; 
     cursor: help;
 }
 
@@ -540,7 +535,6 @@ body {
     visibility: hidden;
     opacity: 0;
     position: absolute;
-    /* FIX: Increased z-index significantly to stay on top of results cards */
     z-index: 100000 !important;
     background-color: #0f172a; 
     color: #ffffff;
@@ -562,7 +556,6 @@ body {
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.1);
     
-    /* FIX: Adjusted position to clear the header icon better */
     bottom: 130%; 
     left: 50%;
     transform: translateX(-50%);
@@ -793,8 +786,6 @@ body {
     padding: 4px 6px;
     border: 2px solid #e5e7eb;
     border-radius: 6px;
-    font-family: inherit;
-    font-size: 0.95rem;
     font-weight: 700;
     color: #16a34a;
     text-align: center;
