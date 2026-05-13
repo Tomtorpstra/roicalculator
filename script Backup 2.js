@@ -296,7 +296,7 @@ const translations = {
         pdfNetBenefit3Year: 'Net Benefit (3 years)',
         pdfScenarioAnalysis: 'Scenario Analysis',
         pdfPerYear: 'Per Year',
-        pdfOver3Years: 'Over 3 Years',
+        pdfOver3Years: 'Over 3 Year',
         pdfOeeImprovement: 'OEE Improvement',
         pdfCompanyDetails: 'Company Details',
         pdfCompany: 'Company',
@@ -741,6 +741,27 @@ function updateLineOEE(p, i, v) { const pct = parseFloat(v); plantData[p].lines[
 // ==========================================
 // CALCULATE
 // ==========================================
+
+// Add this helper function to your script to fix the missing graph issue
+function findBreakEvenMonth(annualBenefit, investment, maintenance) {
+    let cumulativeBenefit = 0;
+    let cumulativeCost = investment;
+    
+    // Check up to 120 months (10 years)
+    for (let m = 1; m <= 120; m++) {
+        let yearNum = Math.ceil(m / 12);
+        // Apply ramp-up logic: Year 1 = 33%, Year 2 = 67%, Year 3+ = 100%
+        let monthlyBenefit = (annualBenefit * (yearNum <= 3 ? (yearNum / 3) : 1)) / 12;
+        cumulativeBenefit += monthlyBenefit;
+        cumulativeCost += (maintenance / 12);
+
+        if (cumulativeBenefit >= cumulativeCost) {
+            return m < 12 ? `${m} ${t('months')}` : `${(m / 12).toFixed(1)} ${t('yearLabel').toLowerCase()}`;
+        }
+    }
+    return t('overMonths');
+}
+
 function calculate() {
     const sector = document.getElementById('sector').value;
     const fixedFee = parseFloat(document.getElementById('fixedFee').value) || 0;
@@ -780,8 +801,11 @@ function calculate() {
                 if (scenario === 'expected') totalLinesCount++;
                 
                 const hours = workHours[line.shifts.toString()] || 2000;
-                const output = data.outputPerHour[line.outputLevel || 'avg'];
-                const margin = data.marginPerUnit[line.marginLevel || 'avg'];
+                
+                // Use custom values if "Handmatig" is selected, otherwise use benchmark
+                const output = line.outputLevel === 'custom' ? (line.customOutput || 0) : data.outputPerHour[line.outputLevel || 'avg'];
+                const margin = line.marginLevel === 'custom' ? (line.customMargin || 0) : data.marginPerUnit[line.marginLevel || 'avg'];
+                
                 const oeeStart = line.currentOEE !== null ? line.currentOEE : data.oeeStart;
                 
                 let improvement;
@@ -825,6 +849,25 @@ function calculate() {
     }
 
     renderCalcBreakdown(breakdownRows, results[selectedScenario].annual);
+    
+    // --- BADGE & GRAPH LOGIC ---
+    const breakEvenResult = findBreakEvenMonth(results[selectedScenario].annual, totalFixedCost, variableCost);
+    const badge = document.getElementById('breakEvenBadge');
+    
+    const yearDisplay = document.getElementById('breakEvenYear');
+    if (yearDisplay) yearDisplay.textContent = breakEvenResult;
+
+    if (badge) {
+        if (breakEvenResult === t('overMonths')) {
+            badge.classList.remove('success');
+            badge.classList.add('warning');
+        } else {
+            badge.classList.remove('warning');
+            badge.classList.add('success');
+        }
+    }
+
+    // This renders the visual lines in the canvas
     renderGraph(calculateBreakEven(results[selectedScenario].annual, totalFixedCost, variableCost));
 }
 

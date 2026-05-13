@@ -818,7 +818,7 @@ function calculate() {
                 scenarioImproves.push(improvement);
 
                 const costFactor = line.calcModel === 'cost' ? { conservative: 0.2, expected: 0.3, optimistic: 0.4, aangepast: 0.3 }[scenario] : 1;
-                const annual = (output * margin) * oeeStart * improvement * hours * costFactor;
+                const annual = (output * margin) * improvement * hours * costFactor;
                 totalAnnual += annual;
 
                 if (scenario === selectedScenario) {
