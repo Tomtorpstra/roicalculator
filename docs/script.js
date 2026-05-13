@@ -330,6 +330,19 @@ const translations = {
         outputLabelHigh: 'High',
         rampUpTitle: "Gradual Savings Realization (Ramp-up)",
         rampUpDesc: "The ROI accounts for a realistic adoption process. Results are built up in stages (Year 1: 33%, Year 2: 67%, Year 3: 100%) to reflect the time required for staff training, process optimization, and cultural change within your organization.",
+        sectorPharm: 'Pharmaceutical',
+        sectorFood: 'Food',
+        sectorBottlers: 'Bottlers',
+        sectorTextile: 'Textile',
+        sectorWood: 'Wood',
+        sectorPaper: 'Paper',
+        sectorChemical: 'Chemical',
+        sectorPlastic: 'Plastic',
+        sectorMetal: 'Metal',
+        sectorMachine: 'Machinery',
+        sectorAuto: 'Auto & Transport',
+        sectorElectronics: 'Electronics',
+        sectorOil: 'Oil & Refinery',
     }
 };
 
@@ -344,8 +357,11 @@ function setLanguage(lang) {
     document.documentElement.lang = lang;
     document.title = t('pageTitle');
     applyTranslations();
+    
+    // RE-INITIALIZE THE SEARCHABLE SELECT TO LOAD NEW TRANSLATIONS
+    initSearchableSelect(); 
+    
     renderPlantContent();
-    initSearchableSelect();
     calculate();
 }
 
