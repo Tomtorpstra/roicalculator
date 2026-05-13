@@ -773,15 +773,12 @@ function updateLineOEE(p, i, v) { const pct = parseFloat(v); plantData[p].lines[
 // CALCULATE
 // ==========================================
 
-// Add this helper function to your script to fix the missing graph issue
 function findBreakEvenMonth(annualBenefit, investment, maintenance) {
     let cumulativeBenefit = 0;
     let cumulativeCost = investment;
     
-    // Check up to 120 months (10 years)
     for (let m = 1; m <= 120; m++) {
         let yearNum = Math.ceil(m / 12);
-        // Apply ramp-up logic: Year 1 = 33%, Year 2 = 67%, Year 3+ = 100%
         let monthlyBenefit = (annualBenefit * (yearNum <= 3 ? (yearNum / 3) : 1)) / 12;
         cumulativeBenefit += monthlyBenefit;
         cumulativeCost += (maintenance / 12);
@@ -832,11 +829,8 @@ function calculate() {
                 if (scenario === 'expected') totalLinesCount++;
                 
                 const hours = workHours[line.shifts.toString()] || 2000;
-                
-                // Use custom values if "Handmatig" is selected, otherwise use benchmark
                 const output = line.outputLevel === 'custom' ? (line.customOutput || 0) : data.outputPerHour[line.outputLevel || 'avg'];
                 const margin = line.marginLevel === 'custom' ? (line.customMargin || 0) : data.marginPerUnit[line.marginLevel || 'avg'];
-                
                 const oeeStart = line.currentOEE !== null ? line.currentOEE : data.oeeStart;
                 
                 let improvement;
@@ -884,7 +878,6 @@ function calculate() {
     // --- BADGE & GRAPH LOGIC ---
     const breakEvenResult = findBreakEvenMonth(results[selectedScenario].annual, totalFixedCost, variableCost);
     const badge = document.getElementById('breakEvenBadge');
-    
     const yearDisplay = document.getElementById('breakEvenYear');
     if (yearDisplay) yearDisplay.textContent = breakEvenResult;
 
@@ -898,14 +891,17 @@ function calculate() {
         }
     }
 
-    // This renders the visual lines in the canvas
+    // UPDATE SCENARIO TEXT IN FOOTER
+    const scenarioNameElement = document.getElementById('breakEvenScenarioName');
+    if (scenarioNameElement) {
+        scenarioNameElement.textContent = t(selectedScenario);
+    }
+
     renderGraph(calculateBreakEven(results[selectedScenario].annual, totalFixedCost, variableCost));
 }
 
 function renderCalcBreakdown(rows, totalAnnual) {
     const container = document.getElementById('calcBreakdownContent');
-    
-    // Bijgewerkte tabel met alleen de relevante kolommen voor de nieuwe som
     let html = `
         <div class="calc-breakdown-formula">${t('calcBreakdownFormula')}</div>
         <table class="calc-breakdown-table">
