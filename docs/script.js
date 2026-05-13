@@ -1,6 +1,9 @@
 // ==========================================
 // TRANSLATIONS
 // ==========================================
+// ==========================================
+// TRANSLATIONS (Updated with English Point 2 & Formula Consistency)
+// ==========================================
 const translations = {
     nl: {
         pageTitle: 'OEE ROI Calculator - D4A Besparing Berekening',
@@ -73,8 +76,8 @@ const translations = {
         calcStep1Formula: 'Waarde per uur = Output per uur \u00d7 Marge per eenheid',
         calcStep1Desc: 'De output en marge komen uit uw sector benchmarks of uw eigen ingevoerde waarden.',
         calcStep2Title: '2. Jaarlijkse besparing (per lijn)',
-        calcStep2Formula: 'Jaarlijks = Waarde/uur \u00d7 Huidige OEE \u00d7 OEE verbetering \u00d7 Werkuren \u00d7 Kostenfactor',
-        calcStep2Desc: 'Elk gewonnen uur wordt gewaardeerd tegen de huidige OEE \u00d7 toegevoegde waarde per uur, omdat de lijn op het huidige OEE-niveau produceert. De werkuren worden bepaald door het ploegregime (2.000 tot 8.760 uur/jaar).',
+        calcStep2Formula: 'Jaarlijks = Waarde/uur (bij 100%) × OEE verbetering (punten) × Werkuren × Kostenfactor',
+        calcStep2Desc: 'Elk gewonnen procentpunt OEE wordt direct gewaardeerd tegen de toegevoegde waarde per uur. Als u bijvoorbeeld van 50% naar 52% OEE gaat, rekent het model met de 2% winst op uw totale capaciteit.',
         calcStep3Title: '3. Berekeningsmodel',
         calcStep3Desc: '<strong>Vraagmodel:</strong> Onbeperkte vraag \u2014 extra OEE genereert extra omzet (factor = 1).<br><strong>Kostenmodel:</strong> Vast volume \u2014 OEE verbetering verlaagt kosten. Kostenfactor: conservatief 20%, verwacht 30%, optimistisch 40%.',
         calcStep4Title: '4. Besparing over 3 jaar',
