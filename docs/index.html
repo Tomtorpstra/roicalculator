@@ -51,21 +51,21 @@
                         <div class="select-wrapper" id="sectorWrapper">
                             <input type="text" class="select-search" id="sectorSearch" data-i18n-placeholder="sectorSearchPlaceholder" placeholder="Zoek sector...">
                             <select id="sector" onchange="onSectorChange()">
-    <option value="" data-i18n="sectorDefault">-- Selecteer uw sector --</option>
-    <option value="farmaceutische" data-i18n="sectorPharm">Farmaceutische</option>
-    <option value="food" data-i18n="sectorFood">Food</option>
-    <option value="bottlers" data-i18n="sectorBottlers">Bottlers</option>
-    <option value="textiel" data-i18n="sectorTextile">Textiel</option>
-    <option value="hout" data-i18n="sectorWood">Hout</option>
-    <option value="papier" data-i18n="sectorPaper">Papier</option>
-    <option value="chemie" data-i18n="sectorChemical">Chemie</option>
-    <option value="kunststof" data-i18n="sectorPlastic">Kunststof</option>
-    <option value="metaal" data-i18n="sectorMetal">Metaal</option>
-    <option value="machinebouw" data-i18n="sectorMachine">Machinebouw</option>
-    <option value="autoentransport" data-i18n="sectorAuto">Auto & Transport</option>
-    <option value="electronica" data-i18n="sectorElectronics">Electronica</option>
-    <option value="olieenrafinaderij" data-i18n="sectorOil">Olie & Raffinaderij</option>
-</select>
+                                <option value="" data-i18n="sectorDefault">-- Selecteer uw sector --</option>
+                                <option value="farmaceutische" data-i18n="sectorPharm">Farmaceutische</option>
+                                <option value="food" data-i18n="sectorFood">Food</option>
+                                <option value="bottlers" data-i18n="sectorBottlers">Bottlers</option>
+                                <option value="textiel" data-i18n="sectorTextile">Textiel</option>
+                                <option value="hout" data-i18n="sectorWood">Hout</option>
+                                <option value="papier" data-i18n="sectorPaper">Papier</option>
+                                <option value="chemie" data-i18n="sectorChemical">Chemie</option>
+                                <option value="kunststof" data-i18n="sectorPlastic">Kunststof</option>
+                                <option value="metaal" data-i18n="sectorMetal">Metaal</option>
+                                <option value="machinebouw" data-i18n="sectorMachine">Machinebouw</option>
+                                <option value="autoentransport" data-i18n="sectorAuto">Auto & Transport</option>
+                                <option value="electronica" data-i18n="sectorElectronics">Electronica</option>
+                                <option value="olieenrafinaderij" data-i18n="sectorOil">Olie & Raffinaderij</option>
+                            </select>
                             <div class="select-dropdown" id="sectorDropdown"></div>
                         </div>
                     </div>
@@ -273,7 +273,11 @@
                             <span data-i18n="cumulativeCosts">Cumulatieve Kosten</span>
                         </div>
                     </div>
-                    <div class="break-even-note" data-i18n="breakEvenNotePrefix">Gebaseerd op het verwachte scenario</div>
+                    <div class="break-even-note">
+                        <span data-i18n="breakEvenNotePrefix">Gebaseerd op het</span> 
+                        <span id="breakEvenScenarioName"></span> 
+                        <span data-i18n="breakEvenNoteSuffix">scenario</span>
+                    </div>
                 </div>
             </div>
         </div>

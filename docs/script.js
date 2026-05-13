@@ -1,9 +1,6 @@
 // ==========================================
 // TRANSLATIONS
 // ==========================================
-// ==========================================
-// TRANSLATIONS (Updated with English Point 2 & Formula Consistency)
-// ==========================================
 const translations = {
     nl: {
         pageTitle: 'OEE ROI Calculator - D4A Besparing Berekening',
@@ -105,9 +102,10 @@ const translations = {
         calcBreakdownFormula: 'Besparing per lijn = Werkuren × OEE verbetering × Waarde/uur × Modelfactor',
         cardSavingsTitle: 'Besparingspotentieel',
         linesAcross: 'lijnen over',
-        conservative: 'Conservatief',
-        expected: 'Verwacht',
-        optimistic: 'Optimistisch',
+        conservative: 'conservatieve',
+        expected: 'verwachte',
+        optimistic: 'optimistische',
+        aangepast: 'aangepaste',
         perYear: 'per jaar',
         overThreeYears: 'over 3 jaar',
         oeeImprovement: 'OEE verbetering',
@@ -131,7 +129,7 @@ const translations = {
         companyDefault: 'Bedrijf',
         pdfTitle: 'ROI Rapport',
         pdfExpectedSavings: 'Verwachte Besparing (per jaar)',
-        pdfMonthsBreakEven: 'Maanden Break-even',
+        pdfMonthsBreakeven: 'Maanden Break-even',
         pdfRoi3Year: 'ROI (3 jaar)',
         pdfNetBenefit3Year: 'Netto Voordeel (3 jaar)',
         pdfScenarioAnalysis: 'Scenario Analyse',
@@ -268,9 +266,10 @@ const translations = {
         calcBreakdownFormula: 'Savings per line = Work hours × OEE improvement × Value/hr × Model factor',
         cardSavingsTitle: 'Savings Potential',
         linesAcross: 'lines across',
-        conservative: 'Conservative',
-        expected: 'Expected',
-        optimistic: 'Optimistic',
+        conservative: 'conservative',
+        expected: 'expected',
+        optimistic: 'optimistic',
+        aangepast: 'custom',
         perYear: 'per year',
         overThreeYears: 'over 3 years',
         oeeImprovement: 'OEE improvement',
@@ -294,7 +293,7 @@ const translations = {
         companyDefault: 'Company',
         pdfTitle: 'ROI Report',
         pdfExpectedSavings: 'Expected Savings (per year)',
-        pdfMonthsBreakEven: 'Months Break-even',
+        pdfMonthsBreakeven: 'Months Break-even',
         pdfRoi3Year: 'ROI (3 years)',
         pdfNetBenefit3Year: 'Net Benefit (3 years)',
         pdfScenarioAnalysis: 'Scenario Analysis',
