@@ -262,7 +262,7 @@ const translations = {
         calcBreakdownModel: 'Model',
         calcBreakdownAnnual: 'Annual',
         calcBreakdownTotal: 'Total per year',
-        calcBreakdownFormula: 'Savings per line = Work hours × OEE improvement × Current OEE × Value/hr × Model factor',
+        calcBreakdownFormula: 'Savings per line = Work hours × OEE improvement × Value/hr × Model factor',
         cardSavingsTitle: 'Savings Potential',
         linesAcross: 'lines across',
         conservative: 'Conservative',
