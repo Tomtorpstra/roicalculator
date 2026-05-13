@@ -99,7 +99,7 @@ const translations = {
         calcBreakdownModel: 'Model',
         calcBreakdownAnnual: 'Jaarlijks',
         calcBreakdownTotal: 'Totaal per jaar',
-        calcBreakdownFormula: 'Besparing per lijn = Werkuren × OEE verbetering × Huidige OEE × Waarde/uur × Modelfactor',
+        calcBreakdownFormula: 'Besparing per lijn = Werkuren × OEE verbetering × Waarde/uur × Modelfactor',
         cardSavingsTitle: 'Besparingspotentieel',
         linesAcross: 'lijnen over',
         conservative: 'Conservatief',
@@ -873,9 +873,48 @@ function calculate() {
 
 function renderCalcBreakdown(rows, totalAnnual) {
     const container = document.getElementById('calcBreakdownContent');
-    let html = `<div class="calc-breakdown-formula">${t('calcBreakdownFormula')}</div><table class="calc-breakdown-table"><thead><tr><th>${t('calcBreakdownLine')}</th><th>${t('calcBreakdownHours')}</th><th>${t('calcBreakdownOEEImpr')}</th><th>${t('calcBreakdownCurrentOEE')}</th><th>${t('calcBreakdownValueHr')}</th><th>${t('calcBreakdownModel')}</th><th>${t('calcBreakdownAnnual')}</th></tr></thead><tbody>`;
-    rows.forEach(row => { html += `<tr><td class="line-number">${row.lineName}</td><td>${new Intl.NumberFormat('nl-NL').format(row.hours)}</td><td>${formatPercentage(row.oeeIncrease)}</td><td>${formatPercentage(row.currentOEE)}</td><td>${formatCurrency(row.addedValue)}</td><td>${t('model' + row.model.charAt(0).toUpperCase() + row.model.slice(1))}${row.costFactor < 1 ? ' (' + Math.round(row.costFactor * 100) + '%)' : ''}</td><td class="annual-value">${formatCurrency(row.annual)}</td></tr>`; });
-    html += `</tbody><tfoot><tr class="calc-breakdown-total"><td colspan="6">${t('calcBreakdownTotal')}</td><td class="annual-value">${formatCurrency(totalAnnual)}</td></tr></tfoot></table>`;
+    
+    // Bijgewerkte tabel met alleen de relevante kolommen voor de nieuwe som
+    let html = `
+        <div class="calc-breakdown-formula">${t('calcBreakdownFormula')}</div>
+        <table class="calc-breakdown-table">
+            <thead>
+                <tr>
+                    <th>${t('calcBreakdownLine')}</th>
+                    <th>${t('calcBreakdownHours')}</th>
+                    <th>${t('calcBreakdownOEEImpr')}</th>
+                    <th>${t('calcBreakdownValueHr')}</th>
+                    <th>${t('calcBreakdownModel')}</th>
+                    <th>${t('calcBreakdownAnnual')}</th>
+                </tr>
+            </thead>
+            <tbody>`;
+            
+    rows.forEach(row => { 
+        html += `
+            <tr>
+                <td class="line-number">${row.lineName}</td>
+                <td>${new Intl.NumberFormat('nl-NL').format(row.hours)}</td>
+                <td>+${formatPercentage(row.oeeIncrease)}</td>
+                <td>${formatCurrency(row.addedValue)}</td>
+                <td>
+                    ${t('model' + row.model.charAt(0).toUpperCase() + row.model.slice(1))}
+                    ${row.costFactor < 1 ? ' (' + Math.round(row.costFactor * 100) + '%)' : ''}
+                </td>
+                <td class="annual-value">${formatCurrency(row.annual)}</td>
+            </tr>`; 
+    });
+    
+    html += `
+            </tbody>
+            <tfoot>
+                <tr class="calc-breakdown-total">
+                    <td colspan="5">${t('calcBreakdownTotal')}</td>
+                    <td class="annual-value">${formatCurrency(totalAnnual)}</td>
+                </tr>
+            </tfoot>
+        </table>`;
+        
     container.innerHTML = html;
 }
 
