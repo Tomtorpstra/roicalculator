@@ -1084,3 +1084,9 @@ footer {
     color: #dc2626;
     border: 1px solid #fecaca;
 }
+.data-protection-note {
+    font-size: 0.85rem;
+    color: #64748b; /* Subtiel grijs */
+    margin-top: 4px;
+    font-style: italic;
+}

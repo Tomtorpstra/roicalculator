@@ -178,6 +178,7 @@ const translations = {
         sectorAuto: 'Auto & Transport',
         sectorElectronics: 'Electronica',
         sectorOil: 'Olie & Raffinaderij',
+        dataProtectionNote: 'Ingevoerde data wordt niet opgeslagen.',
     },
     en: {
         pageTitle: 'OEE ROI Calculator - D4A Savings Calculation',
@@ -355,6 +356,7 @@ const translations = {
         sectorAuto: 'Auto & Transport',
         sectorElectronics: 'Electronics',
         sectorOil: 'Oil & Refinery',
+        dataProtectionNote: 'Entered data is not being saved.',
     }
 };
 
