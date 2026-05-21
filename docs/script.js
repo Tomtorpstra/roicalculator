@@ -164,7 +164,7 @@ const translations = {
         outputLabelAvg: 'Gemiddeld',
         outputLabelHigh: 'Hoog',
         rampUpTitle: "Geleidelijke Besparingsopbouw (Ramp-up)",
-        rampUpDesc: "De ROI houdt rekening met een realistisch adoptieproces. We bouwen de resultaten stapsgewijs op (Jaar 1: 33%, Jaar 2: 67%, Jaar 3: 100%) om rekening te houden met de tijd die nodig is voor training, procesoptimalisatie en gedragsverandering binnen uw team.",
+        rampUpDesc: "De ROI houdt rekening met een realistisch adoptieproces. We bouwen de resultaten stapsgewijs op (Jaar 1: 33%, Jaar 2: 67%, Year 3: 100%) om rekening te houden met de tijd die nodig is voor training, procesoptimalisatie en gedragsverandering binnen uw team.",
         sectorPharm: 'Farmaceutische',
         sectorFood: 'Food',
         sectorBottlers: 'Bottlers',
@@ -369,10 +369,7 @@ function setLanguage(lang) {
     document.documentElement.lang = lang;
     document.title = t('pageTitle');
     applyTranslations();
-    
-    // RE-INITIALIZE THE SEARCHABLE SELECT TO LOAD NEW TRANSLATIONS
     initSearchableSelect(); 
-    
     renderPlantContent();
     calculate();
 }
@@ -700,12 +697,11 @@ function renderPlantContent() {
                 ? Math.round(line.currentOEE * 100) 
                 : (data ? Math.round(data.oeeStart * 100) : '');
 
-            // Determine values for Value/Hour cell
             const currentOutput = (line.outputLevel === 'custom' ? (line.customOutput || 0) : (data ? data.outputPerHour[line.outputLevel || 'avg'] : 0));
             const currentMargin = (line.marginLevel === 'custom' ? (line.customMargin || 0) : (data ? data.marginPerUnit[line.marginLevel || 'avg'] : 0));
 
             tableHTML += `
-                <tr>
+                <tr data-line-index="${index}">
                     <td style="font-weight: bold; color: #94a3b8;">${index + 1}</td>
                     <td><input type="text" class="line-input" value="${line.name || ''}" onchange="updateLineName(${p}, ${index}, this.value)" placeholder="Lijn naam.."></td>
                     <td>
@@ -721,7 +717,7 @@ function renderPlantContent() {
                             <option value="max" ${line.outputLevel === 'max' ? 'selected' : ''}>${t('optionHigh')} (${data ? data.outputPerHour.max : '0'})</option>
                             <option value="custom" ${line.outputLevel === 'custom' ? 'selected' : ''}>${t('optionCustom')}</option>
                         </select>
-                        ${line.outputLevel === 'custom' ? `<input type="number" class="line-input" style="margin-top:5px;" value="${line.customOutput || ''}" oninput="plantData[${p}].lines[${index}].customOutput=parseFloat(this.value); calculate();" placeholder="Output/u">` : ''}
+                        ${line.outputLevel === 'custom' ? `<input type="number" class="line-input custom-output-field" style="margin-top:5px;" value="${line.customOutput || ''}" oninput="plantData[${p}].lines[${index}].customOutput=parseFloat(this.value); calculate();" placeholder="Output/u">` : ''}
                     </td>
                     <td>
                         <select class="line-select" onchange="updateLineMargin(${p}, ${index}, this.value)">
@@ -730,7 +726,7 @@ function renderPlantContent() {
                             <option value="max" ${line.marginLevel === 'max' ? 'selected' : ''}>${t('optionHigh')} (€${data ? data.marginPerUnit.max : '0'})</option>
                             <option value="custom" ${line.marginLevel === 'custom' ? 'selected' : ''}>${t('optionCustom')}</option>
                         </select>
-                        ${line.marginLevel === 'custom' ? `<input type="number" class="line-input" style="margin-top:5px;" value="${line.customMargin || ''}" oninput="plantData[${p}].lines[${index}].customMargin=parseFloat(this.value); calculate();" placeholder="Marge/st">` : ''}
+                        ${line.marginLevel === 'custom' ? `<input type="number" class="line-input custom-margin-field" style="margin-top:5px;" value="${line.customMargin || ''}" oninput="plantData[${p}].lines[${index}].customMargin=parseFloat(this.value); calculate();" placeholder="Marge/st">` : ''}
                     </td>
                     <td>
                         <select class="line-select" onchange="updateLineModel(${p}, ${index}, this.value)">
@@ -764,36 +760,8 @@ function renderPlantContent() {
 function addLine(p) { plantData[p].lines.push({ shifts: 3, outputLevel: 'avg', marginLevel: 'avg', name: '', calcModel: 'demand', currentOEE: null, situation: 'blueUpgrade' }); renderPlantContent(); calculate(); }
 function removeLine(p, i) { if (plantData[p].lines.length > 1) { plantData[p].lines.splice(i, 1); renderPlantContent(); calculate(); } }
 function updateLineName(p, i, v) { plantData[p].lines[i].name = v; }
-function updateLineOutput(p, i, l) { 
-    plantData[p].lines[i].outputLevel = l; 
-    renderPlantContent(); 
-    calculate(); 
-    
-    // Zorgt ervoor dat de focus in het invoerveld blijft tijdens het typen
-    const customInput = document.querySelector(`#plant-${p}-content tr:nth-child(${i+1}) input[placeholder="Output/u"]`);
-    if (customInput) {
-        customInput.focus();
-        // Zet de cursor aan het einde van de tekst
-        const val = customInput.value;
-        customInput.value = '';
-        customInput.value = val;
-    }
-}
-function updateLineMargin(p, i, l) { 
-    plantData[p].lines[i].marginLevel = l; 
-    renderPlantContent(); 
-    calculate(); 
-    
-    // Zorgt ervoor dat de focus in het invoerveld blijft tijdens het typen
-    const customInput = document.querySelector(`#plant-${p}-content tr:nth-child(${i+1}) input[placeholder="Marge/st"]`);
-    if (customInput) {
-        customInput.focus();
-        // Zet de cursor aan het einde van de tekst
-        const val = customInput.value;
-        customInput.value = '';
-        customInput.value = val;
-    }
-}
+function updateLineOutput(p, i, l) { plantData[p].lines[i].outputLevel = l; renderPlantContent(); calculate(); }
+function updateLineMargin(p, i, l) { plantData[p].lines[i].marginLevel = l; renderPlantContent(); calculate(); }
 function updateLineModel(p, i, v) { plantData[p].lines[i].calcModel = v; calculate(); }
 function updateLineOEE(p, i, v) { const pct = parseFloat(v); plantData[p].lines[i].currentOEE = (pct >= 0 && pct <= 100) ? pct / 100 : null; calculate(); }
 
@@ -845,6 +813,29 @@ function calculate() {
     const results = {};
     const breakdownRows = [];
     let totalLinesCount = 0;
+
+    // LIVE UPDATE VAN DE WAARDE/UUR CELLEN TIJDENS HET TYPEN
+    if (plantData[activePlant]) {
+        plantData[activePlant].lines.forEach((line, index) => {
+            const rowEl = document.querySelector(`#plant-${activePlant}-content tr[data-line-index="${index}"]`);
+            if (rowEl) {
+                // Haal de live getypte waarden direct uit de inputvelden als ze bestaan
+                const outField = rowEl.querySelector('.custom-output-field');
+                const margField = rowEl.querySelector('.custom-margin-field');
+                
+                if (outField && line.outputLevel === 'custom') line.customOutput = parseFloat(outField.value) || 0;
+                if (margField && line.marginLevel === 'custom') line.customMargin = parseFloat(margField.value) || 0;
+
+                const liveOutput = line.outputLevel === 'custom' ? (line.customOutput || 0) : data.outputPerHour[line.outputLevel || 'avg'];
+                const liveMargin = line.marginLevel === 'custom' ? (line.customMargin || 0) : data.marginPerUnit[line.marginLevel || 'avg'];
+                
+                const valueCell = rowEl.querySelector('.added-value-cell');
+                if (valueCell) {
+                    valueCell.textContent = formatCurrency(liveOutput * liveMargin);
+                }
+            }
+        });
+    }
 
     for (const scenario of scenarios) {
         let totalAnnual = 0;
@@ -919,7 +910,6 @@ function calculate() {
         }
     }
 
-    // UPDATE SCENARIO TEXT IN FOOTER
     const scenarioNameElement = document.getElementById('breakEvenScenarioName');
     if (scenarioNameElement) {
         scenarioNameElement.textContent = t(selectedScenario);
