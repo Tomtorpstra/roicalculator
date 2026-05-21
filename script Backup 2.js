@@ -73,8 +73,8 @@ const translations = {
         calcStep1Formula: 'Waarde per uur = Output per uur \u00d7 Marge per eenheid',
         calcStep1Desc: 'De output en marge komen uit uw sector benchmarks of uw eigen ingevoerde waarden.',
         calcStep2Title: '2. Jaarlijkse besparing (per lijn)',
-        calcStep2Formula: 'Jaarlijks = Waarde/uur \u00d7 Huidige OEE \u00d7 OEE verbetering \u00d7 Werkuren \u00d7 Kostenfactor',
-        calcStep2Desc: 'Elk gewonnen uur wordt gewaardeerd tegen de huidige OEE \u00d7 toegevoegde waarde per uur, omdat de lijn op het huidige OEE-niveau produceert. De werkuren worden bepaald door het ploegregime (2.000 tot 8.760 uur/jaar).',
+        calcStep2Formula: 'Jaarlijks = Waarde/uur (bij 100%) × OEE verbetering (punten) × Werkuren × Kostenfactor',
+        calcStep2Desc: 'Elk gewonnen procentpunt OEE wordt direct gewaardeerd tegen de toegevoegde waarde per uur. Als u bijvoorbeeld van 50% naar 52% OEE gaat, rekent het model met de 2% winst op uw totale capaciteit.',
         calcStep3Title: '3. Berekeningsmodel',
         calcStep3Desc: '<strong>Vraagmodel:</strong> Onbeperkte vraag \u2014 extra OEE genereert extra omzet (factor = 1).<br><strong>Kostenmodel:</strong> Vast volume \u2014 OEE verbetering verlaagt kosten. Kostenfactor: conservatief 20%, verwacht 30%, optimistisch 40%.',
         calcStep4Title: '4. Besparing over 3 jaar',
@@ -99,12 +99,13 @@ const translations = {
         calcBreakdownModel: 'Model',
         calcBreakdownAnnual: 'Jaarlijks',
         calcBreakdownTotal: 'Totaal per jaar',
-        calcBreakdownFormula: 'Besparing per lijn = Werkuren × OEE verbetering × Huidige OEE × Waarde/uur × Modelfactor',
+        calcBreakdownFormula: 'Besparing per lijn = Werkuren × OEE verbetering × Waarde/uur × Modelfactor',
         cardSavingsTitle: 'Besparingspotentieel',
         linesAcross: 'lijnen over',
-        conservative: 'Conservatief',
-        expected: 'Verwacht',
-        optimistic: 'Optimistisch',
+        conservative: 'conservatieve',
+        expected: 'verwachte',
+        optimistic: 'optimistische',
+        aangepast: 'aangepaste',
         perYear: 'per jaar',
         overThreeYears: 'over 3 jaar',
         oeeImprovement: 'OEE verbetering',
@@ -128,7 +129,7 @@ const translations = {
         companyDefault: 'Bedrijf',
         pdfTitle: 'ROI Rapport',
         pdfExpectedSavings: 'Verwachte Besparing (per jaar)',
-        pdfMonthsBreakEven: 'Maanden Break-even',
+        pdfMonthsBreakeven: 'Maanden Break-even',
         pdfRoi3Year: 'ROI (3 jaar)',
         pdfNetBenefit3Year: 'Netto Voordeel (3 jaar)',
         pdfScenarioAnalysis: 'Scenario Analyse',
@@ -164,6 +165,19 @@ const translations = {
         outputLabelHigh: 'Hoog',
         rampUpTitle: "Geleidelijke Besparingsopbouw (Ramp-up)",
         rampUpDesc: "De ROI houdt rekening met een realistisch adoptieproces. We bouwen de resultaten stapsgewijs op (Jaar 1: 33%, Jaar 2: 67%, Jaar 3: 100%) om rekening te houden met de tijd die nodig is voor training, procesoptimalisatie en gedragsverandering binnen uw team.",
+        sectorPharm: 'Farmaceutische',
+        sectorFood: 'Food',
+        sectorBottlers: 'Bottlers',
+        sectorTextile: 'Textiel',
+        sectorWood: 'Hout',
+        sectorPaper: 'Papier',
+        sectorChemical: 'Chemie',
+        sectorPlastic: 'Kunststof',
+        sectorMetal: 'Metaal',
+        sectorMachine: 'Machinebouw',
+        sectorAuto: 'Auto & Transport',
+        sectorElectronics: 'Electronica',
+        sectorOil: 'Olie & Raffinaderij',
     },
     en: {
         pageTitle: 'OEE ROI Calculator - D4A Savings Calculation',
@@ -236,8 +250,8 @@ const translations = {
         calcStep1Formula: 'Value per hour = Output per hour \u00d7 Margin per unit',
         calcStep1Desc: 'The output and margin come from your sector benchmarks or your own entered values.',
         calcStep2Title: '2. Annual savings (per line)',
-        calcStep2Formula: 'Annual = Value/hr \u00d7 Current OEE \u00d7 OEE improvement \u00d7 Work hours \u00d7 Cost factor',
-        calcStep2Desc: 'Each won hour is valued at the current OEE \u00d7 added value per hour, since the line produces at its current OEE level. Work hours are determined by the shift regime (2,000 to 8,760 hrs/year).',
+        calcStep2Formula: 'Annual = Value/hr (at 100%) × OEE improvement (points) × Work hours × Cost factor',
+        calcStep2Desc: 'Each OEE percentage point gained is directly valued against the added value per hour. For example, if you go from 50% to 52% OEE, the model calculates with the 2% gain on your total capacity.',
         calcStep3Title: '3. Calculation model',
         calcStep3Desc: '<strong>Demand model:</strong> Unlimited demand \u2014 extra OEE generates extra revenue (factor = 1).<br><strong>Cost model:</strong> Fixed volume \u2014 OEE improvement reduces costs. Cost factor: conservative 20%, expected 30%, optimistic 40%.',
         calcStep4Title: '4. Savings over 3 years',
@@ -262,12 +276,13 @@ const translations = {
         calcBreakdownModel: 'Model',
         calcBreakdownAnnual: 'Annual',
         calcBreakdownTotal: 'Total per year',
-        calcBreakdownFormula: 'Savings per line = Work hours × OEE improvement × Current OEE × Value/hr × Model factor',
+        calcBreakdownFormula: 'Savings per line = Work hours × OEE improvement × Value/hr × Model factor',
         cardSavingsTitle: 'Savings Potential',
         linesAcross: 'lines across',
-        conservative: 'Conservative',
-        expected: 'Expected',
-        optimistic: 'Optimistic',
+        conservative: 'conservative',
+        expected: 'expected',
+        optimistic: 'optimistic',
+        aangepast: 'custom',
         perYear: 'per year',
         overThreeYears: 'over 3 years',
         oeeImprovement: 'OEE improvement',
@@ -291,7 +306,7 @@ const translations = {
         companyDefault: 'Company',
         pdfTitle: 'ROI Report',
         pdfExpectedSavings: 'Expected Savings (per year)',
-        pdfMonthsBreakEven: 'Months Break-even',
+        pdfMonthsBreakeven: 'Months Break-even',
         pdfRoi3Year: 'ROI (3 years)',
         pdfNetBenefit3Year: 'Net Benefit (3 years)',
         pdfScenarioAnalysis: 'Scenario Analysis',
@@ -327,6 +342,19 @@ const translations = {
         outputLabelHigh: 'High',
         rampUpTitle: "Gradual Savings Realization (Ramp-up)",
         rampUpDesc: "The ROI accounts for a realistic adoption process. Results are built up in stages (Year 1: 33%, Year 2: 67%, Year 3: 100%) to reflect the time required for staff training, process optimization, and cultural change within your organization.",
+        sectorPharm: 'Pharmaceutical',
+        sectorFood: 'Food',
+        sectorBottlers: 'Bottlers',
+        sectorTextile: 'Textile',
+        sectorWood: 'Wood',
+        sectorPaper: 'Paper',
+        sectorChemical: 'Chemical',
+        sectorPlastic: 'Plastic',
+        sectorMetal: 'Metal',
+        sectorMachine: 'Machinery',
+        sectorAuto: 'Auto & Transport',
+        sectorElectronics: 'Electronics',
+        sectorOil: 'Oil & Refinery',
     }
 };
 
@@ -341,8 +369,11 @@ function setLanguage(lang) {
     document.documentElement.lang = lang;
     document.title = t('pageTitle');
     applyTranslations();
+    
+    // RE-INITIALIZE THE SEARCHABLE SELECT TO LOAD NEW TRANSLATIONS
+    initSearchableSelect(); 
+    
     renderPlantContent();
-    initSearchableSelect();
     calculate();
 }
 
@@ -742,15 +773,12 @@ function updateLineOEE(p, i, v) { const pct = parseFloat(v); plantData[p].lines[
 // CALCULATE
 // ==========================================
 
-// Add this helper function to your script to fix the missing graph issue
 function findBreakEvenMonth(annualBenefit, investment, maintenance) {
     let cumulativeBenefit = 0;
     let cumulativeCost = investment;
     
-    // Check up to 120 months (10 years)
     for (let m = 1; m <= 120; m++) {
         let yearNum = Math.ceil(m / 12);
-        // Apply ramp-up logic: Year 1 = 33%, Year 2 = 67%, Year 3+ = 100%
         let monthlyBenefit = (annualBenefit * (yearNum <= 3 ? (yearNum / 3) : 1)) / 12;
         cumulativeBenefit += monthlyBenefit;
         cumulativeCost += (maintenance / 12);
@@ -801,11 +829,8 @@ function calculate() {
                 if (scenario === 'expected') totalLinesCount++;
                 
                 const hours = workHours[line.shifts.toString()] || 2000;
-                
-                // Use custom values if "Handmatig" is selected, otherwise use benchmark
                 const output = line.outputLevel === 'custom' ? (line.customOutput || 0) : data.outputPerHour[line.outputLevel || 'avg'];
                 const margin = line.marginLevel === 'custom' ? (line.customMargin || 0) : data.marginPerUnit[line.marginLevel || 'avg'];
-                
                 const oeeStart = line.currentOEE !== null ? line.currentOEE : data.oeeStart;
                 
                 let improvement;
@@ -818,7 +843,7 @@ function calculate() {
                 scenarioImproves.push(improvement);
 
                 const costFactor = line.calcModel === 'cost' ? { conservative: 0.2, expected: 0.3, optimistic: 0.4, aangepast: 0.3 }[scenario] : 1;
-                const annual = (output * margin) * oeeStart * improvement * hours * costFactor;
+                const annual = (output * margin) * improvement * hours * costFactor;
                 totalAnnual += annual;
 
                 if (scenario === selectedScenario) {
@@ -853,7 +878,6 @@ function calculate() {
     // --- BADGE & GRAPH LOGIC ---
     const breakEvenResult = findBreakEvenMonth(results[selectedScenario].annual, totalFixedCost, variableCost);
     const badge = document.getElementById('breakEvenBadge');
-    
     const yearDisplay = document.getElementById('breakEvenYear');
     if (yearDisplay) yearDisplay.textContent = breakEvenResult;
 
@@ -867,15 +891,57 @@ function calculate() {
         }
     }
 
-    // This renders the visual lines in the canvas
+    // UPDATE SCENARIO TEXT IN FOOTER
+    const scenarioNameElement = document.getElementById('breakEvenScenarioName');
+    if (scenarioNameElement) {
+        scenarioNameElement.textContent = t(selectedScenario);
+    }
+
     renderGraph(calculateBreakEven(results[selectedScenario].annual, totalFixedCost, variableCost));
 }
 
 function renderCalcBreakdown(rows, totalAnnual) {
     const container = document.getElementById('calcBreakdownContent');
-    let html = `<div class="calc-breakdown-formula">${t('calcBreakdownFormula')}</div><table class="calc-breakdown-table"><thead><tr><th>${t('calcBreakdownLine')}</th><th>${t('calcBreakdownHours')}</th><th>${t('calcBreakdownOEEImpr')}</th><th>${t('calcBreakdownCurrentOEE')}</th><th>${t('calcBreakdownValueHr')}</th><th>${t('calcBreakdownModel')}</th><th>${t('calcBreakdownAnnual')}</th></tr></thead><tbody>`;
-    rows.forEach(row => { html += `<tr><td class="line-number">${row.lineName}</td><td>${new Intl.NumberFormat('nl-NL').format(row.hours)}</td><td>${formatPercentage(row.oeeIncrease)}</td><td>${formatPercentage(row.currentOEE)}</td><td>${formatCurrency(row.addedValue)}</td><td>${t('model' + row.model.charAt(0).toUpperCase() + row.model.slice(1))}${row.costFactor < 1 ? ' (' + Math.round(row.costFactor * 100) + '%)' : ''}</td><td class="annual-value">${formatCurrency(row.annual)}</td></tr>`; });
-    html += `</tbody><tfoot><tr class="calc-breakdown-total"><td colspan="6">${t('calcBreakdownTotal')}</td><td class="annual-value">${formatCurrency(totalAnnual)}</td></tr></tfoot></table>`;
+    let html = `
+        <div class="calc-breakdown-formula">${t('calcBreakdownFormula')}</div>
+        <table class="calc-breakdown-table">
+            <thead>
+                <tr>
+                    <th>${t('calcBreakdownLine')}</th>
+                    <th>${t('calcBreakdownHours')}</th>
+                    <th>${t('calcBreakdownOEEImpr')}</th>
+                    <th>${t('calcBreakdownValueHr')}</th>
+                    <th>${t('calcBreakdownModel')}</th>
+                    <th>${t('calcBreakdownAnnual')}</th>
+                </tr>
+            </thead>
+            <tbody>`;
+            
+    rows.forEach(row => { 
+        html += `
+            <tr>
+                <td class="line-number">${row.lineName}</td>
+                <td>${new Intl.NumberFormat('nl-NL').format(row.hours)}</td>
+                <td>+${formatPercentage(row.oeeIncrease)}</td>
+                <td>${formatCurrency(row.addedValue)}</td>
+                <td>
+                    ${t('model' + row.model.charAt(0).toUpperCase() + row.model.slice(1))}
+                    ${row.costFactor < 1 ? ' (' + Math.round(row.costFactor * 100) + '%)' : ''}
+                </td>
+                <td class="annual-value">${formatCurrency(row.annual)}</td>
+            </tr>`; 
+    });
+    
+    html += `
+            </tbody>
+            <tfoot>
+                <tr class="calc-breakdown-total">
+                    <td colspan="5">${t('calcBreakdownTotal')}</td>
+                    <td class="annual-value">${formatCurrency(totalAnnual)}</td>
+                </tr>
+            </tfoot>
+        </table>`;
+        
     container.innerHTML = html;
 }
 

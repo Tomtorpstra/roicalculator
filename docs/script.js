@@ -764,8 +764,36 @@ function renderPlantContent() {
 function addLine(p) { plantData[p].lines.push({ shifts: 3, outputLevel: 'avg', marginLevel: 'avg', name: '', calcModel: 'demand', currentOEE: null, situation: 'blueUpgrade' }); renderPlantContent(); calculate(); }
 function removeLine(p, i) { if (plantData[p].lines.length > 1) { plantData[p].lines.splice(i, 1); renderPlantContent(); calculate(); } }
 function updateLineName(p, i, v) { plantData[p].lines[i].name = v; }
-function updateLineOutput(p, i, l) { plantData[p].lines[i].outputLevel = l; renderPlantContent(); calculate(); }
-function updateLineMargin(p, i, l) { plantData[p].lines[i].marginLevel = l; renderPlantContent(); calculate(); }
+function updateLineOutput(p, i, l) { 
+    plantData[p].lines[i].outputLevel = l; 
+    renderPlantContent(); 
+    calculate(); 
+    
+    // Zorgt ervoor dat de focus in het invoerveld blijft tijdens het typen
+    const customInput = document.querySelector(`#plant-${p}-content tr:nth-child(${i+1}) input[placeholder="Output/u"]`);
+    if (customInput) {
+        customInput.focus();
+        // Zet de cursor aan het einde van de tekst
+        const val = customInput.value;
+        customInput.value = '';
+        customInput.value = val;
+    }
+}
+function updateLineMargin(p, i, l) { 
+    plantData[p].lines[i].marginLevel = l; 
+    renderPlantContent(); 
+    calculate(); 
+    
+    // Zorgt ervoor dat de focus in het invoerveld blijft tijdens het typen
+    const customInput = document.querySelector(`#plant-${p}-content tr:nth-child(${i+1}) input[placeholder="Marge/st"]`);
+    if (customInput) {
+        customInput.focus();
+        // Zet de cursor aan het einde van de tekst
+        const val = customInput.value;
+        customInput.value = '';
+        customInput.value = val;
+    }
+}
 function updateLineModel(p, i, v) { plantData[p].lines[i].calcModel = v; calculate(); }
 function updateLineOEE(p, i, v) { const pct = parseFloat(v); plantData[p].lines[i].currentOEE = (pct >= 0 && pct <= 100) ? pct / 100 : null; calculate(); }
 

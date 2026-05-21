@@ -966,3 +966,121 @@ footer {
     color: #1e293b;
     font-weight: 500;
 }
+.btn-calc-info {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #f1f5f9;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    outline: none;
+}
+
+.btn-calc-info:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+.btn-calc-info svg {
+    color: #94a3b8;
+}
+/* Step 2: Modal Structure & Alignment */
+.calc-section {
+    margin-bottom: 24px;
+}
+
+.calc-section h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 8px;
+}
+
+.calc-desc {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: #475569;
+    margin: 8px 0;
+}
+
+/* Ramp-up Visualization (The bars for Year 1, 2, 3) */
+.calc-ramp {
+    margin: 16px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.calc-ramp-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.calc-ramp-label {
+    width: 60px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #64748b;
+}
+
+.calc-ramp-bar {
+    height: 20px;
+    background: #00AAFF;
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+/* Centering and refining the blue formula boxes */
+.calc-formula {
+    text-align: center;
+    padding: 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin: 12px 0;
+}
+/* Fix for Break-even Badge positioning */
+.break-even-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.break-even-result-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+/* Green state (Break-even reached) */
+.break-even-result-badge.success {
+    background: #dcfce7;
+    color: #16a34a;
+    border: 1px solid #bbf7d0;
+}
+
+/* Red state (No break-even within 10 years) */
+.break-even-result-badge.warning {
+    background: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
