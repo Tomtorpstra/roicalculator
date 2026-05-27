@@ -28,7 +28,7 @@ const translations = {
         unitsPerHour: 'eenheden/uur',
         marginLabel: 'Marge per eenheid',
         perUnit: 'per eenheid',
-        addedValueLabel: 'Toegevoegde waarde per uur:',
+        addedValueLabel: 'Toegevoegde marge per uur:', // Aangepast naar marge
         perHourSuffix: '/uur',
         benchmarkInfoText: 'Waarden zijn industrie-typische benchmarkbereiken, gebaseerd op productielijn capaciteiten en gemiddelde contributiemarges in vergelijkbare productieomgevingen.',
         cardPlantsTitle: 'Plants & Lijnen Configuratie',
@@ -41,7 +41,7 @@ const translations = {
         thMargin: 'Marge',
         marginTooltipTitle: 'Margin/Unit is: contributiemarge per extra geproduceerd product',
         marginTooltipBody: '= verkoopprijs (netto) \u2212 variabele kosten per product. Deze waardes zijn bedoeld als startpunt, D4A kan deze waardes aanpassen op basis van uw behoefte. D4A berekent de marge per eenheid als netto verkoopprijs minus variabele kosten per product. Dat is de bijdrage van \u00e9\u00e9n extra geproduceerd stuk. De ranges in onze tabel zijn benchmark-ordegroottes; voor de definitieve businesscase vervangen we die door jullie werkelijke prijs- en kostdata.',
-        thAddedValue: 'Waarde/uur',
+        thAddedValue: 'Marge/uur', // Aangepast van Waarde/uur naar Marge/uur
         thModel: 'Model',
         modelDemand: 'Vraag',
         modelCost: 'Kosten',
@@ -70,12 +70,12 @@ const translations = {
         internalCostTooltipBody: 'implementatie-uren, trainingsuren, IT hardware, IT software.',
         calcInfoBtn: 'Berekening',
         calcModalTitle: 'Hoe berekenen wij het besparingspotentieel?',
-        calcStep1Title: '1. Toegevoegde waarde per uur',
-        calcStep1Formula: 'Waarde per uur = Output per uur \u00d7 Marge per eenheid',
+        calcStep1Title: '1. Toegevoegde marge per uur', // Aangepast naar marge
+        calcStep1Formula: 'Marge per uur = Output per uur \u00d7 Marge per eenheid', // Aangepast naar marge
         calcStep1Desc: 'De output en marge komen uit uw sector benchmarks of uw eigen ingevoerde waarden.',
         calcStep2Title: '2. Jaarlijkse besparing (per lijn)',
-        calcStep2Formula: 'Jaarlijks = Waarde/uur (bij 100%) × OEE verbetering (punten) × Werkuren × Kostenfactor',
-        calcStep2Desc: 'Elk gewonnen procentpunt OEE wordt direct gewaardeerd tegen de toegevoegde waarde per uur. Als u bijvoorbeeld van 50% naar 52% OEE gaat, rekent het model met de 2% winst op uw totale capaciteit.',
+        calcStep2Formula: 'Jaarlijks = Marge/uur (bij 100%) × OEE verbetering (punten) × Werkuren × Kostenfactor', // Aangepast naar marge
+        calcStep2Desc: 'Elk gewonnen procentpunt OEE wordt direct gewaardeerd tegen de toegevoegde marge per uur. Als u bijvoorbeeld van 50% naar 52% OEE gaat, rekent het model met de 2% winst op uw totale capaciteit.', // Aangepast naar marge
         calcStep3Title: '3. Berekeningsmodel',
         calcStep3Desc: '<strong>Vraagmodel:</strong> Onbeperkte vraag \u2014 extra OEE genereert extra omzet (factor = 1).<br><strong>Kostenmodel:</strong> Vast volume \u2014 OEE verbetering verlaagt kosten. Kostenfactor: conservatief 20%, verwacht 30%, optimistisch 40%.',
         calcStep4Title: '4. Besparing over 3 jaar',
@@ -85,22 +85,22 @@ const translations = {
         calcYear2: 'Jaar 2',
         calcYear3: 'Jaar 3',
         calcStep5Title: '5. Scenario\u2019s',
-        calcStep5Desc: 'Elk scenario (conservatief, verwacht, optimistisch) gebruikt een andere OEE verbetering percentage, gebaseerd op sectordata en historische resultaten.',
+        calcStep5Desc: 'Elk scenario (conservatief, verwacht, optimistisch) gebruikt een andere OEE verbetering percentage, gebaseerd op sectordata hematische resultaten.',
         placeholderTitle: 'Vul uw gegevens in',
         placeholderText: 'Selecteer uw sector, productie parameters en OEE situatie om uw besparingspotentieel te zien',
         savingPotentialTooltip: 'Dit besparingspotentieel is gebaseerd op de upgrade van OEE blue naar T4A. De OEE verhoging die gepaard gaat met deze upgrade wordt behaald door: 1. Direct inzicht op actuele stand van zaken vanaf overal in de wereld 2. Makkelijker schaalbaar als het gaat om lijnen en functionaliteiten 3. Koppeling met ERP for scherpere analyses 4. Nieuwe inzichten en analyse tools maken verbeteren nog makkelijker 5. Configuratie en beheer centraal ipv in de fabriek, per lijn 6. meer mogelijkheden tav gebruikersrechten en het automatisch versturen van rapporten 7. Maximale flexibiliteit bij keuze on/of premise 8. Inzetbaar als data platform: ontvangen data uit andere bronnen dan productie machines, combineren en presenteren in T4A & Real time Koppeling mogelijk met specialistische data analyse tools, oa PowerBI.',
-        valuePerHourTooltipTitle: 'Waarde per uur bij 100% OEE',
-        valuePerHourTooltipBody: 'Dit is de maximale toegevoegde waarde per uur, berekend alsof de lijn op 100% OEE draait (zonder verlies van beschikbaarheid, prestatie en kwaliteit).',
+        valuePerHourTooltipTitle: 'Marge per uur bij 100% OEE', // Aangepast naar marge
+        valuePerHourTooltipBody: 'Dit is de maximale toegevoegde marge per uur, berekend alsof de lijn op 100% OEE draait (zonder verlies van beschikbaarheid, prestatie en kwaliteit).', // Aangepast naar marge
         calcBreakdownTitle: 'Berekeningsoverzicht',
         calcBreakdownLine: 'Lijn',
         calcBreakdownHours: 'Werkuren',
         calcBreakdownOEEImpr: 'OEE Verbr.',
         calcBreakdownCurrentOEE: 'Huidige OEE',
-        calcBreakdownValueHr: 'Waarde/uur',
+        calcBreakdownValueHr: 'Marge/uur', // Aangepast van Waarde/uur naar Marge/uur
         calcBreakdownModel: 'Model',
         calcBreakdownAnnual: 'Jaarlijks',
         calcBreakdownTotal: 'Totaal per jaar',
-        calcBreakdownFormula: 'Besparing per lijn = Werkuren × OEE verbetering × Waarde/uur × Modelfactor',
+        calcBreakdownFormula: 'Besparing per lijn = Werkuren × OEE verbetering × Marge/uur × Modelfactor', // Aangepast naar marge
         cardSavingsTitle: 'Besparingspotentieel',
         linesAcross: 'lijnen over',
         conservative: 'conservatieve',
@@ -111,7 +111,7 @@ const translations = {
         overThreeYears: 'over 3 jaar',
         oeeImprovement: 'OEE verbetering',
         cardSectorTitle: 'Sector & Productie Gegevens',
-        valuePerHour: 'Waarde / Uur',
+        valuePerHour: 'Marge / Uur', // Aangepast van Waarde / Uur naar Marge / Uur
         startOee: 'Start OEE',
         expectedImprovement: 'Verwachte Verbetering',
         oeePotentialComparison: 'OEE Potentieel Vergelijking',
@@ -143,7 +143,7 @@ const translations = {
         pdfOeeSituation: 'OEE Situatie',
         pdfMaxOutput: 'Maximal output per uur',
         pdfMarginPerUnit: 'Marge per eenheid',
-        pdfValuePerHour: 'Waarde per uur',
+        pdfValuePerHour: 'Marge per uur', // Aangepast van Waarde per uur naar Marge per uur
         pdfNumPlants: 'Aantal Plants',
         pdfTotalLines: 'Totaal Lijnen',
         pdfOeeImprovementSection: 'OEE Verbetering',
@@ -206,7 +206,7 @@ const translations = {
         unitsPerHour: 'units/hour',
         marginLabel: 'Margin per unit',
         perUnit: 'per unit',
-        addedValueLabel: 'Added value per hour:',
+        addedValueLabel: 'Added margin per hour:', // Aangepast naar margin
         perHourSuffix: '/hour',
         benchmarkInfoText: 'Values are industry-typical benchmark ranges, based on production line capacities and average contribution margins in comparable production environments.',
         cardPlantsTitle: 'Plants & Lines Configuration',
@@ -219,7 +219,7 @@ const translations = {
         thMargin: 'Margin',
         marginTooltipTitle: 'Margin per Unit: the contribution margin per additional unit produced',
         marginTooltipBody: '= net selling price \u2212 variable cost per product. These values are intended as a starting point. D4A can adjust them based on your specific situation and requirements. D4A calculates the margin per unit as the net selling price minus the variable cost per product. This represents the economic contribution of one additional unit produced. The ranges shown in our table are industry benchmark order-of-magnitude estimates. For the final business case, we will replace them with your actual pricing and cost data.',
-        thAddedValue: 'Value/hr',
+        thAddedValue: 'Margin/hour', // Aangepast van Value/hr naar Margin/hour
         thModel: 'Model',
         modelDemand: 'Demand',
         modelCost: 'Cost',
@@ -248,12 +248,12 @@ const translations = {
         internalCostTooltipBody: 'implementation hours, training hours, IT hardware, IT software.',
         calcInfoBtn: 'Calculation',
         calcModalTitle: 'How do we calculate the savings potential?',
-        calcStep1Title: '1. Added value per hour',
-        calcStep1Formula: 'Value per hour = Output per hour \u00d7 Margin per unit',
+        calcStep1Title: '1. Added margin per hour', // Aangepast naar margin
+        calcStep1Formula: 'Margin per hour = Output per hour \u00d7 Margin per unit', // Aangepast naar margin
         calcStep1Desc: 'The output and margin come from your sector benchmarks or your own entered values.',
         calcStep2Title: '2. Annual savings (per line)',
-        calcStep2Formula: 'Annual = Value/hr (at 100%) × OEE improvement (points) × Work hours × Cost factor',
-        calcStep2Desc: 'Each OEE percentage point gained is directly valued against the added value per hour. For example, if you go from 50% to 52% OEE, the model calculates with the 2% gain on your total capacity.',
+        calcStep2Formula: 'Annual = Margin/hour (at 100%) × OEE improvement (points) × Work hours × Cost factor', // Aangepast naar margin
+        calcStep2Desc: 'Each OEE percentage point gained is directly valued against the added margin per hour. For example, if you go from 50% to 52% OEE, the model calculates with the 2% gain on your total capacity.', // Aangepast naar margin
         calcStep3Title: '3. Calculation model',
         calcStep3Desc: '<strong>Demand model:</strong> Unlimited demand \u2014 extra OEE generates extra revenue (factor = 1).<br><strong>Cost model:</strong> Fixed volume \u2014 OEE improvement reduces costs. Cost factor: conservative 20%, expected 30%, optimistic 40%.',
         calcStep4Title: '4. Savings over 3 years',
@@ -267,18 +267,18 @@ const translations = {
         placeholderTitle: 'Enter your details',
         placeholderText: 'Select your sector, production parameters and OEE situation to see your savings potential',
         savingPotentialTooltip: 'The savings potential is based on the upgrade from OEE blue to T4A. The OEE increase proportional to this upgrade is achieved through: 1. Direct insight into the current state of affairs from anywhere in the world 2. Scalable booking regarding lines and functionalities 3. Integration with ERP for sharper analyses 4. New insights and analysis tools made even easier 5. Central configuration and management instead of in the factory, per line 6. More options regarding user rights and automatic notification 7. Possibility when choosing on-premise or premise 8. Usability as a data platform: receiving data from sources other than production machines, combining and presenting it in T4A & Realtime. Integration possible with specialized data analysis tools, including PowerBI.',
-        valuePerHourTooltipTitle: 'Value per hour at 100% OEE',
-        valuePerHourTooltipBody: 'This is the maximum added value per hour, calculated as if the line runs at 100% OEE (without loss of availability, performance and quality).',
+        valuePerHourTooltipTitle: 'Margin per hour at 100% OEE', // Aangepast naar margin
+        valuePerHourTooltipBody: 'This is the maximum added margin per hour, calculated as if the line runs at 100% OEE (without loss of availability, performance and quality).', // Aangepast naar margin
         calcBreakdownTitle: 'Calculation Overview',
         calcBreakdownLine: 'Line',
         calcBreakdownHours: 'Work hours',
         calcBreakdownOEEImpr: 'OEE Impr.',
         calcBreakdownCurrentOEE: 'Current OEE',
-        calcBreakdownValueHr: 'Value/hr',
+        calcBreakdownValueHr: 'Margin/hour', // Aangepast van Value/hr naar Margin/hour
         calcBreakdownModel: 'Model',
         calcBreakdownAnnual: 'Annual',
         calcBreakdownTotal: 'Total per year',
-        calcBreakdownFormula: 'Savings per line = Work hours × OEE improvement × Value/hr × Model factor',
+        calcBreakdownFormula: 'Savings per line = Work hours × OEE improvement × Margin/hour × Model factor', // Aangepast naar margin
         cardSavingsTitle: 'Savings Potential',
         linesAcross: 'lines across',
         conservative: 'conservative',
@@ -289,7 +289,7 @@ const translations = {
         overThreeYears: 'over 3 years',
         oeeImprovement: 'OEE improvement',
         cardSectorTitle: 'Sector & Production Data',
-        valuePerHour: 'Value / Hour',
+        valuePerHour: 'Margin / Hour', // Aangepast van Value / Hour naar Margin / Hour
         startOee: 'Starting OEE',
         expectedImprovement: 'Expected Improvement',
         oeePotentialComparison: 'OEE Potential Comparison',
@@ -321,7 +321,7 @@ const translations = {
         pdfOeeSituation: 'OEE Situation',
         pdfMaxOutput: 'Maximum output per hour',
         pdfMarginPerUnit: 'Margin per unit',
-        pdfValuePerHour: 'Value per hour',
+        pdfValuePerHour: 'Margin per hour', // Aangepast van Value per hour naar Margin per hour
         pdfNumPlants: 'Number of Plants',
         pdfTotalLines: 'Total Lines',
         pdfOeeImprovementSection: 'OEE Improvement',

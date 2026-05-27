@@ -5,6 +5,7 @@ const translations = {
     nl: {
         pageTitle: 'OEE ROI Calculator - D4A Besparing Berekening',
         subtitle: 'Bereken uw potentiele besparing met T4A/P4A OEE-optimalisatie',
+        dataProtectionNote: 'Ingevoerde data wordt niet opgeslagen.',
         exportPdf: 'Export PDF',
         cardCurrentTitle: 'Uw Huidige Situatie',
         cardCurrentSubtitle: 'Selecteer uw sector en huidige OEE status',
@@ -45,7 +46,7 @@ const translations = {
         modelDemand: 'Vraag',
         modelCost: 'Kosten',
         modelTooltipTitle: 'Berekeningsmodel',
-        modelTooltipBody: 'Vraag: onbeperkte vraag \u2014 extra OEE levert extra omzet op. Kosten: gelijk volume \u2014 OEE-verbetering verlaagt kosten (scrap, energie, storingen).',
+        modelTooltipBody: '<strong>Vraagmodel:</strong> Onbeperkte vraag &mdash; extra OEE genereert extra omzet (factor = 1).<br><strong>Kostenmodel:</strong> Vast volume &mdash; OEE verbetering verlaagt kosten. Kostenfactor: conservatief 20%, verwacht 30%, optimistisch 40%.',
         thCurrentOEE: 'Huidige OEE',
         currentOEETooltipTitle: 'Huidige OEE',
         currentOEETooltipBody: 'Het huidige OEE-percentage van deze lijn vóór verbeteringen. Standaard waarde komt uit sector benchmark. Pas aan naar uw werkelijke situatie.',
@@ -87,7 +88,7 @@ const translations = {
         calcStep5Desc: 'Elk scenario (conservatief, verwacht, optimistisch) gebruikt een andere OEE verbetering percentage, gebaseerd op sectordata en historische resultaten.',
         placeholderTitle: 'Vul uw gegevens in',
         placeholderText: 'Selecteer uw sector, productie parameters en OEE situatie om uw besparingspotentieel te zien',
-        savingPotentialTooltip: 'Dit besparingspotentieel is gebaseerd op de upgrade van OEE blue naar T4A. De OEE verhoging die gepaard gaat met deze upgrade wordt behaald door: 1. Direct inzicht op actuele stand van zaken vanaf overal in de wereld 2. Makkelijker schaalbaar als het gaat om lijnen en functionaliteiten 3. Koppeling met ERP voor scherpere analyses 4. Nieuwe inzichten en analyse tools maken verbeteren nog makkelijker 5. Configuratie en beheer centraal ipv in de fabriek, per lijn 6. meer mogelijkheden tav gebruikersrechten en het automatisch versturen van rapporten 7. Maximale flexibiliteit bij keuze on/of premise 8. Inzetbaar als data platform: ontvangen data uit andere bronnen dan productie machines, combineren en presenteren in T4A & Real time Koppeling mogelijk met specialistische data analyse tools, oa PowerBI.',
+        savingPotentialTooltip: 'Dit besparingspotentieel is gebaseerd op de upgrade van OEE blue naar T4A. De OEE verhoging die gepaard gaat met deze upgrade wordt behaald door: 1. Direct inzicht op actuele stand van zaken vanaf overal in de wereld 2. Makkelijker schaalbaar als het gaat om lijnen en functionaliteiten 3. Koppeling met ERP for scherpere analyses 4. Nieuwe inzichten en analyse tools maken verbeteren nog makkelijker 5. Configuratie en beheer centraal ipv in de fabriek, per lijn 6. meer mogelijkheden tav gebruikersrechten en het automatisch versturen van rapporten 7. Maximale flexibiliteit bij keuze on/of premise 8. Inzetbaar als data platform: ontvangen data uit andere bronnen dan productie machines, combineren en presenteren in T4A & Real time Koppeling mogelijk met specialistische data analyse tools, oa PowerBI.',
         valuePerHourTooltipTitle: 'Waarde per uur bij 100% OEE',
         valuePerHourTooltipBody: 'Dit is de maximale toegevoegde waarde per uur, berekend alsof de lijn op 100% OEE draait (zonder verlies van beschikbaarheid, prestatie en kwaliteit).',
         calcBreakdownTitle: 'Berekeningsoverzicht',
@@ -164,7 +165,7 @@ const translations = {
         outputLabelAvg: 'Gemiddeld',
         outputLabelHigh: 'Hoog',
         rampUpTitle: "Geleidelijke Besparingsopbouw (Ramp-up)",
-        rampUpDesc: "De ROI houdt rekening met een realistisch adoptieproces. We bouwen de resultaten stapsgewijs op (Jaar 1: 33%, Jaar 2: 67%, Jaar 3: 100%) om rekening te houden met de tijd die nodig is voor training, procesoptimalisatie en gedragsverandering binnen uw team.",
+        rampUpDesc: "De ROI houdt rekening met een realistisch adoptieproces. We bouwen de resultaten stapsgewijs op (Jaar 1: 33%, Jaar 2: 67%, Year 3: 100%) om rekening te houden met de tijd die nodig is voor training, procesoptimalisatie en gedragsverandering binnen uw team.",
         sectorPharm: 'Farmaceutische',
         sectorFood: 'Food',
         sectorBottlers: 'Bottlers',
@@ -182,6 +183,7 @@ const translations = {
     en: {
         pageTitle: 'OEE ROI Calculator - D4A Savings Calculation',
         subtitle: 'Calculate your potential savings with T4A/P4A OEE optimization',
+        dataProtectionNote: 'Entered data is not being saved.',
         exportPdf: 'Export PDF',
         cardCurrentTitle: 'Your Current Situation',
         cardCurrentSubtitle: 'Select your sector and current OEE status',
@@ -222,7 +224,7 @@ const translations = {
         modelDemand: 'Demand',
         modelCost: 'Cost',
         modelTooltipTitle: 'Calculation model',
-        modelTooltipBody: 'Demand: unlimited demand \u2014 extra OEE generates extra revenue. Cost: fixed volume \u2014 OEE improvement reduces costs (scrap, energy, downtime).',
+        modelTooltipBody: '<strong>Demand model:</strong> Unlimited demand &mdash; extra OEE generates extra revenue (factor = 1).<br><strong>Cost model:</strong> Fixed volume &mdash; OEE improvement reduces costs. Cost factor: conservative 20%, expected 30%, optimistic 40%.',
         thCurrentOEE: 'Current OEE',
         currentOEETooltipTitle: 'Current OEE',
         currentOEETooltipBody: 'The current OEE percentage of this line before improvements. Default value comes from sector benchmark. Adjust to your actual situation.',
@@ -369,10 +371,7 @@ function setLanguage(lang) {
     document.documentElement.lang = lang;
     document.title = t('pageTitle');
     applyTranslations();
-    
-    // RE-INITIALIZE THE SEARCHABLE SELECT TO LOAD NEW TRANSLATIONS
     initSearchableSelect(); 
-    
     renderPlantContent();
     calculate();
 }
@@ -686,7 +685,7 @@ function renderPlantContent() {
                             <th>Situatie</th>
                             <th class="th-tooltip">Output <span class="info-icon">ⓘ</span><div class="tooltip-text">${t('outputTooltipBody')}</div></th>
                             <th class="th-tooltip">Marge <span class="info-icon">ⓘ</span><div class="tooltip-text">${t('marginTooltipBody')}</div></th>
-                            <th>Model</th>
+                            <th class="th-tooltip">Model <span class="info-icon">ⓘ</span><div class="tooltip-text">${t('modelTooltipBody')}</div></th>
                             <th>Ploegen</th>
                             <th>${t('thAddedValue')}</th>
                             <th class="th-tooltip">OEE % <span class="info-icon">ⓘ</span><div class="tooltip-text">${t('currentOEETooltipBody')}</div></th>
@@ -700,12 +699,11 @@ function renderPlantContent() {
                 ? Math.round(line.currentOEE * 100) 
                 : (data ? Math.round(data.oeeStart * 100) : '');
 
-            // Determine values for Value/Hour cell
             const currentOutput = (line.outputLevel === 'custom' ? (line.customOutput || 0) : (data ? data.outputPerHour[line.outputLevel || 'avg'] : 0));
             const currentMargin = (line.marginLevel === 'custom' ? (line.customMargin || 0) : (data ? data.marginPerUnit[line.marginLevel || 'avg'] : 0));
 
             tableHTML += `
-                <tr>
+                <tr data-line-index="${index}">
                     <td style="font-weight: bold; color: #94a3b8;">${index + 1}</td>
                     <td><input type="text" class="line-input" value="${line.name || ''}" onchange="updateLineName(${p}, ${index}, this.value)" placeholder="Lijn naam.."></td>
                     <td>
@@ -721,7 +719,7 @@ function renderPlantContent() {
                             <option value="max" ${line.outputLevel === 'max' ? 'selected' : ''}>${t('optionHigh')} (${data ? data.outputPerHour.max : '0'})</option>
                             <option value="custom" ${line.outputLevel === 'custom' ? 'selected' : ''}>${t('optionCustom')}</option>
                         </select>
-                        ${line.outputLevel === 'custom' ? `<input type="number" class="line-input" style="margin-top:5px;" value="${line.customOutput || ''}" oninput="plantData[${p}].lines[${index}].customOutput=parseFloat(this.value); calculate();" placeholder="Output/u">` : ''}
+                        ${line.outputLevel === 'custom' ? `<input type="number" class="line-input custom-output-field" style="margin-top:5px;" value="${line.customOutput || ''}" oninput="plantData[${p}].lines[${index}].customOutput=parseFloat(this.value); calculate();" placeholder="Output/u">` : ''}
                     </td>
                     <td>
                         <select class="line-select" onchange="updateLineMargin(${p}, ${index}, this.value)">
@@ -730,7 +728,7 @@ function renderPlantContent() {
                             <option value="max" ${line.marginLevel === 'max' ? 'selected' : ''}>${t('optionHigh')} (€${data ? data.marginPerUnit.max : '0'})</option>
                             <option value="custom" ${line.marginLevel === 'custom' ? 'selected' : ''}>${t('optionCustom')}</option>
                         </select>
-                        ${line.marginLevel === 'custom' ? `<input type="number" class="line-input" style="margin-top:5px;" value="${line.customMargin || ''}" oninput="plantData[${p}].lines[${index}].customMargin=parseFloat(this.value); calculate();" placeholder="Marge/st">` : ''}
+                        ${line.marginLevel === 'custom' ? `<input type="number" class="line-input custom-margin-field" style="margin-top:5px;" value="${line.customMargin || ''}" oninput="plantData[${p}].lines[${index}].customMargin=parseFloat(this.value); calculate();" placeholder="Marge/st">` : ''}
                     </td>
                     <td>
                         <select class="line-select" onchange="updateLineModel(${p}, ${index}, this.value)">
@@ -818,6 +816,27 @@ function calculate() {
     const breakdownRows = [];
     let totalLinesCount = 0;
 
+    if (plantData[activePlant]) {
+        plantData[activePlant].lines.forEach((line, index) => {
+            const rowEl = document.querySelector(`#plant-${activePlant}-content tr[data-line-index="${index}"]`);
+            if (rowEl) {
+                const outField = rowEl.querySelector('.custom-output-field');
+                const margField = rowEl.querySelector('.custom-margin-field');
+                
+                if (outField && line.outputLevel === 'custom') line.customOutput = parseFloat(outField.value) || 0;
+                if (margField && line.marginLevel === 'custom') line.customMargin = parseFloat(margField.value) || 0;
+
+                const liveOutput = line.outputLevel === 'custom' ? (line.customOutput || 0) : data.outputPerHour[line.outputLevel || 'avg'];
+                const liveMargin = line.marginLevel === 'custom' ? (line.customMargin || 0) : data.marginPerUnit[line.marginLevel || 'avg'];
+                
+                const valueCell = rowEl.querySelector('.added-value-cell');
+                if (valueCell) {
+                    valueCell.textContent = formatCurrency(liveOutput * liveMargin);
+                }
+            }
+        });
+    }
+
     for (const scenario of scenarios) {
         let totalAnnual = 0;
         let lineCounter = 0;
@@ -891,7 +910,6 @@ function calculate() {
         }
     }
 
-    // UPDATE SCENARIO TEXT IN FOOTER
     const scenarioNameElement = document.getElementById('breakEvenScenarioName');
     if (scenarioNameElement) {
         scenarioNameElement.textContent = t(selectedScenario);
