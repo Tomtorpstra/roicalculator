@@ -5,6 +5,7 @@ const translations = {
     nl: {
         pageTitle: 'OEE ROI Calculator - D4A Besparing Berekening',
         subtitle: 'Bereken uw potentiele besparing met T4A/P4A OEE-optimalisatie',
+        dataProtectionNote: 'Ingevoerde data wordt niet opgeslagen.',
         exportPdf: 'Export PDF',
         cardCurrentTitle: 'Uw Huidige Situatie',
         cardCurrentSubtitle: 'Selecteer uw sector en huidige OEE status',
@@ -45,7 +46,7 @@ const translations = {
         modelDemand: 'Vraag',
         modelCost: 'Kosten',
         modelTooltipTitle: 'Berekeningsmodel',
-        modelTooltipBody: 'Vraag: onbeperkte vraag \u2014 extra OEE levert extra omzet op. Kosten: gelijk volume \u2014 OEE-verbetering verlaagt kosten (scrap, energie, storingen).',
+        modelTooltipBody: '<strong>Vraagmodel:</strong> Onbeperkte vraag &mdash; extra OEE genereert extra omzet (factor = 1).<br><strong>Kostenmodel:</strong> Vast volume &mdash; OEE verbetering verlaagt kosten. Kostenfactor: conservatief 20%, verwacht 30%, optimistisch 40%.',
         thCurrentOEE: 'Huidige OEE',
         currentOEETooltipTitle: 'Huidige OEE',
         currentOEETooltipBody: 'Het huidige OEE-percentage van deze lijn vóór verbeteringen. Standaard waarde komt uit sector benchmark. Pas aan naar uw werkelijke situatie.',
@@ -87,7 +88,7 @@ const translations = {
         calcStep5Desc: 'Elk scenario (conservatief, verwacht, optimistisch) gebruikt een andere OEE verbetering percentage, gebaseerd op sectordata en historische resultaten.',
         placeholderTitle: 'Vul uw gegevens in',
         placeholderText: 'Selecteer uw sector, productie parameters en OEE situatie om uw besparingspotentieel te zien',
-        savingPotentialTooltip: 'Dit besparingspotentieel is gebaseerd op de upgrade van OEE blue naar T4A. De OEE verhoging die gepaard gaat met deze upgrade wordt behaald door: 1. Direct inzicht op actuele stand van zaken vanaf overal in de wereld 2. Makkelijker schaalbaar als het gaat om lijnen en functionaliteiten 3. Koppeling met ERP voor scherpere analyses 4. Nieuwe inzichten en analyse tools maken verbeteren nog makkelijker 5. Configuratie en beheer centraal ipv in de fabriek, per lijn 6. meer mogelijkheden tav gebruikersrechten en het automatisch versturen van rapporten 7. Maximale flexibiliteit bij keuze on/of premise 8. Inzetbaar als data platform: ontvangen data uit andere bronnen dan productie machines, combineren en presenteren in T4A & Real time Koppeling mogelijk met specialistische data analyse tools, oa PowerBI.',
+        savingPotentialTooltip: 'Dit besparingspotentieel is gebaseerd op de upgrade van OEE blue naar T4A. De OEE verhoging die gepaard gaat met deze upgrade wordt behaald door: 1. Direct inzicht op actuele stand van zaken vanaf overal in de wereld 2. Makkelijker schaalbaar als het gaat om lijnen en functionaliteiten 3. Koppeling met ERP for scherpere analyses 4. Nieuwe inzichten en analyse tools maken verbeteren nog makkelijker 5. Configuratie en beheer centraal ipv in de fabriek, per lijn 6. meer mogelijkheden tav gebruikersrechten en het automatisch versturen van rapporten 7. Maximale flexibiliteit bij keuze on/of premise 8. Inzetbaar als data platform: ontvangen data uit andere bronnen dan productie machines, combineren en presenteren in T4A & Real time Koppeling mogelijk met specialistische data analyse tools, oa PowerBI.',
         valuePerHourTooltipTitle: 'Waarde per uur bij 100% OEE',
         valuePerHourTooltipBody: 'Dit is de maximale toegevoegde waarde per uur, berekend alsof de lijn op 100% OEE draait (zonder verlies van beschikbaarheid, prestatie en kwaliteit).',
         calcBreakdownTitle: 'Berekeningsoverzicht',
@@ -178,11 +179,11 @@ const translations = {
         sectorAuto: 'Auto & Transport',
         sectorElectronics: 'Electronica',
         sectorOil: 'Olie & Raffinaderij',
-        dataProtectionNote: 'Ingevoerde data wordt niet opgeslagen.',
     },
     en: {
         pageTitle: 'OEE ROI Calculator - D4A Savings Calculation',
         subtitle: 'Calculate your potential savings with T4A/P4A OEE optimization',
+        dataProtectionNote: 'Entered data is not being saved.',
         exportPdf: 'Export PDF',
         cardCurrentTitle: 'Your Current Situation',
         cardCurrentSubtitle: 'Select your sector and current OEE status',
@@ -223,7 +224,7 @@ const translations = {
         modelDemand: 'Demand',
         modelCost: 'Cost',
         modelTooltipTitle: 'Calculation model',
-        modelTooltipBody: 'Demand: unlimited demand \u2014 extra OEE generates extra revenue. Cost: fixed volume \u2014 OEE improvement reduces costs (scrap, energy, downtime).',
+        modelTooltipBody: '<strong>Demand model:</strong> Unlimited demand &mdash; extra OEE generates extra revenue (factor = 1).<br><strong>Cost model:</strong> Fixed volume &mdash; OEE improvement reduces costs. Cost factor: conservative 20%, expected 30%, optimistic 40%.',
         thCurrentOEE: 'Current OEE',
         currentOEETooltipTitle: 'Current OEE',
         currentOEETooltipBody: 'The current OEE percentage of this line before improvements. Default value comes from sector benchmark. Adjust to your actual situation.',
@@ -356,7 +357,6 @@ const translations = {
         sectorAuto: 'Auto & Transport',
         sectorElectronics: 'Electronics',
         sectorOil: 'Oil & Refinery',
-        dataProtectionNote: 'Entered data is not being saved.',
     }
 };
 
@@ -685,7 +685,7 @@ function renderPlantContent() {
                             <th>Situatie</th>
                             <th class="th-tooltip">Output <span class="info-icon">ⓘ</span><div class="tooltip-text">${t('outputTooltipBody')}</div></th>
                             <th class="th-tooltip">Marge <span class="info-icon">ⓘ</span><div class="tooltip-text">${t('marginTooltipBody')}</div></th>
-                            <th>Model</th>
+                            <th class="th-tooltip">Model <span class="info-icon">ⓘ</span><div class="tooltip-text">${t('modelTooltipBody')}</div></th>
                             <th>Ploegen</th>
                             <th>${t('thAddedValue')}</th>
                             <th class="th-tooltip">OEE % <span class="info-icon">ⓘ</span><div class="tooltip-text">${t('currentOEETooltipBody')}</div></th>
@@ -816,12 +816,10 @@ function calculate() {
     const breakdownRows = [];
     let totalLinesCount = 0;
 
-    // LIVE UPDATE VAN DE WAARDE/UUR CELLEN TIJDENS HET TYPEN
     if (plantData[activePlant]) {
         plantData[activePlant].lines.forEach((line, index) => {
             const rowEl = document.querySelector(`#plant-${activePlant}-content tr[data-line-index="${index}"]`);
             if (rowEl) {
-                // Haal de live getypte waarden direct uit de inputvelden als ze bestaan
                 const outField = rowEl.querySelector('.custom-output-field');
                 const margField = rowEl.querySelector('.custom-margin-field');
                 
