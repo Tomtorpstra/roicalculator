@@ -404,7 +404,6 @@ function applyTranslations() {
 // CALCULATION MODAL
 // ==========================================
 function openCalcModal() {
-    // GECORRIGEERD: opent nu correct de pop-up via classList
     document.getElementById('calcModal').classList.add('open');
 }
 
@@ -775,7 +774,6 @@ function updateLineOEE(p, i, v) { const pct = parseFloat(v); plantData[p].lines[
 // ==========================================
 // CALCULATE
 // ==========================================
-
 function findBreakEvenMonth(annualBenefit, investment, operationalRecurringCosts) {
     let cumulativeBenefit = 0;
     let cumulativeCost = investment;
@@ -986,6 +984,7 @@ function calculateBreakEven(annualBenefit, fixedFee, totalRecurringCosts) {
 
 function renderGraph(yearData) {
     const canvas = document.getElementById('breakEvenCanvas');
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
     const dpr = window.devicePixelRatio || 1;
     const rect = canvas.getBoundingClientRect();
@@ -997,7 +996,7 @@ function renderGraph(yearData) {
     const last = yearData[yearData.length - 1];
     const maxVal = Math.max(...yearData.map(d => Math.max(d.cumulativeBenefit, d.cumulativeCost)));
     const xScale = (y) => padding.left + (y / last.year) * graphWidth;
-    const yScale = (v) => padding.top + graphHeight - (v / maxVal) * graphHeight;
+    const yScale = (v) => padding.top + graphHeight - (v / (maxVal || 1)) * graphHeight;
 
     ctx.clearRect(0,0, rect.width, rect.height);
     ctx.strokeStyle = '#e5e7eb'; ctx.font = '11px Inter';
@@ -1018,32 +1017,27 @@ function renderGraph(yearData) {
 }
 
 function exportPDF() {
-    // 1. Controleer of de sector is ingevuld
     const sectorElement = document.getElementById('sector');
     if (!sectorElement || !sectorElement.value) {
         alert(t('alertFillIn'));
         return;
     }
 
-    // 2. Haal alle actuele data en resultaten live op uit het model
     const companyName = document.getElementById('companyName').value || t('companyDefault');
     const sectorText = sectorElement.options[sectorElement.selectedIndex].text;
     const plantsCount = document.getElementById('totalPlantsDisplay').textContent;
     const linesCount = document.getElementById('totalLinesDisplay').textContent;
 
-    // Kostenkomponenten
     const fixedD4A = parseFloat(document.getElementById('fixedFee').value) || 0;
     const internalOneTime = parseFloat(document.getElementById('internalCost').value) || 0;
     const recurringD4A = parseFloat(document.getElementById('variableCost').value) || 0;
     const recurringInternal = parseFloat(document.getElementById('recurringInternalCost').value) || 0;
 
-    // Besparingen (Expected Scenario) uit de live interface kaarten halen
-    const saveY1 = document.getElementById('expectedYear1').textContent;
-    const saveY2 = document.getElementById('expectedYear2').textContent;
-    const saveY3 = document.getElementById('expectedYear3').textContent;
+    const saveY1 = document.getElementById(selectedScenario + 'Year1').textContent;
+    const saveY2 = document.getElementById(selectedScenario + 'Year2').textContent;
+    const saveY3 = document.getElementById(selectedScenario + 'Year3').textContent;
     const breakEvenTime = document.getElementById('breakEvenYear').textContent;
 
-    // 3. Vul het rapport-sjabloon met de data
     document.getElementById('pdf-meta-company').textContent = companyName;
     document.getElementById('pdf-summary-sector').textContent = sectorText;
     document.getElementById('pdf-summary-plants').textContent = `${plantsCount} Plant(s) / ${linesCount} Lijn(en)`;
@@ -1058,17 +1052,14 @@ function exportPDF() {
     document.getElementById('pdf-save-y3').textContent = saveY3;
     document.getElementById('pdf-save-be').textContent = breakEvenTime;
 
-    // 4. Kloon de berekeningstabel uit het overzicht en plak deze kaal in het rapport
     const sourceTable = document.querySelector('.calc-breakdown-table');
     const tableArea = document.getElementById('pdf-table-area');
     
-    // Verwijder eventuele oude tabelresten in het sjabloon
     const oldTable = tableArea.querySelector('table');
     if (oldTable) oldTable.remove();
 
     if (sourceTable) {
         const clonedTable = sourceTable.cloneNode(true);
-        // Geef de gekloonde tabel een strakke, cleane styling mee voor op papier
         clonedTable.style.width = '100%';
         clonedTable.style.borderCollapse = 'collapse';
         clonedTable.style.marginTop = '15px';
@@ -1083,7 +1074,6 @@ function exportPDF() {
         tableArea.appendChild(clonedTable);
     }
 
-    // 5. Trigger de browser PDF/Print engine
     window.print();
 }
 

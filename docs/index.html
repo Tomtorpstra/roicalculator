@@ -10,15 +10,15 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
+    <div class="container" id="appContainer">
         <header class="header">
             <div class="header-left">
                 <img src="logo.png" alt="Decide4Action" class="logo">
-<div class="header-title">
-    <h1>OEE <span>ROI Calculator</span></h1>
-    <p class="subtitle" data-i18n="subtitle">Bereken uw potentiele besparing met T4A/P4A OEE-optimalisatie</p>
-    <p class="data-protection-note" data-i18n="dataProtectionNote">Ingevoerde data wordt niet opgeslagen.</p>
-</div>
+                <div class="header-title">
+                    <h1>OEE <span>ROI Calculator</span></h1>
+                    <p class="subtitle" data-i18n="subtitle">Bereken uw potentiele besparing met T4A/P4A OEE-optimalisatie</p>
+                    <p class="data-protection-note" data-i18n="dataProtectionNote">Ingevoerde data wordt niet opgeslagen.</p>
+                </div>
             </div>
             <div class="header-right">
                 <div class="lang-switcher">
@@ -44,6 +44,13 @@
                         <div>
                             <h2 data-i18n="cardCurrentTitle">Uw Huidige Situatie</h2>
                             <p class="card-subtitle" data-i18n="cardCurrentSubtitle">Selecteer uw sector en huidige OEE status</p>
+                        </div>
+                    </div>
+
+                    <div class="form-row" style="margin-bottom: 20px;">
+                        <div class="form-group">
+                            <label for="companyName" data-i18n="companyNameLabel">Bedrijfsnaam</label>
+                            <input type="text" id="companyName" data-i18n-placeholder="companyNamePlaceholder" placeholder="Vul uw bedrijfsnaam in">
                         </div>
                     </div>
 
@@ -96,59 +103,58 @@
                 </div>
 
                 <div class="card">
-    <div class="card-header">
-        <div class="card-icon orange">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-        </div>
-        <div>
-            <h2 data-i18n="cardCostsTitle">Project kosten uit offerte</h2>
-            <p class="card-subtitle" data-i18n="cardCostsSubtitle">Eenmalige en jaarlijkse kosten voor ROI berekening</p>
-        </div>
-    </div>
+                    <div class="card-header">
+                        <div class="card-icon orange">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                        </div>
+                        <div>
+                            <h2 data-i18n="cardCostsTitle">Projectkosten</h2>
+                            <p class="card-subtitle" data-i18n="cardCostsSubtitle">Eenmalige en jaarlijkse kosten voor ROI berekening</p>
+                        </div>
+                    </div>
 
-    <div class="form-row" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
-        
-        <div class="form-group">
-            <label for="fixedFee" data-i18n="fixedFeeLabel">Eenmalige D4A kosten</label>
-            <div class="currency-input">
-                <input type="number" id="fixedFee" min="0" onchange="calculate()" oninput="calculate()" data-i18n-placeholder="fixedFeePlaceholder" placeholder="Bijv. 15.000">
-            </div>
-        </div>
-        
-        <div class="form-group">
-            <label for="internalCost" class="th-tooltip">
-                <span data-i18n="internalCostLabel">Eenmalige interne kosten</span> 
-                <span class="info-icon">ⓘ</span>
-                <div class="tooltip-text">
-                    <span data-i18n="internalCostTooltipBody">implementatie-uren, trainingsuren, IT hardware, IT software.</span>
+                    <div class="form-row" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
+                        <div class="form-group">
+                            <label for="fixedFee" data-i18n="fixedFeeLabel">Eenmalige D4A kosten</label>
+                            <div class="currency-input">
+                                <input type="number" id="fixedFee" min="0" onchange="calculate()" oninput="calculate()" data-i18n-placeholder="fixedFeePlaceholder" placeholder="Bijv. 15.000">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="internalCost" class="th-tooltip">
+                                <span data-i18n="internalCostLabel">Eenmalige interne kosten</span> 
+                                <span class="info-icon">ⓘ</span>
+                                <div class="tooltip-text">
+                                    <span data-i18n="internalCostTooltipBody">implementatie-uren, trainingsuren, IT hardware, IT software.</span>
+                                </div>
+                            </label>
+                            <div class="currency-input">
+                                <input type="number" id="internalCost" min="0" value="0" onchange="calculate()" oninput="calculate()" data-i18n-placeholder="internalCostPlaceholder" placeholder="Bijv. 5.000">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="variableCost" data-i18n="variableCostLabel">Jaarlijks terugkomende D4A kosten</label>
+                            <div class="currency-input">
+                                <input type="number" id="variableCost" min="0" onchange="calculate()" oninput="calculate()" data-i18n-placeholder="variableCostPlaceholder" placeholder="Bijv. 3.000">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="recurringInternalCost" data-i18n="recurringInternalCostLabel">Jaarlijks terugkomende interne kosten</label>
+                            <div class="currency-input">
+                                <input type="number" id="recurringInternalCost" min="0" onchange="calculate()" oninput="calculate()" data-i18n-placeholder="recurringInternalCostPlaceholder" placeholder="Bijv. 2.000">
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </label>
-            <div class="currency-input">
-                <input type="number" id="internalCost" min="0" value="0" onchange="calculate()" oninput="calculate()" data-i18n-placeholder="internalCostPlaceholder" placeholder="Bijv. 5.000">
             </div>
-        </div>
-        
-        <div class="form-group">
-            <label for="variableCost" data-i18n="variableCostLabel">Jaarlijks terugkomende D4A kosten</label>
-            <div class="currency-input">
-                <input type="number" id="variableCost" min="0" onchange="calculate()" oninput="calculate()" data-i18n-placeholder="variableCostPlaceholder" placeholder="Bijv. 3.000">
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="recurringInternalCost" data-i18n="recurringInternalCostLabel">Jaarlijks terugkomende interne kosten</label>
-            <div class="currency-input">
-                <input type="number" id="recurringInternalCost" min="0" onchange="calculate()" oninput="calculate()" data-i18n-placeholder="recurringInternalCostPlaceholder" placeholder="Bijv. 2.000">
-            </div>
-        </div>
-
-    </div>
-</div>
 
             <div class="results-column">
                 <div class="card" id="placeholderCard">
-                    <div class="results-placeholder">
-                        <div class="results-placeholder-icon">&#x1F4CA;</div>
+                    <div class="results-placeholder" style="text-align: center; padding: 40px 20px;">
+                        <div class="results-placeholder-icon" style="font-size: 3rem; margin-bottom: 10px;">📊</div>
                         <h3 data-i18n="placeholderTitle">Vul uw gegevens in</h3>
                         <p data-i18n="placeholderText">Selecteer uw sector, productie parameters en OEE situatie om uw besparingspotentieel te zien</p>
                     </div>
@@ -161,7 +167,7 @@
                         </div>
                         <div style="flex:1;">
                             <h2 class="th-tooltip" style="border-bottom: none; cursor: help; display: inline-flex; align-items: center;">
-                                <span data-i18n="cardSavingsTitle">Besparingspotentieel</span>
+                                <span data-i18n="cardSavingsTitle">Extra marge & kosten reductie</span>
                                 <span class="info-icon" style="margin-left: 6px;">ⓘ</span>
                                 <div class="tooltip-text">
                                     <span data-i18n="savingPotentialTooltip"></span>
@@ -224,30 +230,21 @@
                         </div>
 
                         <div class="scenario-card" data-scenario="aangepast" onclick="selectScenario('aangepast')">
-    <div class="scenario-label" data-i18n="custom">Aangepast</div>
-    <div class="scenario-three-year" id="customThreeYear">-</div>
-    <div class="scenario-three-year-label" data-i18n="overThreeYears">over 3 jaar</div>
-    <div class="scenario-divider"></div>
-    <div class="scenario-years-grid">
-        <div class="year-col">
-            <span class="year-label" data-i18n="calcYear1">Jaar 1</span>
-            <span class="year-value" id="customYear1">-</span>
-        </div>
-        <div class="year-col">
-            <span class="year-label" data-i18n="calcYear2">Jaar 2</span>
-            <span class="year-value" id="customYear2">-</span>
-        </div>
-        <div class="year-col">
-            <span class="year-label" data-i18n="calcYear3">Jaar 3</span>
-            <span class="year-value" id="customYear3">-</span>
-        </div>
-    </div>
-    <div class="scenario-divider"></div>
-    <div class="custom-oee-input-wrapper">
-        <input type="number" id="customOEEInput" class="custom-oee-input" min="0" max="100" step="0.1" placeholder="%" oninput="calculate()">
-    </div>
-    <div class="scenario-oee-label" data-i18n="oeeImprovement">OEE verbetering</div>
-</div>
+                            <div class="scenario-label" data-i18n="custom">Aangepast</div>
+                            <div class="scenario-three-year" id="customThreeYear">-</div>
+                            <div class="scenario-three-year-label" data-i18n="overThreeYears">over 3 jaar</div>
+                            <div class="scenario-divider"></div>
+                            <div class="scenario-years-grid">
+                                <div class="year-col"><span class="year-label" data-i18n="calcYear1">Jaar 1</span><span class="year-value" id="customYear1">-</span></div>
+                                <div class="year-col"><span class="year-label" data-i18n="calcYear2">Jaar 2</span><span class="year-value" id="customYear2">-</span></div>
+                                <div class="year-col"><span class="year-label" data-i18n="calcYear3">Jaar 3</span><span class="year-value" id="customYear3">-</span></div>
+                            </div>
+                            <div class="scenario-divider"></div>
+                            <div class="custom-oee-input-wrapper">
+                                <input type="number" id="customOEEInput" class="custom-oee-input" min="0" max="100" step="0.1" placeholder="%" oninput="calculate()">
+                            </div>
+                            <div class="scenario-oee-label" data-i18n="oeeImprovement">OEE verbetering</div>
+                        </div>
                     </div>
                 </div>
 
@@ -293,7 +290,7 @@
                             <span data-i18n="cumulativeCosts">Cumulatieve Kosten</span>
                         </div>
                     </div>
-                    <div class="break-even-note">
+                    <div class="break-even-note" style="margin-top: 10px; font-size: 0.85rem; color: #64748b;">
                         <span data-i18n="breakEvenNotePrefix">Gebaseerd op het</span> 
                         <span id="breakEvenScenarioName"></span> 
                         <span data-i18n="breakEvenNoteSuffix">scenario</span>
@@ -315,18 +312,18 @@
             </div>
             <div class="calc-modal-body">
                 <div class="calc-section">
-                    <h3 data-i18n="calcStep1Title">1. Toegevoegde waarde per uur</h3>
-                    <div class="calc-formula" data-i18n="calcStep1Formula">Waarde per uur = Output per uur &times; Marge per eenheid</div>
+                    <h3 data-i18n="calcStep1Title">1. Toegevoegde marge per uur</h3>
+                    <div class="calc-formula" data-i18n="calcStep1Formula">Marge per uur = Output per uur &times; Marge per eenheid</div>
                     <p class="calc-desc" data-i18n="calcStep1Desc">De output en marge komen uit uw sector benchmarks of uw eigen ingevoerde waarden.</p>
                 </div>
                 <div class="calc-section">
                     <h3 data-i18n="calcStep2Title">2. Jaarlijkse besparing (per lijn)</h3>
-                    <div class="calc-formula" data-i18n="calcStep2Formula">Jaarlijks = Waarde/uur (bij 100%) × OEE verbetering (punten) × Werkuren × Kostenfactor</div>
-                    <p class="calc-desc" data-i18n="calcStep2Desc">Elk gewonnen procentpunt OEE wordt direct gewaardeerd tegen de toegevoegde waarde per uur. Als u bijvoorbeeld van 50% naar 52% OEE gaat, rekent het model met de 2% winst op uw totale capaciteit.</p>
+                    <div class="calc-formula" data-i18n="calcStep2Formula">Jaarlijks = Marge/uur (bij 100%) × OEE verbetering (punten) × Werkuren × Kostenfactor</div>
+                    <p class="calc-desc" data-i18n="calcStep2Desc">Elk gewonnen procentpunt OEE wordt direct gewaardeerd tegen de toegevoegde marge per uur. Als u bijvoorbeeld van 50% naar 52% OEE gaat, rekent het model met de 2% winst op uw totale capaciteit.</p>
                 </div>
                 <div class="calc-section">
                     <h3 data-i18n="calcStep3Title">3. Berekeningsmodel</h3>
-                    <p class="calc-desc" data-i18n="calcStep3Desc"><strong>Vraagmodel:</strong> Onbeperkte vraag &mdash; extra OEE genereert extra omzet (factor = 1).<br><strong>Kostenmodel:</strong> Vast volume &mdash; OEE verbetering verlaagt kosten. Kostenfactor: conservatief 20%, verwacht 30%, optimistisch 40%.</p>
+                    <p class="calc-desc" id="calcStep3Desc"><strong>Vraagmodel:</strong> Onbeperkte vraag &mdash; extra OEE genereert extra omzet (factor = 1).<br><strong>Kostenmodel:</strong> Vast volume &mdash; OEE verbetering verlaagt kosten. Kostenfactor: conservatief 20%, verwacht 30%, optimistisch 40%.</p>
                 </div>
                 <div class="calc-section">
                     <h3 data-i18n="calcStep4Title">4. Besparing over 3 jaar</h3>
@@ -350,65 +347,66 @@
         </div>
     </div>
 
+    <div id="pdf-report-template">
+        <div class="pdf-container" style="padding: 30px; font-family: 'Inter', sans-serif; color: #0f172a; background: #ffffff;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 20px; margin-bottom: 30px;">
+                <div>
+                    <h1 style="font-size: 24px; margin: 0; color: #0284c7;">OEE ROI Calculator</h1>
+                    <p style="margin: 5px 0 0 0; color: #64748b; font-size: 14px;">Business Case & Savings Report</p>
+                </div>
+                <div id="pdf-meta-company" style="text-align: right; font-weight: bold; font-size: 16px; color: #1e293b;"></div>
+            </div>
+
+            <div style="background: #f8fafc; border-radius: 8px; padding: 20px; margin-bottom: 25px; border: 1px solid #e2e8f0;">
+                <h3 style="margin-top: 0; color: #1e293b; border-bottom: 1px solid #cbd5e1; padding-bottom: 8px;">1. Algemene Gegevens</h3>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; font-size: 14px;">
+                    <div><strong>Sector:</strong> <span id="pdf-summary-sector"></span></div>
+                    <div><strong>Aantal Plants / Lijnen:</strong> <span id="pdf-summary-plants"></span></div>
+                </div>
+            </div>
+
+            <div style="background: #f8fafc; border-radius: 8px; padding: 20px; margin-bottom: 25px; border: 1px solid #e2e8f0;">
+                <h3 style="margin-top: 0; color: #1e293b; border-bottom: 1px solid #cbd5e1; padding-bottom: 8px;">2. Projectkosten & Investeringen</h3>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; font-size: 14px;">
+                    <div><strong>Eenmalige D4A kosten:</strong> <span id="pdf-cost-fixed"></span></div>
+                    <div><strong>Eenmalige interne kosten:</strong> <span id="pdf-cost-internal"></span></div>
+                    <div><strong>Jaarlijkse D4A kosten:</strong> <span id="pdf-cost-recurring-d4a"></span></div>
+                    <div><strong>Jaarlijkse interne kosten:</strong> <span id="pdf-cost-recurring-int"></span></div>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 30px;">
+                <h3 style="color: #1e293b; border-bottom: 1px solid #cbd5e1; padding-bottom: 8px;">3. Extra marge &amp; kosten reductie (Verwacht)</h3>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; text-align: center; margin-top: 15px;">
+                    <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 15px;">
+                        <div style="font-size: 12px; color: #166534; text-transform: uppercase;">Jaar 1</div>
+                        <div id="pdf-save-y1" style="font-size: 18px; font-weight: bold; color: #14532d; margin-top: 5px;"></div>
+                    </div>
+                    <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 15px;">
+                        <div style="font-size: 12px; color: #166534; text-transform: uppercase;">Jaar 2</div>
+                        <div id="pdf-save-y2" style="font-size: 18px; font-weight: bold; color: #14532d; margin-top: 5px;"></div>
+                    </div>
+                    <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 15px;">
+                        <div style="font-size: 12px; color: #166534; text-transform: uppercase;">Jaar 3 (Potentieel)</div>
+                        <div id="pdf-save-y3" style="font-size: 18px; font-weight: bold; color: #14532d; margin-top: 5px;"></div>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; background: #f0fdfa; border: 1px solid #99f6e4; border-radius: 6px; padding: 12px 20px; display: flex; justify-content: space-between; font-weight: bold;">
+                    <span style="color: #0d9488;">Verwachte terugverdientijd (Break-even):</span>
+                    <span id="pdf-save-be" style="color: #115e59;"></span>
+                </div>
+            </div>
+
+            <div id="pdf-table-area" style="margin-bottom: 30px;">
+                <h3 style="color: #1e293b; border-bottom: 1px solid #cbd5e1; padding-bottom: 8px;">4. Berekeningsoverzicht per lijn</h3>
+            </div>
+
+            <div style="text-align: center; color: #94a3b8; font-size: 11px; margin-top: 50px; border-top: 1px solid #e2e8f0; padding-top: 15px;">
+                D4A Besparing ROI Berekening | Data gebaseerd op Eurostat SBS &amp; NACE Rev.2
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>
-<div id="pdf-report-template" style="display: none;">
-    <div class="pdf-container" style="padding: 30px; font-family: 'Inter', sans-serif; color: #0f172a; background: #ffffff;">
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 20px; margin-bottom: 30px;">
-            <div>
-                <h1 style="font-size: 24px; margin: 0; color: #0284c7;">OEE ROI Calculator</h1>
-                <p style="margin: 5px 0 0 0; color: #64748b; font-size: 14px;">Business Case & Savings Report</p>
-            </div>
-            <div id="pdf-meta-company" style="text-align: right; font-weight: bold; font-size: 16px; color: #1e293b;"></div>
-        </div>
-
-        <div style="background: #f8fafc; border-radius: 8px; padding: 20px; margin-bottom: 25px; border: 1px solid #e2e8f0;">
-            <h3 style="margin-top: 0; color: #1e293b; border-bottom: 1px solid #cbd5e1; padding-bottom: 8px;">1. Algemene Gegevens</h3>
-            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; font-size: 14px;">
-                <div><strong>Sector:</strong> <span id="pdf-summary-sector"></span></div>
-                <div><strong>Aantal Plants / Lijnen:</strong> <span id="pdf-summary-plants"></span></div>
-            </div>
-        </div>
-
-        <div style="background: #f8fafc; border-radius: 8px; padding: 20px; margin-bottom: 25px; border: 1px solid #e2e8f0;">
-            <h3 style="margin-top: 0; color: #1e293b; border-bottom: 1px solid #cbd5e1; padding-bottom: 8px;">2. Projectkosten & Investeringen</h3>
-            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; font-size: 14px;">
-                <div><strong>Eenmalige D4A kosten:</strong> <span id="pdf-cost-fixed"></span></div>
-                <div><strong>Eenmalige interne kosten:</strong> <span id="pdf-cost-internal"></span></div>
-                <div><strong>Jaarlijkse D4A kosten:</strong> <span id="pdf-cost-recurring-d4a"></span></div>
-                <div><strong>Jaarlijkse interne kosten:</strong> <span id="pdf-cost-recurring-int"></span></div>
-            </div>
-        </div>
-
-        <div style="margin-bottom: 30px;">
-            <h3 style="color: #1e293b; border-bottom: 1px solid #cbd5e1; padding-bottom: 8px;">3. Extra marge &amp; kosten reductie (Verwacht)</h3>
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; text-align: center; margin-top: 15px;">
-                <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 15px;">
-                    <div style="font-size: 12px; color: #166534; text-transform: uppercase;">Jaar 1</div>
-                    <div id="pdf-save-y1" style="font-size: 18px; font-weight: bold; color: #14532d; margin-top: 5px;"></div>
-                </div>
-                <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 15px;">
-                    <div style="font-size: 12px; color: #166534; text-transform: uppercase;">Jaar 2</div>
-                    <div id="pdf-save-y2" style="font-size: 18px; font-weight: bold; color: #14532d; margin-top: 5px;"></div>
-                </div>
-                <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 15px;">
-                    <div style="font-size: 12px; color: #166534; text-transform: uppercase;">Jaar 3 (Potentieel)</div>
-                    <div id="pdf-save-y3" style="font-size: 18px; font-weight: bold; color: #14532d; margin-top: 5px;"></div>
-                </div>
-            </div>
-            <div style="margin-top: 15px; background: #f0fdfa; border: 1px solid #99f6e4; border-radius: 6px; padding: 12px 20px; display: flex; justify-content: space-between; font-weight: bold;">
-                <span style="color: #0d9488;">Verwachte terugverdientijd (Break-even):</span>
-                <span id="pdf-save-be" style="color: #115e59;"></span>
-            </div>
-        </div>
-
-        <div id="pdf-table-area" style="margin-bottom: 30px;">
-            <h3 style="color: #1e293b; border-bottom: 1px solid #cbd5e1; padding-bottom: 8px;">4. Berekeningsoverzicht per lijn</h3>
-            </div>
-
-        <div style="text-align: center; color: #94a3b8; font-size: 11px; margin-top: 50px; border-top: 1px solid #e2e8f0; padding-top: 15px;">
-            D4A Besparing ROI Berekening | Data gebaseerd op Eurostat SBS &amp; NACE Rev.2
-        </div>
-    </div>
-</div>

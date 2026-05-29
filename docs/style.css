@@ -489,7 +489,7 @@ input, select, button, textarea {
     border: 1px solid #cbd5e1;
     border-radius: 6px;
     font-family: 'Inter', sans-serif;
-    font-size: 0.8rem; /* Changed from 0.9rem to 0.8rem for a smaller look */
+    font-size: 0.8rem; 
     color: #1e293b;
     background-color: #fff;
     transition: border-color 0.2s;
@@ -758,7 +758,18 @@ input, select, button, textarea {
 .scenario-card.selected .year-value { color: #0369a1; }
 .scenario-card.selected .year-label { color: #00AAFF; }
 
-/* Custom Scenario Input */
+/* Custom OEE Input and Table Numerics */
+.lines-table input[type="number"].line-input,
+.custom-oee-input {
+    width: 100%;
+    pointer-events: auto !important;
+    cursor: text;
+    background-color: #fff;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 4px 10px;
+}
+
 .custom-oee-input-wrapper {
     display: flex;
     justify-content: center;
@@ -768,14 +779,16 @@ input, select, button, textarea {
 
 .custom-oee-input {
     width: 72px;
-    padding: 4px 6px;
-    border: 2px solid #e5e7eb;
-    border-radius: 6px;
     font-weight: 700;
     color: #16a34a;
     text-align: center;
-    background: #fff;
-    pointer-events: auto !important;
+}
+
+.custom-oee-input:focus, 
+.lines-table input[type="number"].line-input:focus {
+    outline: none;
+    border-color: #00AAFF;
+    box-shadow: 0 0 0 2px rgba(0, 170, 255, 0.1);
 }
 
 /* Break-even Chart */
@@ -816,7 +829,7 @@ input, select, button, textarea {
 .legend-color.benefit { background: #10b981; }
 .legend-color.cost { background: #ef4444; }
 
-/* Remove button styling */
+/* Remove line button styling */
 .btn-remove-line {
     width: 28px;
     height: 28px;
@@ -835,7 +848,7 @@ input, select, button, textarea {
 .btn-remove-line:hover { background: #fecaca; }
 .btn-remove-line:disabled { opacity: 0.3; cursor: not-allowed; }
 
-/* Modal */
+/* Modal layout elements */
 .calc-modal-overlay {
     display: none;
     position: fixed;
@@ -880,117 +893,6 @@ input, select, button, textarea {
 
 .calc-modal-body { padding: 24px 28px 28px; }
 
-.calc-formula {
-    background: #f0f9ff;
-    border: 1px solid #bae6fd;
-    border-radius: 8px;
-    padding: 10px 14px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #0369a1;
-    margin: 8px 0;
-}
-
-footer {
-    text-align: center;
-    margin-top: 40px;
-    color: #94a3b8;
-    font-size: 0.8rem;
-}
-
-/* Responsive */
-@media (max-width: 640px) {
-    .scenario-grid { grid-template-columns: 1fr 1fr; }
-    .form-row, .form-row-3 { grid-template-columns: 1fr; }
-}
-
-/* NEW: Ensures Manual Input boxes match the dropdown style */
-.lines-table input[type="number"].line-input {
-    width: 100%;
-    pointer-events: auto !important;
-}
-/* --- MANUAL INPUT & CUSTOM SCENARIO FIXES --- */
-
-/* Ensures the fourth 'Handmatig' option is visible in dropdowns */
-.line-select option[value="custom"] {
-    display: block !important;
-}
-
-/* Styles for manual numeric inputs when they appear in the table */
-.lines-table input[type="number"].line-input {
-    width: 100%;
-    pointer-events: auto !important;
-    cursor: text;
-    background-color: #fff;
-    border: 1px solid #cbd5e1;
-    border-radius: 6px;
-    padding: 4px 10px;
-}
-
-/* Ensure the 'Aangepast' scenario card and its input are interactive */
-.scenario-card[data-scenario="aangepast"] {
-    pointer-events: auto !important;
-}
-
-.custom-oee-input-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 2px 0;
-}
-
-.custom-oee-input {
-    width: 72px;
-    padding: 4px 6px;
-    border: 2px solid #e5e7eb;
-    border-radius: 6px;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: #16a34a;
-    text-align: center;
-    background: #fff;
-    pointer-events: auto !important;
-    cursor: text;
-}
-
-/* Visual feedback when the manual input is focused */
-.custom-oee-input:focus, 
-.lines-table input[type="number"].line-input:focus {
-    outline: none;
-    border-color: #00AAFF;
-    box-shadow: 0 0 0 2px rgba(0, 170, 255, 0.1);
-}
-.added-value-cell {
-    font-size: 0.8rem;
-    color: #1e293b;
-    font-weight: 500;
-}
-.btn-calc-info {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: #f1f5f9;
-    color: #64748b;
-    border: 1px solid #e2e8f0;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    outline: none;
-}
-
-.btn-calc-info:hover {
-    background: #e2e8f0;
-    color: #0f172a;
-}
-
-.btn-calc-info svg {
-    color: #94a3b8;
-}
-/* Step 2: Modal Structure & Alignment */
 .calc-section {
     margin-bottom: 24px;
 }
@@ -1009,7 +911,6 @@ footer {
     margin: 8px 0;
 }
 
-/* Ramp-up Visualization (The bars for Year 1, 2, 3) */
 .calc-ramp {
     margin: 16px 0;
     display: flex;
@@ -1043,16 +944,27 @@ footer {
     transition: width 0.3s ease;
 }
 
-/* Centering and refining the blue formula boxes */
 .calc-formula {
     text-align: center;
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-radius: 8px;
     padding: 12px;
     font-family: 'Inter', sans-serif;
     font-size: 0.85rem;
     font-weight: 600;
     margin: 12px 0;
+    color: #0369a1;
 }
-/* Fix for Break-even Badge positioning */
+
+footer {
+    text-align: center;
+    margin-top: 40px;
+    color: #94a3b8;
+    font-size: 0.8rem;
+}
+
+/* Break-even badge & metadata blocks */
 .break-even-header {
     display: flex;
     justify-content: space-between;
@@ -1071,103 +983,86 @@ footer {
     white-space: nowrap;
 }
 
-/* Green state (Break-even reached) */
 .break-even-result-badge.success {
     background: #dcfce7;
     color: #16a34a;
     border: 1px solid #bbf7d0;
 }
 
-/* Red state (No break-even within 10 years) */
 .break-even-result-badge.warning {
     background: #fee2e2;
     color: #dc2626;
     border: 1px solid #fecaca;
 }
+
 .data-protection-note {
     font-size: 0.85rem;
-    color: #64748b; /* Subtiel grijs */
+    color: #64748b;
     margin-top: 4px;
     font-style: italic;
 }
-@media print {
-    /* Verberg knoppen, sliders, tabs en invoervelden die niet op het rapport horen */
-    .btn, 
-    .btn-primary, 
-    .btn-remove-line, 
-    #plantTabs, 
-    .num-plants-slider-container, 
-    #sectorSearch,
-    #sectorDropdown {
-        display: none !important;
-    }
 
-    /* Zorg dat de kaarten en achtergrond eruitzien als een dashboard */
-    body {
-        background: #f8fafc !important;
-        color: #0f172a !important;
-        font-family: 'Inter', sans-serif !important;
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-    }
-
-    .card {
-        border: 1px solid #e2e8f0 !important;
-        background: #ffffff !important;
-        box-shadow: none !important;
-        page-break-inside: avoid;
-        margin-bottom: 20px !important;
-        padding: 20px !important;
-        border-radius: 12px !important;
-    }
-
-    /* Transformeer invoervelden naar strakke dashboard-tekst */
-    input[type="number"], 
-    input[type="text"], 
-    select {
-        border: none !important;
-        background: transparent !important;
-        appearance: none !important;
-        -webkit-appearance: none !important;
-        font-weight: 600 !important;
-        color: #1e293b !important;
-        padding: 0 !important;
-        width: auto !important;
-    }
-
-    /* Specifieke tabel optimalisaties voor het rapport */
-    .lines-table {
-        width: 100% !important;
-        border-collapse: collapse !important;
-    }
-
-    .lines-table th {
-        background-color: #f1f5f9 !important;
-        color: #475569 !important;
-    }
-
-    .lines-table td, .lines-table th {
-        padding: 10px !important;
-        border-bottom: 1px solid #e2e8f0 !important;
-    }
+.added-value-cell {
+    font-size: 0.8rem;
+    color: #1e293b;
+    font-weight: 500;
 }
-/* Verberg het rapport-sjabloon op het scherm */
+
+.btn-calc-info {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #f1f5f9;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    outline: none;
+}
+
+.btn-calc-info:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+.btn-calc-info svg {
+    color: #94a3b8;
+}
+
 #pdf-report-template {
     display: none;
 }
 
-@media print {
-    /* Verberg de complete calculator applicatie */
-    #appContainer, .calculator-layout, .container, header, footer, .sidebar, .card, #placeholderCard {
-        display: none !important;
-    }
+/* Responsive & Layout Viewports */
+@media (max-width: 640px) {
+    .scenario-grid { grid-template-columns: 1fr 1fr; }
+    .form-row, .form-row-3 { grid-template-columns: 1fr; }
+}
 
-    /* Toon uitsluitend het schone rapport dashboard */
+/* ==========================================
+   PRINT STYLES (Clean management document view)
+   ========================================== */
+@media print {
+    /* Verberg de interactieve app structuur */
+    body * {
+        visibility: hidden;
+    }
+    
+    /* Maak uitsluitend de print template container volledig zichtbaar */
+    #pdf-report-template, #pdf-report-template * {
+        visibility: visible;
+    }
+    
     #pdf-report-template {
         display: block !important;
+        position: absolute;
+        left: 0;
+        top: 0;
         width: 100% !important;
-        position: absolute !important;
-        left: 0 !important;
-        top: 0 !important;
+        background: #ffffff !important;
     }
 }
