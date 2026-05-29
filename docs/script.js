@@ -37,7 +37,7 @@ const translations = {
         thShiftRegime: 'Ploegen',
         thOutput: 'Max. output',
         outputTooltipTitle: 'Maximale output per uur',
-        outputTooltipBody: 'Dit getal is gebaseerd op de output zonder verlies van snelheid, beschikbaarheid en kwaliteit.',
+        outputTooltipBody: 'Dit getal is gebaseerd op de output zonder verlies van snelheid, availability en kwaliteit.',
         thMargin: 'Marge',
         marginTooltipTitle: 'Margin/Unit is: contributiemarge per extra geproduceerd product',
         marginTooltipBody: '= verkoopprijs (netto) \u2212 variabele kosten per product. Deze waardes zijn bedoeld als startpunt, D4A kan deze waardes aanpassen op basis van uw behoefte. D4A berekent de marge per eenheid als netto verkoopprijs minus variabele kosten per product. Dat is de bijdrage van \u00e9\u00e9n extra geproduceerd stuk. De ranges in onze tabel zijn benchmark-ordegroottes; voor de definitieve businesscase vervangen we die door jullie werkelijke prijs- en kostdata.',
@@ -87,7 +87,7 @@ const translations = {
         calcYear2: 'Jaar 2',
         calcYear3: 'Jaar 3',
         calcStep5Title: '5. Scenario\u2019s',
-        calcStep5Desc: 'Elk scenario (conservatief, verwacht, optimistisch) gebruikt een andere OEE verbetering percentage, gebaseerd op sectordata og historische resultaten.',
+        calcStep5Desc: 'Elk scenario (conservatief, verwacht, optimistisch) gebruikt een andere OEE verbetering percentage, gebaseerd op sectordata en historische resultaten.',
         placeholderTitle: 'Vul uw gegevens in',
         placeholderText: 'Selecteer uw sector, productie parameters en OEE situatie om uw besparingspotentieel te zien',
         savingPotentialTooltip: 'Dit besparingspotentieel is gebaseerd op de upgrade van OEE blue naar T4A. De OEE verhoging die gepaard gaat met deze upgrade wordt behaald door: 1. Direct inzicht op actuele stand van zaken vanaf overal in de wereld 2. Makkelijker schaalbaar als het gaat om lijnen en functionaliteiten 3. Koppeling met ERP for scherpere analyses 4. Nieuwe inzichten en analyse tools maken verbeteren nog makkelijker 5. Configuratie en beheer centraal ipv in de fabriek, per lijn 6. meer mogelijkheden tav gebruikersrechten en het automatisch versturen van rapporten 7. Maximale flexibiliteit bij keuze on/of premise 8. Inzetbaar als data platform: ontvangen data uit andere bronnen dan productie machines, combineren en presenteren in T4A & Real time Koppeling mogelijk met specialistische data analyse tools, oa PowerBI.',
@@ -1029,7 +1029,6 @@ function exportPDF() {
     const saveY3 = document.getElementById(selectedScenario + 'Year3').textContent;
     const breakEvenTime = document.getElementById('breakEvenYear').textContent;
 
-    // Vul algemene datum in plaats van bedrijfsnaam
     const opt = { year: 'numeric', month: 'long', day: 'numeric' };
     document.getElementById('pdf-current-date').textContent = new Date().toLocaleDateString('nl-NL', opt);
     
@@ -1046,7 +1045,6 @@ function exportPDF() {
     document.getElementById('pdf-save-y3').textContent = saveY3;
     document.getElementById('pdf-save-be').textContent = breakEvenTime;
 
-    // NIEUW: Canvas grafiek omzetten naar afbeelding en injecteren in het PDF sjabloon
     const liveCanvas = document.getElementById('breakEvenCanvas');
     const pdfGraphImage = document.getElementById('pdf-graph-image');
     if (liveCanvas && pdfGraphImage) {
