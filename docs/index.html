@@ -297,7 +297,6 @@
         </footer>
     </div>
 
-    <!-- Modals area -->
     <div class="calc-modal-overlay" id="calcModal" onclick="closeCalcModal(event)">
         <div class="calc-modal">
             <div class="calc-modal-header">
@@ -341,68 +340,66 @@
         </div>
     </div>
 
-    <!-- Hidden PDF Summary Document Layout Section -->
     <div id="pdf-report-template">
         <div class="pdf-container" style="padding: 30px; font-family: 'Inter', sans-serif; color: #0f172a; background: #ffffff;">
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 20px; margin-bottom: 30px;">
                 <div>
                     <h1 style="font-size: 24px; margin: 0; color: #0284c7;">OEE ROI Calculator</h1>
-                    <p style="margin: 5px 0 0 0; color: #64748b; font-size: 14px;">Business Case & Savings Report</p>
+                    <p style="margin: 5px 0 0 0; color: #64748b; font-size: 14px;" data-i18n="pdfSubtitle">Business Case & Savings Report</p>
                 </div>
                 <div style="text-align: right; color: #64748b; font-size: 12px;" id="pdf-current-date"></div>
             </div>
 
             <div style="background: #f8fafc; border-radius: 8px; padding: 20px; margin-bottom: 25px; border: 1px solid #e2e8f0;">
-                <h3 style="margin-top: 0; color: #1e293b; border-bottom: 1px solid #cbd5e1; padding-bottom: 8px;">1. Algemene Gegevens</h3>
+                <h3 style="margin-top: 0; color: #1e293b; border-bottom: 1px solid #cbd5e1; padding-bottom: 8px;" data-i18n="pdfSecGeneral">1. Algemene Gegevens</h3>
                 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; font-size: 14px;">
-                    <div><strong>Sector:</strong> <span id="pdf-summary-sector"></span></div>
-                    <div><strong>Aantal Plants / Lijnen:</strong> <span id="pdf-summary-plants"></span></div>
+                    <div><strong data-i18n="pdfLabelSector">Sector:</strong> <span id="pdf-summary-sector"></span></div>
+                    <div><strong data-i18n="pdfLabelPlantsLines">Aantal Plants / Lijnen:</strong> <span id="pdf-summary-plants"></span></div>
                 </div>
             </div>
 
             <div style="background: #f8fafc; border-radius: 8px; padding: 20px; margin-bottom: 25px; border: 1px solid #e2e8f0;">
-                <h3 style="margin-top: 0; color: #1e293b; border-bottom: 1px solid #cbd5e1; padding-bottom: 8px;">2. Projectkosten & Investeringen</h3>
+                <h3 style="margin-top: 0; color: #1e293b; border-bottom: 1px solid #cbd5e1; padding-bottom: 8px;" data-i18n="pdfSecCosts">2. Projectkosten & Investeringen</h3>
                 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; font-size: 14px;">
-                    <div><strong>Eenmalige D4A kosten:</strong> <span id="pdf-cost-fixed"></span></div>
-                    <div><strong>Eenmalige interne kosten:</strong> <span id="pdf-cost-internal"></span></div>
-                    <div><strong>Jaarlijkse D4A kosten:</strong> <span id="pdf-cost-recurring-d4a"></span></div>
-                    <div><strong>Jaarlijkse interne kosten:</strong> <span id="pdf-cost-recurring-int"></span></div>
+                    <div><strong data-i18n="fixedFeeLabel">Eenmalige D4A kosten:</strong> <span id="pdf-cost-fixed"></span></div>
+                    <div><strong data-i18n="internalCostLabel">Eenmalige interne kosten:</strong> <span id="pdf-cost-internal"></span></div>
+                    <div><strong data-i18n="variableCostLabel">Jaarlijks terugkomende D4A kosten:</strong> <span id="pdf-cost-recurring-d4a"></span></div>
+                    <div><strong data-i18n="recurringInternalCostLabel">Jaarlijks terugkomende interne kosten:</strong> <span id="pdf-cost-recurring-int"></span></div>
                 </div>
             </div>
 
             <div style="margin-bottom: 30px;">
-                <h3 style="color: #1e293b; border-bottom: 1px solid #cbd5e1; padding-bottom: 8px;">3. Extra marge &amp; kosten reductie (Verwacht)</h3>
+                <h3 style="color: #1e293b; border-bottom: 1px solid #cbd5e1; padding-bottom: 8px;" id="pdf-savings-header">3. Extra marge &amp; kosten reductie</h3>
                 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; text-align: center; margin-top: 15px;">
                     <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 15px;">
-                        <div style="font-size: 12px; color: #166534; text-transform: uppercase;">Jaar 1</div>
+                        <div style="font-size: 12px; color: #166534; text-transform: uppercase;" data-i18n="calcYear1">Jaar 1</div>
                         <div id="pdf-save-y1" style="font-size: 18px; font-weight: bold; color: #14532d; margin-top: 5px;"></div>
                     </div>
                     <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 15px;">
-                        <div style="font-size: 12px; color: #166534; text-transform: uppercase;">Jaar 2</div>
+                        <div style="font-size: 12px; color: #166534; text-transform: uppercase;" data-i18n="calcYear2">Jaar 2</div>
                         <div id="pdf-save-y2" style="font-size: 18px; font-weight: bold; color: #14532d; margin-top: 5px;"></div>
                     </div>
                     <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 15px;">
-                        <div style="font-size: 12px; color: #166534; text-transform: uppercase;">Jaar 3 (Potentieel)</div>
+                        <div style="font-size: 12px; color: #166534; text-transform: uppercase;" id="pdf-y3-label">Jaar 3 (Potentieel)</div>
                         <div id="pdf-save-y3" style="font-size: 18px; font-weight: bold; color: #14532d; margin-top: 5px;"></div>
                     </div>
                 </div>
                 <div style="margin-top: 15px; background: #f0fdfa; border: 1px solid #99f6e4; border-radius: 6px; padding: 12px 20px; display: flex; justify-content: space-between; font-weight: bold;">
-                    <span style="color: #0d9488;">Verwachte terugverdientijd (Break-even):</span>
+                    <span style="color: #0d9488;" data-i18n="pdfLabelExpectedBE">Verwachte terugverdientijd (Break-even):</span>
                     <span id="pdf-save-be" style="color: #115e59;"></span>
                 </div>
             </div>
 
-            <!-- GEWIZIGD: Gecorrigeerde titel van Break-even Prototyping naar Break-even Grafiek -->
             <div style="margin-bottom: 30px; page-break-inside: avoid;">
-                <h3 style="color: #1e293b; border-bottom: 1px solid #cbd5e1; padding-bottom: 8px;">4. Break-even Grafiek</h3>
+                <h3 style="color: #1e293b; border-bottom: 1px solid #cbd5e1; padding-bottom: 8px;" data-i18n="pdfSecGraph">4. Break-even Grafiek</h3>
                 <div style="text-align: center; margin-top: 15px; background: #f8fafc; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0;">
                     <img id="pdf-graph-image" style="width: 100%; max-height: 240px; object-fit: contain;" alt="Break-even Chart">
                     <div style="display: flex; justify-content: center; gap: 24px; margin-top: 10px; font-size: 12px; color: #64748b;">
                         <div style="display: flex; align-items: center; gap: 6px;">
-                            <div style="width: 20px; height: 4px; background: #10b981; border-radius: 2px;"></div> Cumulatief Voordeel
+                            <div style="width: 20px; height: 4px; background: #10b981; border-radius: 2px;"></div> <span data-i18n="cumulativeBenefit">Cumulatief Voordeel</span>
                         </div>
                         <div style="display: flex; align-items: center; gap: 6px;">
-                            <div style="width: 20px; height: 4px; background: #ef4444; border-radius: 2px;"></div> Cumulatieve Kosten
+                            <div style="width: 20px; height: 4px; background: #ef4444; border-radius: 2px;"></div> <span data-i18n="cumulativeCosts">Cumulatieve Kosten</span>
                         </div>
                     </div>
                     <div id="pdf-graph-note" style="margin-top: 8px; font-size: 11px; color: #64748b; font-style: italic;"></div>
@@ -410,10 +407,10 @@
             </div>
 
             <div id="pdf-table-area" style="margin-bottom: 30px;">
-                <h3 style="color: #1e293b; border-bottom: 1px solid #cbd5e1; padding-bottom: 8px;">5. Berekeningsoverzicht per lijn</h3>
+                <h3 style="color: #1e293b; border-bottom: 1px solid #cbd5e1; padding-bottom: 8px;" data-i18n="pdfSecOverview">5. Berekeningsoverzicht per lijn</h3>
             </div>
 
-            <div style="text-align: center; color: #94a3b8; font-size: 11px; margin-top: 40px; border-top: 1px solid #e2e8f0; padding-top: 15px;">
+            <div style="text-align: center; color: #94a3b8; font-size: 11px; margin-top: 40px; border-top: 1px solid #e2e8f0; padding-top: 15px;" data-i18n="footer">
                 D4A Besparing ROI Berekening | Data gebaseerd op Eurostat SBS &amp; NACE Rev.2
             </div>
         </div>

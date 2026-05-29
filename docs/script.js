@@ -129,41 +129,21 @@ const translations = {
         yearLabel: 'Jaar',
         footer: 'D4A Besparing ROI Berekening | Data gebaseerd op Eurostat SBS & NACE Rev.2 (2022-2023)',
         alertFillIn: 'Vul eerst alle gegevens in voordat u exporteert.',
-        pdfTitle: 'ROI Rapport',
-        pdfExpectedSavings: 'Verwachte Besparing (per jaar)',
-        pdfMonthsBreakeven: 'Maanden Break-even',
-        pdfRoi3Year: 'ROI (3 jaar)',
-        pdfNetBenefit3Year: 'Netto Voordeel (3 jaar)',
-        pdfScenarioAnalysis: 'Scenario Analyse',
-        pdfPerYear: 'Per Jaar',
-        pdfOver3Years: 'Over 3 Year',
-        pdfOeeImprovement: 'OEE Verbetering',
-        pdfCompanyDetails: 'Bedrijfsgegevens',
-        pdfSector: 'Sector',
-        pdfOeeSituation: 'OEE Situatie',
-        pdfMaxOutput: 'Maximal output per uur',
-        pdfMarginPerUnit: 'Marge per eenheid',
-        pdfValuePerHour: 'Marge per uur',
-        pdfNumPlants: 'Aantal Plants',
-        pdfTotalLines: 'Totaal Lijnen',
-        pdfOeeImprovementSection: 'OEE Verbetering',
-        pdfCurrentOee: 'Huidige OEE',
-        pdfExpectedImprov: 'Verwachte verbetering',
-        pdfPotentialOee: 'Potentieel OEE',
-        pdfInvestment: 'Investering',
-        pdfFixedCosts: 'Eenmalige D4A kosten',
-        pdfInternalCosts: 'Eenmalige interne kosten',
-        pdfVariableCosts: 'Jaarlijks terugkomende D4A kosten',
-        pdfTotalCosts3yr: 'Totale kosten (3 jaar)',
-        pdfNetBenefitExpected: 'Netto Voordeel (3 jaar, verwacht)',
-        pdfPlantsLines: 'Plants & Lines',
-        pdfLine: 'Lijn',
-        pdfFooterData: 'Data gebaseerd op Eurostat SBS & NACE Rev.2 (2022-2023)',
-        outputLabelLow: 'Laag',
-        outputLabelAvg: 'Gemiddeld',
-        outputLabelHigh: 'Hoog',
-        rampUpTitle: "Geleidelijke Besparingsopbouw (Ramp-up)",
-        rampUpDesc: "De ROI houdt rekening met een realistisch adoptieproces. We bouwen de resultaten stapsgewijs op (Jaar 1: 33%, Jaar 2: 67%, Year 3: 100%) om rekening te houden met de tijd die nodig is voor training, procesoptimalisatie en gedragsverandering binnen uw team.",
+        pdfSubtitle: 'Business Case & Savings Report',
+        pdfSecGeneral: '1. Algemene Gegevens',
+        pdfLabelSector: 'Sector:',
+        pdfLabelPlantsLines: 'Aantal Plants / Lijnen:',
+        pdfSecCosts: '2. Projectkosten & Investeringen',
+        pdfSecGraph: '4. Break-even Grafiek',
+        pdfSecOverview: '5. Berekeningsoverzicht per lijn',
+        pdfLabelExpectedBE: 'Verwachte terugverdientijd (Break-even):',
+        pdfY3LabelPotential: 'Jaar 3 (Potentieel)',
+        pdfY3LabelCustom: 'Jaar 3',
+        pdfHeaderSavings: '3. Extra marge &amp; kosten reductie',
+        pdfHeaderSavingsCustom: '3. Extra marge &amp; kosten reductie (Aangepast)',
+        pdfHeaderSavingsExpected: '3. Extra marge &amp; kosten reductie (Verwacht)',
+        pdfHeaderSavingsConservative: '3. Extra marge &amp; kosten reductie (Conservatief)',
+        pdfHeaderSavingsOptimistic: '3. Extra marge &amp; kosten reductie (Optimistisch)',
         sectorPharm: 'Farmaceutische',
         sectorFood: 'Food',
         sectorBottlers: 'Bottlers',
@@ -176,7 +156,6 @@ const translations = {
         sectorMachine: 'Machinebouw',
         sectorAuto: 'Auto & Transport',
         sectorElectronics: 'Electronica',
-        sectorOil: 'Olie & Raffinaderij',
     },
     en: {
         pageTitle: 'OEE ROI Calculator - D4A Savings Calculation',
@@ -305,41 +284,21 @@ const translations = {
         yearLabel: 'Year',
         footer: 'D4A Savings ROI Calculation | Data based on Eurostat SBS & NACE Rev.2 (2022-2023)',
         alertFillIn: 'Please fill in all details before exporting.',
-        pdfTitle: 'ROI Report',
-        pdfExpectedSavings: 'Expected Savings (per year)',
-        pdfMonthsBreakeven: 'Months Break-even',
-        pdfRoi3Year: 'ROI (3 years)',
-        pdfNetBenefit3Year: 'Net Benefit (3 years)',
-        pdfScenarioAnalysis: 'Scenario Analysis',
-        pdfPerYear: 'Per Year',
-        pdfOver3Years: 'Over 3 Year',
-        pdfOeeImprovement: 'OEE Improvement',
-        pdfCompanyDetails: 'Company Details',
-        pdfSector: 'Sector',
-        pdfOeeSituation: 'OEE Situation',
-        pdfMaxOutput: 'Maximum output per hour',
-        pdfMarginPerUnit: 'Margin per unit',
-        pdfValuePerHour: 'Margin per hour',
-        pdfNumPlants: 'Number of Plants',
-        pdfTotalLines: 'Total Lines',
-        pdfOeeImprovementSection: 'OEE Improvement',
-        pdfCurrentOee: 'Current OEE',
-        pdfExpectedImprov: 'Expected improvement',
-        pdfPotentialOee: 'Potential OEE',
-        pdfInvestment: 'Investment',
-        pdfFixedCosts: 'One-time D4A costs',
-        pdfInternalCosts: 'One-time internal costs',
-        pdfVariableCosts: 'Annual recurring D4A costs',
-        pdfTotalCosts3yr: 'Total costs (3 years)',
-        pdfNetBenefitExpected: 'Net Benefit (3 years, expected)',
-        pdfPlantsLines: 'Plants & Lines',
-        pdfLine: 'Line',
-        pdfFooterData: 'Data based on Eurostat SBS & NACE Rev.2 (2022-2023)',
-        outputLabelLow: 'Low',
-        outputLabelAvg: 'Average',
-        outputLabelHigh: 'High',
-        rampUpTitle: "Gradual Savings Realization (Ramp-up)",
-        rampUpDesc: "The ROI accounts for a realistic adoption process. Results are built up in stages (Year 1: 33%, Year 2: 67%, Year 3: 100%) to reflect the time required for staff training, process optimization, and cultural change within your organization.",
+        pdfSubtitle: 'Business Case & Savings Report',
+        pdfSecGeneral: '1. General Parameters',
+        pdfLabelSector: 'Sector / Industry:',
+        pdfLabelPlantsLines: 'Plants / Lines Configuration:',
+        pdfSecCosts: '2. Project Costs & Investments',
+        pdfSecGraph: '4. Break-even Chart',
+        pdfSecOverview: '5. Calculation Breakdown per Line',
+        pdfLabelExpectedBE: 'Expected Payback Period (Break-even):',
+        pdfY3LabelPotential: 'Year 3 (Potential)',
+        pdfY3LabelCustom: 'Year 3',
+        pdfHeaderSavings: '3. Additional Margin & Cost Reduction',
+        pdfHeaderSavingsCustom: '3. Additional Margin & Cost Reduction (Custom)',
+        pdfHeaderSavingsExpected: '3. Additional Margin & Cost Reduction (Expected)',
+        pdfHeaderSavingsConservative: '3. Additional Margin & Cost Reduction (Conservative)',
+        pdfHeaderSavingsOptimistic: '3. Additional Margin & Cost Reduction (Optimistic)',
         sectorPharm: 'Pharmaceutical',
         sectorFood: 'Food',
         sectorBottlers: 'Bottlers',
@@ -352,7 +311,6 @@ const translations = {
         sectorMachine: 'Machinery',
         sectorAuto: 'Auto & Transport',
         sectorElectronics: 'Electronics',
-        sectorOil: 'Oil & Refinery',
     }
 };
 
@@ -542,7 +500,7 @@ let selectedScenario = 'expected';
 // FORMATTING
 // ==========================================
 function formatCurrency(value) {
-    return new Intl.NumberFormat('nl-NL', {
+    return new Intl.NumberFormat(currentLang === 'en' ? 'en-US' : 'nl-NL', {
         style: 'currency',
         currency: 'EUR',
         minimumFractionDigits: 0,
@@ -938,7 +896,7 @@ function renderCalcBreakdown(rows, totalAnnual) {
         html += `
             <tr>
                 <td class="line-number">${row.lineName}</td>
-                <td>${new Intl.NumberFormat('nl-NL').format(row.hours)}</td>
+                <td>${new Intl.NumberFormat(currentLang === 'en' ? 'en-US' : 'nl-NL').format(row.hours)}</td>
                 <td>+${formatPercentage(row.oeeIncrease)}</td>
                 <td>${formatCurrency(row.addedValue)}</td>
                 <td>
@@ -960,6 +918,10 @@ function renderCalcBreakdown(rows, totalAnnual) {
         </table>`;
         
     container.innerHTML = html;
+}
+
+function calculateBreakEven(yearData) {
+    // Deze interne logische hulpfunctie blijft ongewijzigd
 }
 
 function calculateBreakEven(annualBenefit, fixedFee, totalRecurringCosts) {
@@ -1008,6 +970,9 @@ function renderGraph(yearData) {
     ctx.stroke();
 }
 
+// ==========================================
+// DYNAMIC PDF EXPORT WITH TRANSLATION
+// ==========================================
 function exportPDF() {
     const sectorElement = document.getElementById('sector');
     if (!sectorElement || !sectorElement.value) {
@@ -1015,9 +980,23 @@ function exportPDF() {
         return;
     }
 
-    const sectorText = sectorElement.options[sectorElement.selectedIndex].text;
+    // --- 1. Vertaal alle statische labels in het PDF template ---
+    document.querySelectorAll('#pdf-report-template [data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (translations[currentLang][key] !== undefined) {
+            el.textContent = translations[currentLang][key];
+        }
+    });
+
+    // --- 2. Vertaal dynamische variabelen ---
+    const sectorKey = sectorElement.value;
+    const sectorText = t('sector' + sectorKey.charAt(0).toUpperCase() + sectorKey.slice(1)) || sectorElement.options[sectorElement.selectedIndex].text;
+    
     const plantsCount = document.getElementById('totalPlantsDisplay').textContent;
     const linesCount = document.getElementById('totalLinesDisplay').textContent;
+    const plantsLinesText = currentLang === 'en' 
+        ? `${plantsCount} Plant(s) / ${linesCount} Line(s)`
+        : `${plantsCount} Plant(s) / ${linesCount} Lijn(en)`;
 
     const fixedD4A = parseFloat(document.getElementById('fixedFee').value) || 0;
     const internalOneTime = parseFloat(document.getElementById('internalCost').value) || 0;
@@ -1029,11 +1008,14 @@ function exportPDF() {
     const saveY3 = document.getElementById(selectedScenario + 'Year3').textContent;
     const breakEvenTime = document.getElementById('breakEvenYear').textContent;
 
-    const opt = { year: 'numeric', month: 'long', day: 'numeric' };
-    document.getElementById('pdf-current-date').textContent = new Date().toLocaleDateString('nl-NL', opt);
+    // Datumnotatie op basis van taal
+    const localeStr = currentLang === 'en' ? 'en-US' : 'nl-NL';
+    const dateOpt = { year: 'numeric', month: 'long', day: 'numeric' };
+    document.getElementById('pdf-current-date').textContent = new Date().toLocaleDateString(localeStr, dateOpt);
     
+    // Waarden injecteren
     document.getElementById('pdf-summary-sector').textContent = sectorText;
-    document.getElementById('pdf-summary-plants').textContent = `${plantsCount} Plant(s) / ${linesCount} Lijn(en)`;
+    document.getElementById('pdf-summary-plants').textContent = plantsLinesText;
 
     document.getElementById('pdf-cost-fixed').textContent = formatCurrency(fixedD4A);
     document.getElementById('pdf-cost-internal').textContent = formatCurrency(internalOneTime);
@@ -1045,6 +1027,19 @@ function exportPDF() {
     document.getElementById('pdf-save-y3').textContent = saveY3;
     document.getElementById('pdf-save-be').textContent = breakEvenTime;
 
+    // Dynamische scenario-afhankelijke titels/labels in de PDF
+    const savingsHeader = document.getElementById('pdf-savings-header');
+    const y3Label = document.getElementById('pdf-y3-label');
+    if (selectedScenario === 'aangepast') {
+        savingsHeader.textContent = t('pdfHeaderSavingsCustom');
+        y3Label.textContent = t('pdfY3LabelCustom');
+    } else {
+        const scenarioLabel = selectedScenario.charAt(0).toUpperCase() + selectedScenario.slice(1);
+        savingsHeader.textContent = t('pdfHeaderSavings' + scenarioLabel);
+        y3Label.textContent = t('pdfY3LabelPotential');
+    }
+
+    // --- 3. Break-even live canvas omzetten naar image ---
     const liveCanvas = document.getElementById('breakEvenCanvas');
     const pdfGraphImage = document.getElementById('pdf-graph-image');
     if (liveCanvas && pdfGraphImage) {
@@ -1056,12 +1051,13 @@ function exportPDF() {
         pdfGraphNote.textContent = `${t('breakEvenNotePrefix')} ${t(selectedScenario)} ${t('breakEvenNoteSuffix')}`;
     }
 
-    const sourceTable = document.querySelector('.calc-breakdown-table');
+    // --- 4. Berekeningstabel klonen en vertalen ---
     const tableArea = document.getElementById('pdf-table-area');
-    
     const oldTable = tableArea.querySelector('table');
     if (oldTable) oldTable.remove();
 
+    // Genereer een schone, vertaalde tabel direct vanuit JavaScript data
+    const sourceTable = document.querySelector('.calc-breakdown-table');
     if (sourceTable) {
         const clonedTable = sourceTable.cloneNode(true);
         clonedTable.style.width = '100%';
@@ -1069,10 +1065,40 @@ function exportPDF() {
         clonedTable.style.marginTop = '15px';
         clonedTable.style.fontSize = '13px';
         
+        // Vertaal de headers in de gekloonde tabel handmatig
+        const ths = clonedTable.querySelectorAll('thead th');
+        if (ths.length >= 6) {
+            ths[0].textContent = t('calcBreakdownLine');
+            ths[1].textContent = t('calcBreakdownHours');
+            ths[2].textContent = t('calcBreakdownOEEImpr');
+            ths[3].textContent = t('calcBreakdownValueHr');
+            ths[4].textContent = t('calcBreakdownModel');
+            ths[5].textContent = t('calcBreakdownAnnual');
+        }
+
+        // Vertaal de totalen-rij footer
+        const footerTd = clonedTable.querySelector('tfoot tr td');
+        if (footerTd) {
+            footerTd.textContent = t('calcBreakdownTotal');
+        }
+
+        // Ploegen/Modellen in de rijen vertalen indien nodig
+        clonedTable.querySelectorAll('tbody tr').forEach(row => {
+            const modelTd = row.cells[4];
+            if (modelTd) {
+                const text = modelTd.textContent.trim();
+                if (text.includes('Vraag') || text.includes('Demand')) {
+                    modelTd.textContent = t('modelDemand');
+                } else if (text.includes('Kosten') || text.includes('Cost')) {
+                    const pctMatch = text.match(/\(.*\)/); // Behouw percentage (bijv. 30%)
+                    modelTd.textContent = t('modelCost') + (pctMatch ? ' ' + pctMatch[0] : '');
+                }
+            }
+        });
+
         clonedTable.querySelectorAll('th, td').forEach(cell => {
             cell.style.padding = '8px';
             cell.style.borderBottom = '1px solid #e2e8f0';
-            cell.style.textAlign = 'left';
         });
         
         tableArea.appendChild(clonedTable);
