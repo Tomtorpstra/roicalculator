@@ -17,8 +17,13 @@ const translations = {
         sectorOil: 'Olie & Raffinaderij',
         currentSituationLabel: 'Huidige OEE Situatie',
         situationDefault: '-- Selecteer uw huidige situatie --',
-        situationNoOEE: 'Nieuwe klant - Geen OEE registratie (naar T4A/P4A)',
-        situationBlue: 'OEE Blue upgrade (naar T4A/P4A)',
+        
+        // NIEUWE LABELS NEDERLANDS
+        situationNoOEE: 'Geen OEE software aanwezig',
+        situationBlue: 'Upgrade van bestaande software',
+        situationLabelNoOEE: 'Geen OEE software aanwezig',
+        situationLabelBlue: 'Upgrade van bestaande software',
+        
         numPlantsLabel: 'Aantal Plants',
         outputLabel: 'Maximal output per uur',
         benchmarkNote: '(sector benchmark)',
@@ -60,18 +65,14 @@ const translations = {
         addLineBtn: '+ Lijn Toevoegen',
         cardCostsTitle: 'Projectkosten',
         cardCostsSubtitle: 'Eenmalige en jaarlijkse kosten voor ROI berekening',
-        
-        // Vernieuwde & Nieuwe Kostenlabels NL
         fixedFeeLabel: 'Eenmalige D4A kosten',
         internalCostLabel: 'Eenmalige interne kosten',
         variableCostLabel: 'Jaarlijks terugkomende D4A kosten',
         recurringInternalCostLabel: 'Jaarlijks terugkomende interne kosten',
-        
         fixedFeePlaceholder: 'Bijv. 15.000',
         internalCostPlaceholder: 'Bijv. 5.000',
         variableCostPlaceholder: 'Bijv. 3.000',
         recurringInternalCostPlaceholder: 'Bijv. 2.000',
-        
         internalCostTooltipTitle: 'Interne kosten zijn:',
         internalCostTooltipBody: 'implementatie-uren, trainingsuren, IT hardware, IT software.',
         calcInfoBtn: 'Berekening',
@@ -84,7 +85,7 @@ const translations = {
         calcStep2Desc: 'Elk gewonnen procentpunt OEE wordt direct gewaardeerd tegen de toegevoegde marge per uur. Als u bijvoorbeeld van 50% naar 52% OEE gaat, rekent het model met de 2% winst op uw totale capaciteit.',
         calcStep3Title: '3. Berekeningsmodel',
         calcStep3Desc: '<strong>Vraagmodel:</strong> Onbeperkte vraag \u2014 extra OEE genereert extra omzet (factor = 1).<br><strong>Kostenmodel:</strong> Vast volume \u2014 OEE verbetering verlaagt kosten. Kostenfactor: conservatief 20%, verwacht 30%, optimistisch 40%.',
-        calcStep4Title: '4. Besparing over 3 years',
+        calcStep4Title: '4. Besparing over 3 jaar',
         calcStep4Desc: 'De OEE verbetering wordt geleidelijk opgebouwd over 3 jaar:',
         calcStep4Formula: 'Totaal 3 jaar = Jaarlijks \u00d7 (1/3 + 2/3 + 1) = Jaarlijks \u00d7 2',
         calcYear1: 'Jaar 1',
@@ -157,16 +158,14 @@ const translations = {
         pdfExpectedImprov: 'Verwachte verbetering',
         pdfPotentialOee: 'Potentieel OEE',
         pdfInvestment: 'Investering',
-        pdfFixedCosts: 'Eenmalige D4A kosten',
-        pdfInternalCosts: 'Eenmalige interne kosten',
-        pdfVariableCosts: 'Jaarlijks terugkomende D4A kosten',
+        pdfFixedCosts: 'One-time D4A costs',
+        pdfInternalCosts: 'One-time internal costs',
+        pdfVariableCosts: 'Annual recurring D4A costs',
         pdfTotalCosts3yr: 'Totale kosten (3 jaar)',
         pdfNetBenefitExpected: 'Netto Voordeel (3 jaar, verwacht)',
         pdfPlantsLines: 'Plants & Lijnen',
         pdfLine: 'Lijn',
         pdfFooterData: 'Data gebaseerd op Eurostat SBS & NACE Rev.2 (2022-2023)',
-        situationLabelNoOEE: 'Nieuwe klant - Geen OEE',
-        situationLabelBlue: 'OEE Blue upgrade',
         outputLabelLow: 'Laag',
         outputLabelAvg: 'Gemiddeld',
         outputLabelHigh: 'Hoog',
@@ -201,8 +200,13 @@ const translations = {
         sectorOil: 'Oil & Refinery',
         currentSituationLabel: 'Current OEE Situation',
         situationDefault: '-- Select your current situation --',
-        situationNoOEE: 'New client - No OEE registration (to T4A/P4A)',
-        situationBlue: 'OEE Blue upgrade (to T4A/P4A)',
+        
+        // NIEUWE LABELS ENGELS
+        situationNoOEE: 'No OEE software in place',
+        situationBlue: 'Upgrade of existing software',
+        situationLabelNoOEE: 'No OEE software in place',
+        situationLabelBlue: 'Upgrade of existing software',
+        
         numPlantsLabel: 'Number of Plants',
         outputLabel: 'Maximum output per hour',
         benchmarkNote: '(sector benchmark)',
@@ -242,20 +246,16 @@ const translations = {
         shifts: 'shifts',
         removeBtn: 'Remove',
         addLineBtn: '+ Add Line',
-        cardCostsTitle: 'Projectcosts',
+        cardCostsTitle: 'Project costs',
         cardCostsSubtitle: 'One-time and annual costs for ROI calculation',
-        
-        // Vernieuwde & Nieuwe Kostenlabels EN
         fixedFeeLabel: 'One-time D4A costs',
         internalCostLabel: 'One-time internal costs',
         variableCostLabel: 'Annual recurring D4A costs',
         recurringInternalCostLabel: 'Annual recurring internal costs',
-        
         fixedFeePlaceholder: 'E.g. 15,000',
         internalCostPlaceholder: 'E.g. 5,000',
         variableCostLabelPlaceholder: 'E.g. 3,000',
         recurringInternalCostPlaceholder: 'E.g. 2,000',
-        
         internalCostTooltipTitle: 'Internal costs could be:',
         internalCostTooltipBody: 'implementation hours, training hours, IT hardware, IT software.',
         calcInfoBtn: 'Calculation',
@@ -349,8 +349,6 @@ const translations = {
         pdfPlantsLines: 'Plants & Lines',
         pdfLine: 'Line',
         pdfFooterData: 'Data based on Eurostat SBS & NACE Rev.2 (2022-2023)',
-        situationLabelNoOEE: 'New client - No OEE',
-        situationLabelBlue: 'OEE Blue upgrade',
         outputLabelLow: 'Low',
         outputLabelAvg: 'Average',
         outputLabelHigh: 'High',
@@ -720,8 +718,8 @@ function renderPlantContent() {
                     <td><input type="text" class="line-input" value="${line.name || ''}" onchange="updateLineName(${p}, ${index}, this.value)" placeholder="Lijn naam.."></td>
                     <td>
                         <select class="line-select" onchange="plantData[${p}].lines[${index}].situation=this.value; calculate();">
-                            <option value="blueUpgrade" ${line.situation === 'blueUpgrade' ? 'selected' : ''}>Blue Upgrade</option>
-                            <option value="noOEE" ${line.situation === 'noOEE' ? 'selected' : ''}>Nieuwe Plant</option>
+                            <option value="blueUpgrade" ${line.situation === 'blueUpgrade' ? 'selected' : ''}>${t('situationBlue')}</option>
+                            <option value="noOEE" ${line.situation === 'noOEE' ? 'selected' : ''}>${t('situationNoOEE')}</option>
                         </select>
                     </td>
                     <td>
@@ -803,13 +801,11 @@ function findBreakEvenMonth(annualBenefit, investment, operationalRecurringCosts
 function calculate() {
     const sector = document.getElementById('sector').value;
     
-    // Haal alle 4 invoervelden live op uit de HTML
     const fixedFee = parseFloat(document.getElementById('fixedFee').value) || 0;
     const internalCost = parseFloat(document.getElementById('internalCost').value) || 0;
     const variableCost = parseFloat(document.getElementById('variableCost').value) || 0;
     const recurringInternalCost = parseFloat(document.getElementById('recurringInternalCost').value) || 0;
     
-    // Bereken de gecombineerde kostenstromen
     const totalOneTimeInvestment = fixedFee + internalCost;
     const totalAnnualRecurringCosts = variableCost + recurringInternalCost;
 
@@ -913,7 +909,6 @@ function calculate() {
     renderCalcBreakdown(breakdownRows, results[selectedScenario].annual);
     
     // --- BADGE & GRAPH LOGIC ---
-    // Neemt nu de som van eenmalige investeringen én gecombineerde terugkerende kosten mee
     const breakEvenResult = findBreakEvenMonth(results[selectedScenario].annual, totalOneTimeInvestment, totalAnnualRecurringCosts);
     const badge = document.getElementById('breakEvenBadge');
     const yearDisplay = document.getElementById('breakEvenYear');
