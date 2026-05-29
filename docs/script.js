@@ -9,8 +9,6 @@ const translations = {
         exportPdf: 'Export PDF',
         cardCurrentTitle: 'Uw Huidige Situatie',
         cardCurrentSubtitle: 'Selecteer uw sector en huidige OEE status',
-        companyNameLabel: 'Bedrijfsnaam',
-        companyNamePlaceholder: 'Vul uw bedrijfsnaam in',
         sectorLabel: 'Sector / Industrie',
         sectorDefault: '-- Selecteer uw sector --',
         sectorSearchPlaceholder: 'Zoek sector...',
@@ -89,7 +87,7 @@ const translations = {
         calcYear2: 'Jaar 2',
         calcYear3: 'Jaar 3',
         calcStep5Title: '5. Scenario\u2019s',
-        calcStep5Desc: 'Elk scenario (conservatief, verwacht, optimistisch) gebruikt een andere OEE verbetering percentage, gebaseerd op sectordata en historische resultaten.',
+        calcStep5Desc: 'Elk scenario (conservatief, verwacht, optimistisch) gebruikt een andere OEE verbetering percentage, gebaseerd op sectordata og historische resultaten.',
         placeholderTitle: 'Vul uw gegevens in',
         placeholderText: 'Selecteer uw sector, productie parameters en OEE situatie om uw besparingspotentieel te zien',
         savingPotentialTooltip: 'Dit besparingspotentieel is gebaseerd op de upgrade van OEE blue naar T4A. De OEE verhoging die gepaard gaat met deze upgrade wordt behaald door: 1. Direct inzicht op actuele stand van zaken vanaf overal in de wereld 2. Makkelijker schaalbaar als het gaat om lijnen en functionaliteiten 3. Koppeling met ERP for scherpere analyses 4. Nieuwe inzichten en analyse tools maken verbeteren nog makkelijker 5. Configuratie en beheer centraal ipv in de fabriek, per lijn 6. meer mogelijkheden tav gebruikersrechten en het automatisch versturen van rapporten 7. Maximale flexibiliteit bij keuze on/of premise 8. Inzetbaar als data platform: ontvangen data uit andere bronnen dan productie machines, combineren en presenteren in T4A & Real time Koppeling mogelijk met specialistische data analyse tools, oa PowerBI.',
@@ -114,13 +112,13 @@ const translations = {
         perYear: 'per jaar',
         overThreeYears: 'over 3 jaar',
         oeeImprovement: 'OEE verbetering',
-        cardSectorTitle: 'Sector & Productie Gegevens',
-        valuePerHour: 'Marge / Uur',
-        startOee: 'Start OEE',
-        expectedImprovement: 'Verwachte Verbetering',
-        oeePotentialComparison: 'OEE Potentieel Vergelijking',
-        current: 'Huidige',
-        withT4A: 'Met T4A/P4A',
+        cardSectorTitle: 'Sector & Production Data',
+        valuePerHour: 'Marge / Hour',
+        startOee: 'Starting OEE',
+        expectedImprovement: 'Expected Improvement',
+        oeePotentialComparison: 'OEE Potential Comparison',
+        current: 'Current',
+        withT4A: 'With T4A/P4A',
         cardBreakEvenTitle: 'Break-even Analyse',
         cumulativeBenefit: 'Cumulatief Voordeel',
         cumulativeCosts: 'Cumulatieve Kosten',
@@ -131,7 +129,6 @@ const translations = {
         yearLabel: 'Jaar',
         footer: 'D4A Besparing ROI Berekening | Data gebaseerd op Eurostat SBS & NACE Rev.2 (2022-2023)',
         alertFillIn: 'Vul eerst alle gegevens in voordat u exporteert.',
-        companyDefault: 'Bedrijf',
         pdfTitle: 'ROI Rapport',
         pdfExpectedSavings: 'Verwachte Besparing (per jaar)',
         pdfMonthsBreakeven: 'Maanden Break-even',
@@ -139,10 +136,9 @@ const translations = {
         pdfNetBenefit3Year: 'Netto Voordeel (3 jaar)',
         pdfScenarioAnalysis: 'Scenario Analyse',
         pdfPerYear: 'Per Jaar',
-        pdfOver3Years: 'Over 3 Jaar',
+        pdfOver3Years: 'Over 3 Year',
         pdfOeeImprovement: 'OEE Verbetering',
         pdfCompanyDetails: 'Bedrijfsgegevens',
-        pdfCompany: 'Bedrijf',
         pdfSector: 'Sector',
         pdfOeeSituation: 'OEE Situatie',
         pdfMaxOutput: 'Maximal output per uur',
@@ -160,7 +156,7 @@ const translations = {
         pdfVariableCosts: 'Jaarlijks terugkomende D4A kosten',
         pdfTotalCosts3yr: 'Totale kosten (3 jaar)',
         pdfNetBenefitExpected: 'Netto Voordeel (3 jaar, verwacht)',
-        pdfPlantsLines: 'Plants & Lijnen',
+        pdfPlantsLines: 'Plants & Lines',
         pdfLine: 'Lijn',
         pdfFooterData: 'Data gebaseerd op Eurostat SBS & NACE Rev.2 (2022-2023)',
         outputLabelLow: 'Laag',
@@ -189,8 +185,6 @@ const translations = {
         exportPdf: 'Export PDF',
         cardCurrentTitle: 'Your Current Situation',
         cardCurrentSubtitle: 'Select your sector and current OEE status',
-        companyNameLabel: 'Company Name',
-        companyNamePlaceholder: 'Enter your company name',
         sectorLabel: 'Sector / Industry',
         sectorDefault: '-- Select your sector --',
         sectorSearchPlaceholder: 'Search sector...',
@@ -311,7 +305,6 @@ const translations = {
         yearLabel: 'Year',
         footer: 'D4A Savings ROI Calculation | Data based on Eurostat SBS & NACE Rev.2 (2022-2023)',
         alertFillIn: 'Please fill in all details before exporting.',
-        companyDefault: 'Company',
         pdfTitle: 'ROI Report',
         pdfExpectedSavings: 'Expected Savings (per year)',
         pdfMonthsBreakeven: 'Months Break-even',
@@ -322,7 +315,6 @@ const translations = {
         pdfOver3Years: 'Over 3 Year',
         pdfOeeImprovement: 'OEE Improvement',
         pdfCompanyDetails: 'Company Details',
-        pdfCompany: 'Company',
         pdfSector: 'Sector',
         pdfOeeSituation: 'OEE Situation',
         pdfMaxOutput: 'Maximum output per hour',
@@ -1023,7 +1015,6 @@ function exportPDF() {
         return;
     }
 
-    const companyName = document.getElementById('companyName').value || t('companyDefault');
     const sectorText = sectorElement.options[sectorElement.selectedIndex].text;
     const plantsCount = document.getElementById('totalPlantsDisplay').textContent;
     const linesCount = document.getElementById('totalLinesDisplay').textContent;
@@ -1038,7 +1029,10 @@ function exportPDF() {
     const saveY3 = document.getElementById(selectedScenario + 'Year3').textContent;
     const breakEvenTime = document.getElementById('breakEvenYear').textContent;
 
-    document.getElementById('pdf-meta-company').textContent = companyName;
+    // Vul algemene datum in plaats van bedrijfsnaam
+    const opt = { year: 'numeric', month: 'long', day: 'numeric' };
+    document.getElementById('pdf-current-date').textContent = new Date().toLocaleDateString('nl-NL', opt);
+    
     document.getElementById('pdf-summary-sector').textContent = sectorText;
     document.getElementById('pdf-summary-plants').textContent = `${plantsCount} Plant(s) / ${linesCount} Lijn(en)`;
 
@@ -1051,6 +1045,18 @@ function exportPDF() {
     document.getElementById('pdf-save-y2').textContent = saveY2;
     document.getElementById('pdf-save-y3').textContent = saveY3;
     document.getElementById('pdf-save-be').textContent = breakEvenTime;
+
+    // NIEUW: Canvas grafiek omzetten naar afbeelding en injecteren in het PDF sjabloon
+    const liveCanvas = document.getElementById('breakEvenCanvas');
+    const pdfGraphImage = document.getElementById('pdf-graph-image');
+    if (liveCanvas && pdfGraphImage) {
+        pdfGraphImage.src = liveCanvas.toDataURL('image/png');
+    }
+    
+    const pdfGraphNote = document.getElementById('pdf-graph-note');
+    if (pdfGraphNote) {
+        pdfGraphNote.textContent = `${t('breakEvenNotePrefix')} ${t(selectedScenario)} ${t('breakEvenNoteSuffix')}`;
+    }
 
     const sourceTable = document.querySelector('.calc-breakdown-table');
     const tableArea = document.getElementById('pdf-table-area');

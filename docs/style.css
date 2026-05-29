@@ -1047,12 +1047,10 @@ footer {
    PRINT STYLES (Clean management document view)
    ========================================== */
 @media print {
-    /* Verberg de interactieve app structuur */
     body * {
         visibility: hidden;
     }
     
-    /* Maak uitsluitend de print template container volledig zichtbaar */
     #pdf-report-template, #pdf-report-template * {
         visibility: visible;
     }

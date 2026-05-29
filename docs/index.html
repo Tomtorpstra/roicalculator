@@ -47,13 +47,6 @@
                         </div>
                     </div>
 
-                    <div class="form-row" style="margin-bottom: 20px;">
-                        <div class="form-group">
-                            <label for="companyName" data-i18n="companyNameLabel">Bedrijfsnaam</label>
-                            <input type="text" id="companyName" data-i18n-placeholder="companyNamePlaceholder" placeholder="Vul uw bedrijfsnaam in">
-                        </div>
-                    </div>
-
                     <div class="form-group">
                         <label for="sector" data-i18n="sectorLabel">Sector / Industrie</label>
                         <div class="select-wrapper" id="sectorWrapper">
@@ -304,6 +297,7 @@
         </footer>
     </div>
 
+    <!-- Modals area -->
     <div class="calc-modal-overlay" id="calcModal" onclick="closeCalcModal(event)">
         <div class="calc-modal">
             <div class="calc-modal-header">
@@ -347,6 +341,7 @@
         </div>
     </div>
 
+    <!-- Hidden PDF Summary Document Layout Section -->
     <div id="pdf-report-template">
         <div class="pdf-container" style="padding: 30px; font-family: 'Inter', sans-serif; color: #0f172a; background: #ffffff;">
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 20px; margin-bottom: 30px;">
@@ -354,7 +349,7 @@
                     <h1 style="font-size: 24px; margin: 0; color: #0284c7;">OEE ROI Calculator</h1>
                     <p style="margin: 5px 0 0 0; color: #64748b; font-size: 14px;">Business Case & Savings Report</p>
                 </div>
-                <div id="pdf-meta-company" style="text-align: right; font-weight: bold; font-size: 16px; color: #1e293b;"></div>
+                <div style="text-align: right; color: #64748b; font-size: 12px;" id="pdf-current-date"></div>
             </div>
 
             <div style="background: #f8fafc; border-radius: 8px; padding: 20px; margin-bottom: 25px; border: 1px solid #e2e8f0;">
@@ -397,11 +392,28 @@
                 </div>
             </div>
 
-            <div id="pdf-table-area" style="margin-bottom: 30px;">
-                <h3 style="color: #1e293b; border-bottom: 1px solid #cbd5e1; padding-bottom: 8px;">4. Berekeningsoverzicht per lijn</h3>
+            <!-- NIEUW: Break-even Grafiek Sectie in de PDF -->
+            <div style="margin-bottom: 30px; page-break-inside: avoid;">
+                <h3 style="color: #1e293b; border-bottom: 1px solid #cbd5e1; padding-bottom: 8px;">4. Break-even Prototyping</h3>
+                <div style="text-align: center; margin-top: 15px; background: #f8fafc; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0;">
+                    <img id="pdf-graph-image" style="width: 100%; max-height: 240px; object-fit: contain;" alt="Break-even Chart">
+                    <div style="display: flex; justify-content: center; gap: 24px; margin-top: 10px; font-size: 12px; color: #64748b;">
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <div style="width: 20px; height: 4px; background: #10b981; border-radius: 2px;"></div> Cumulatief Voordeel
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <div style="width: 20px; height: 4px; background: #ef4444; border-radius: 2px;"></div> Cumulatieve Kosten
+                        </div>
+                    </div>
+                    <div id="pdf-graph-note" style="margin-top: 8px; font-size: 11px; color: #64748b; font-style: italic;"></div>
+                </div>
             </div>
 
-            <div style="text-align: center; color: #94a3b8; font-size: 11px; margin-top: 50px; border-top: 1px solid #e2e8f0; padding-top: 15px;">
+            <div id="pdf-table-area" style="margin-bottom: 30px;">
+                <h3 style="color: #1e293b; border-bottom: 1px solid #cbd5e1; padding-bottom: 8px;">5. Berekeningsoverzicht per lijn</h3>
+            </div>
+
+            <div style="text-align: center; color: #94a3b8; font-size: 11px; margin-top: 40px; border-top: 1px solid #e2e8f0; padding-top: 15px;">
                 D4A Besparing ROI Berekening | Data gebaseerd op Eurostat SBS &amp; NACE Rev.2
             </div>
         </div>
