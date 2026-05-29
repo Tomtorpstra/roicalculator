@@ -58,7 +58,7 @@ const translations = {
         shifts: 'ploegen',
         removeBtn: 'Verwijderen',
         addLineBtn: '+ Lijn Toevoegen',
-        cardCostsTitle: 'Project kosten uit offerte',
+        cardCostsTitle: 'Projectkosten',
         cardCostsSubtitle: 'Eenmalige en jaarlijkse kosten voor ROI berekening',
         
         // Vernieuwde & Nieuwe Kostenlabels NL
@@ -242,7 +242,7 @@ const translations = {
         shifts: 'shifts',
         removeBtn: 'Remove',
         addLineBtn: '+ Add Line',
-        cardCostsTitle: 'Project costs from quotation',
+        cardCostsTitle: 'Projectcosts',
         cardCostsSubtitle: 'One-time and annual costs for ROI calculation',
         
         // Vernieuwde & Nieuwe Kostenlabels EN
