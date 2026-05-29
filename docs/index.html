@@ -96,44 +96,54 @@
                 </div>
 
                 <div class="card">
-                    <div class="card-header">
-                        <div class="card-icon orange">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                        </div>
-                        <div>
-                            <h2 data-i18n="cardCostsTitle">Project kosten uit offerte</h2>
-                            <p class="card-subtitle" data-i18n="cardCostsSubtitle">Eenmalige en jaarlijkse kosten voor ROI berekening</p>
-                        </div>
-                    </div>
+    <div class="card-header">
+        <div class="card-icon orange">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <div>
+            <h2 data-i18n="cardCostsTitle">Project kosten uit offerte</h2>
+            <p class="card-subtitle" data-i18n="cardCostsSubtitle">Eenmalige en jaarlijkse kosten voor ROI berekening</p>
+        </div>
+    </div>
 
-                    <div class="form-row form-row-3">
-                        <div class="form-group">
-                            <label for="fixedFee" data-i18n="fixedFeeLabel">Vaste Kosten (Eenmalig)</label>
-                            <div class="currency-input">
-                                <input type="number" id="fixedFee" min="0" onchange="calculate()" oninput="calculate()" data-i18n-placeholder="fixedFeePlaceholder" placeholder="Bijv. 15.000">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="internalCost" class="th-tooltip">
-                                <span data-i18n="internalCostLabel">Interne Kosten (Eenmalig)</span> 
-                                <span class="info-icon">ⓘ</span>
-                                <div class="tooltip-text">
-                                    <span data-i18n="internalCostTooltipBody">implementatie-uren, trainingsuren, IT hardware, IT software.</span>
-                                </div>
-                            </label>
-                            <div class="currency-input">
-                                <input type="number" id="internalCost" min="0" value="0" onchange="calculate()" oninput="calculate()" data-i18n-placeholder="internalCostPlaceholder" placeholder="Bijv. 5.000">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="variableCost" data-i18n="variableCostLabel">Onderhoudskosten (per jaar)</label>
-                            <div class="currency-input">
-                                <input type="number" id="variableCost" min="0" onchange="calculate()" oninput="calculate()" data-i18n-placeholder="variableCostPlaceholder" placeholder="Bijv. 3.000">
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <div class="form-row" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
+        
+        <div class="form-group">
+            <label for="fixedFee" data-i18n="fixedFeeLabel">Eenmalige D4A kosten</label>
+            <div class="currency-input">
+                <input type="number" id="fixedFee" min="0" onchange="calculate()" oninput="calculate()" data-i18n-placeholder="fixedFeePlaceholder" placeholder="Bijv. 15.000">
             </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="internalCost" class="th-tooltip">
+                <span data-i18n="internalCostLabel">Eenmalige interne kosten</span> 
+                <span class="info-icon">ⓘ</span>
+                <div class="tooltip-text">
+                    <span data-i18n="internalCostTooltipBody">implementatie-uren, trainingsuren, IT hardware, IT software.</span>
+                </div>
+            </label>
+            <div class="currency-input">
+                <input type="number" id="internalCost" min="0" value="0" onchange="calculate()" oninput="calculate()" data-i18n-placeholder="internalCostPlaceholder" placeholder="Bijv. 5.000">
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="variableCost" data-i18n="variableCostLabel">Jaarlijks terugkomende D4A kosten</label>
+            <div class="currency-input">
+                <input type="number" id="variableCost" min="0" onchange="calculate()" oninput="calculate()" data-i18n-placeholder="variableCostPlaceholder" placeholder="Bijv. 3.000">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="recurringInternalCost" data-i18n="recurringInternalCostLabel">Jaarlijks terugkomende interne kosten</label>
+            <div class="currency-input">
+                <input type="number" id="recurringInternalCost" min="0" onchange="calculate()" oninput="calculate()" data-i18n-placeholder="recurringInternalCostPlaceholder" placeholder="Bijv. 2.000">
+            </div>
+        </div>
+
+    </div>
+</div>
 
             <div class="results-column">
                 <div class="card" id="placeholderCard">

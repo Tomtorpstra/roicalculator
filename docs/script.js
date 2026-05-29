@@ -60,12 +60,18 @@ const translations = {
         addLineBtn: '+ Lijn Toevoegen',
         cardCostsTitle: 'Project kosten uit offerte',
         cardCostsSubtitle: 'Eenmalige en jaarlijkse kosten voor ROI berekening',
-        fixedFeeLabel: 'Vaste Kosten (Eenmalig)',
+        
+        // Vernieuwde & Nieuwe Kostenlabels NL
+        fixedFeeLabel: 'Eenmalige D4A kosten',
+        internalCostLabel: 'Eenmalige interne kosten',
+        variableCostLabel: 'Jaarlijks terugkomende D4A kosten',
+        recurringInternalCostLabel: 'Jaarlijks terugkomende interne kosten',
+        
         fixedFeePlaceholder: 'Bijv. 15.000',
-        variableCostLabel: 'Onderhoudskosten (per jaar)',
-        variableCostPlaceholder: 'Bijv. 3.000',
-        internalCostLabel: 'Interne Kosten (Eenmalig)',
         internalCostPlaceholder: 'Bijv. 5.000',
+        variableCostPlaceholder: 'Bijv. 3.000',
+        recurringInternalCostPlaceholder: 'Bijv. 2.000',
+        
         internalCostTooltipTitle: 'Interne kosten zijn:',
         internalCostTooltipBody: 'implementatie-uren, trainingsuren, IT hardware, IT software.',
         calcInfoBtn: 'Berekening',
@@ -78,7 +84,7 @@ const translations = {
         calcStep2Desc: 'Elk gewonnen procentpunt OEE wordt direct gewaardeerd tegen de toegevoegde marge per uur. Als u bijvoorbeeld van 50% naar 52% OEE gaat, rekent het model met de 2% winst op uw totale capaciteit.',
         calcStep3Title: '3. Berekeningsmodel',
         calcStep3Desc: '<strong>Vraagmodel:</strong> Onbeperkte vraag \u2014 extra OEE genereert extra omzet (factor = 1).<br><strong>Kostenmodel:</strong> Vast volume \u2014 OEE verbetering verlaagt kosten. Kostenfactor: conservatief 20%, verwacht 30%, optimistisch 40%.',
-        calcStep4Title: '4. Besparing over 3 jaar',
+        calcStep4Title: '4. Besparing over 3 years',
         calcStep4Desc: 'De OEE verbetering wordt geleidelijk opgebouwd over 3 jaar:',
         calcStep4Formula: 'Totaal 3 jaar = Jaarlijks \u00d7 (1/3 + 2/3 + 1) = Jaarlijks \u00d7 2',
         calcYear1: 'Jaar 1',
@@ -101,7 +107,7 @@ const translations = {
         calcBreakdownAnnual: 'Jaarlijks',
         calcBreakdownTotal: 'Totaal per jaar',
         calcBreakdownFormula: 'Besparing per lijn = Werkuren × OEE verbetering × Marge/uur × Modelfactor',
-        cardSavingsTitle: 'Extra marge & kosten reductie', // Aangepast van Besparingspotentieel
+        cardSavingsTitle: 'Extra marge & kosten reductie',
         linesAcross: 'lijnen over',
         conservative: 'conservatieve',
         expected: 'verwachte',
@@ -151,9 +157,9 @@ const translations = {
         pdfExpectedImprov: 'Verwachte verbetering',
         pdfPotentialOee: 'Potentieel OEE',
         pdfInvestment: 'Investering',
-        pdfFixedCosts: 'Vaste kosten (eenmalig)',
-        pdfInternalCosts: 'Interne kosten (eenmalig)',
-        pdfVariableCosts: 'Onderhoudskosten (per jaar)',
+        pdfFixedCosts: 'Eenmalige D4A kosten',
+        pdfInternalCosts: 'Eenmalige interne kosten',
+        pdfVariableCosts: 'Jaarlijks terugkomende D4A kosten',
         pdfTotalCosts3yr: 'Totale kosten (3 jaar)',
         pdfNetBenefitExpected: 'Netto Voordeel (3 jaar, verwacht)',
         pdfPlantsLines: 'Plants & Lijnen',
@@ -238,12 +244,18 @@ const translations = {
         addLineBtn: '+ Add Line',
         cardCostsTitle: 'Project costs from quotation',
         cardCostsSubtitle: 'One-time and annual costs for ROI calculation',
-        fixedFeeLabel: 'Fixed Costs (One-time)',
+        
+        // Vernieuwde & Nieuwe Kostenlabels EN
+        fixedFeeLabel: 'One-time D4A costs',
+        internalCostLabel: 'One-time internal costs',
+        variableCostLabel: 'Annual recurring D4A costs',
+        recurringInternalCostLabel: 'Annual recurring internal costs',
+        
         fixedFeePlaceholder: 'E.g. 15,000',
-        variableCostLabel: 'Maintenance Costs (per year)',
-        variableCostPlaceholder: 'E.g. 3,000',
-        internalCostLabel: 'Internal Costs (One-time)',
         internalCostPlaceholder: 'E.g. 5,000',
+        variableCostLabelPlaceholder: 'E.g. 3,000',
+        recurringInternalCostPlaceholder: 'E.g. 2,000',
+        
         internalCostTooltipTitle: 'Internal costs could be:',
         internalCostTooltipBody: 'implementation hours, training hours, IT hardware, IT software.',
         calcInfoBtn: 'Calculation',
@@ -279,7 +291,7 @@ const translations = {
         calcBreakdownAnnual: 'Annual',
         calcBreakdownTotal: 'Total per year',
         calcBreakdownFormula: 'Savings per line = Work hours × OEE improvement × Margin/hour × Model factor',
-        cardSavingsTitle: 'Additional margin & cost reduction', // Aangepast van Savings Potential
+        cardSavingsTitle: 'Additional margin & cost reduction',
         linesAcross: 'lines across',
         conservative: 'conservative',
         expected: 'expected',
@@ -329,9 +341,9 @@ const translations = {
         pdfExpectedImprov: 'Expected improvement',
         pdfPotentialOee: 'Potential OEE',
         pdfInvestment: 'Investment',
-        pdfFixedCosts: 'Fixed costs (one-time)',
-        pdfInternalCosts: 'Internal costs (one-time)',
-        pdfVariableCosts: 'Maintenance costs (per year)',
+        pdfFixedCosts: 'One-time D4A costs',
+        pdfInternalCosts: 'One-time internal costs',
+        pdfVariableCosts: 'Annual recurring D4A costs',
         pdfTotalCosts3yr: 'Total costs (3 years)',
         pdfNetBenefitExpected: 'Net Benefit (3 years, expected)',
         pdfPlantsLines: 'Plants & Lines',
@@ -400,7 +412,7 @@ function applyTranslations() {
 // CALCULATION MODAL
 // ==========================================
 function openCalcModal() {
-    document.getElementById('calcModal').classList.add('open');
+    document.getElementById('calcModal').open;
 }
 
 function closeCalcModal(event) {
@@ -771,7 +783,7 @@ function updateLineOEE(p, i, v) { const pct = parseFloat(v); plantData[p].lines[
 // CALCULATE
 // ==========================================
 
-function findBreakEvenMonth(annualBenefit, investment, maintenance) {
+function findBreakEvenMonth(annualBenefit, investment, operationalRecurringCosts) {
     let cumulativeBenefit = 0;
     let cumulativeCost = investment;
     
@@ -779,7 +791,7 @@ function findBreakEvenMonth(annualBenefit, investment, maintenance) {
         let yearNum = Math.ceil(m / 12);
         let monthlyBenefit = (annualBenefit * (yearNum <= 3 ? (yearNum / 3) : 1)) / 12;
         cumulativeBenefit += monthlyBenefit;
-        cumulativeCost += (maintenance / 12);
+        cumulativeCost += (operationalRecurringCosts / 12);
 
         if (cumulativeBenefit >= cumulativeCost) {
             return m < 12 ? `${m} ${t('months')}` : `${(m / 12).toFixed(1)} ${t('yearLabel').toLowerCase()}`;
@@ -790,10 +802,16 @@ function findBreakEvenMonth(annualBenefit, investment, maintenance) {
 
 function calculate() {
     const sector = document.getElementById('sector').value;
+    
+    // Haal alle 4 invoervelden live op uit de HTML
     const fixedFee = parseFloat(document.getElementById('fixedFee').value) || 0;
-    const variableCost = parseFloat(document.getElementById('variableCost').value) || 0;
     const internalCost = parseFloat(document.getElementById('internalCost').value) || 0;
-    const totalFixedCost = fixedFee + internalCost;
+    const variableCost = parseFloat(document.getElementById('variableCost').value) || 0;
+    const recurringInternalCost = parseFloat(document.getElementById('recurringInternalCost').value) || 0;
+    
+    // Bereken de gecombineerde kostenstromen
+    const totalOneTimeInvestment = fixedFee + internalCost;
+    const totalAnnualRecurringCosts = variableCost + recurringInternalCost;
 
     if (!sector || !sectorData[sector]) {
         document.getElementById('placeholderCard').style.display = 'block';
@@ -895,7 +913,8 @@ function calculate() {
     renderCalcBreakdown(breakdownRows, results[selectedScenario].annual);
     
     // --- BADGE & GRAPH LOGIC ---
-    const breakEvenResult = findBreakEvenMonth(results[selectedScenario].annual, totalFixedCost, variableCost);
+    // Neemt nu de som van eenmalige investeringen én gecombineerde terugkerende kosten mee
+    const breakEvenResult = findBreakEvenMonth(results[selectedScenario].annual, totalOneTimeInvestment, totalAnnualRecurringCosts);
     const badge = document.getElementById('breakEvenBadge');
     const yearDisplay = document.getElementById('breakEvenYear');
     if (yearDisplay) yearDisplay.textContent = breakEvenResult;
@@ -915,7 +934,7 @@ function calculate() {
         scenarioNameElement.textContent = t(selectedScenario);
     }
 
-    renderGraph(calculateBreakEven(results[selectedScenario].annual, totalFixedCost, variableCost));
+    renderGraph(calculateBreakEven(results[selectedScenario].annual, totalOneTimeInvestment, totalAnnualRecurringCosts));
 }
 
 function renderCalcBreakdown(rows, totalAnnual) {
@@ -963,12 +982,12 @@ function renderCalcBreakdown(rows, totalAnnual) {
     container.innerHTML = html;
 }
 
-function calculateBreakEven(annualBenefit, fixedFee, variableCost) {
+function calculateBreakEven(annualBenefit, fixedFee, totalRecurringCosts) {
     let yearData = [{ year: 0, cumulativeBenefit: 0, cumulativeCost: fixedFee }];
     let cumulativeBenefit = 0, cumulativeCost = fixedFee;
     for (let year = 1; year <= 10; year++) {
         cumulativeBenefit += annualBenefit * (year <= 3 ? year / 3 : 1);
-        cumulativeCost += variableCost;
+        cumulativeCost += totalRecurringCosts;
         yearData.push({ year, cumulativeBenefit, cumulativeCost });
         if (cumulativeBenefit >= cumulativeCost && year >= 5) break;
     }
