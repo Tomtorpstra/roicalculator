@@ -353,3 +353,62 @@
     <script src="script.js"></script>
 </body>
 </html>
+<div id="pdf-report-template" style="display: none;">
+    <div class="pdf-container" style="padding: 30px; font-family: 'Inter', sans-serif; color: #0f172a; background: #ffffff;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 20px; margin-bottom: 30px;">
+            <div>
+                <h1 style="font-size: 24px; margin: 0; color: #0284c7;">OEE ROI Calculator</h1>
+                <p style="margin: 5px 0 0 0; color: #64748b; font-size: 14px;">Business Case & Savings Report</p>
+            </div>
+            <div id="pdf-meta-company" style="text-align: right; font-weight: bold; font-size: 16px; color: #1e293b;"></div>
+        </div>
+
+        <div style="background: #f8fafc; border-radius: 8px; padding: 20px; margin-bottom: 25px; border: 1px solid #e2e8f0;">
+            <h3 style="margin-top: 0; color: #1e293b; border-bottom: 1px solid #cbd5e1; padding-bottom: 8px;">1. Algemene Gegevens</h3>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; font-size: 14px;">
+                <div><strong>Sector:</strong> <span id="pdf-summary-sector"></span></div>
+                <div><strong>Aantal Plants / Lijnen:</strong> <span id="pdf-summary-plants"></span></div>
+            </div>
+        </div>
+
+        <div style="background: #f8fafc; border-radius: 8px; padding: 20px; margin-bottom: 25px; border: 1px solid #e2e8f0;">
+            <h3 style="margin-top: 0; color: #1e293b; border-bottom: 1px solid #cbd5e1; padding-bottom: 8px;">2. Projectkosten & Investeringen</h3>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; font-size: 14px;">
+                <div><strong>Eenmalige D4A kosten:</strong> <span id="pdf-cost-fixed"></span></div>
+                <div><strong>Eenmalige interne kosten:</strong> <span id="pdf-cost-internal"></span></div>
+                <div><strong>Jaarlijkse D4A kosten:</strong> <span id="pdf-cost-recurring-d4a"></span></div>
+                <div><strong>Jaarlijkse interne kosten:</strong> <span id="pdf-cost-recurring-int"></span></div>
+            </div>
+        </div>
+
+        <div style="margin-bottom: 30px;">
+            <h3 style="color: #1e293b; border-bottom: 1px solid #cbd5e1; padding-bottom: 8px;">3. Extra marge &amp; kosten reductie (Verwacht)</h3>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; text-align: center; margin-top: 15px;">
+                <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 15px;">
+                    <div style="font-size: 12px; color: #166534; text-transform: uppercase;">Jaar 1</div>
+                    <div id="pdf-save-y1" style="font-size: 18px; font-weight: bold; color: #14532d; margin-top: 5px;"></div>
+                </div>
+                <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 15px;">
+                    <div style="font-size: 12px; color: #166534; text-transform: uppercase;">Jaar 2</div>
+                    <div id="pdf-save-y2" style="font-size: 18px; font-weight: bold; color: #14532d; margin-top: 5px;"></div>
+                </div>
+                <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 15px;">
+                    <div style="font-size: 12px; color: #166534; text-transform: uppercase;">Jaar 3 (Potentieel)</div>
+                    <div id="pdf-save-y3" style="font-size: 18px; font-weight: bold; color: #14532d; margin-top: 5px;"></div>
+                </div>
+            </div>
+            <div style="margin-top: 15px; background: #f0fdfa; border: 1px solid #99f6e4; border-radius: 6px; padding: 12px 20px; display: flex; justify-content: space-between; font-weight: bold;">
+                <span style="color: #0d9488;">Verwachte terugverdientijd (Break-even):</span>
+                <span id="pdf-save-be" style="color: #115e59;"></span>
+            </div>
+        </div>
+
+        <div id="pdf-table-area" style="margin-bottom: 30px;">
+            <h3 style="color: #1e293b; border-bottom: 1px solid #cbd5e1; padding-bottom: 8px;">4. Berekeningsoverzicht per lijn</h3>
+            </div>
+
+        <div style="text-align: center; color: #94a3b8; font-size: 11px; margin-top: 50px; border-top: 1px solid #e2e8f0; padding-top: 15px;">
+            D4A Besparing ROI Berekening | Data gebaseerd op Eurostat SBS &amp; NACE Rev.2
+        </div>
+    </div>
+</div>

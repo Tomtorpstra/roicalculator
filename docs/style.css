@@ -1151,3 +1151,23 @@ footer {
         border-bottom: 1px solid #e2e8f0 !important;
     }
 }
+/* Verberg het rapport-sjabloon op het scherm */
+#pdf-report-template {
+    display: none;
+}
+
+@media print {
+    /* Verberg de complete calculator applicatie */
+    #appContainer, .calculator-layout, .container, header, footer, .sidebar, .card, #placeholderCard {
+        display: none !important;
+    }
+
+    /* Toon uitsluitend het schone rapport dashboard */
+    #pdf-report-template {
+        display: block !important;
+        width: 100% !important;
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+    }
+}

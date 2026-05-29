@@ -1017,7 +1017,75 @@ function renderGraph(yearData) {
     ctx.stroke();
 }
 
-function exportPDF() { window.print(); }
+function exportPDF() {
+    // 1. Controleer of de sector is ingevuld
+    const sectorElement = document.getElementById('sector');
+    if (!sectorElement || !sectorElement.value) {
+        alert(t('alertFillIn'));
+        return;
+    }
+
+    // 2. Haal alle actuele data en resultaten live op uit het model
+    const companyName = document.getElementById('companyName').value || t('companyDefault');
+    const sectorText = sectorElement.options[sectorElement.selectedIndex].text;
+    const plantsCount = document.getElementById('totalPlantsDisplay').textContent;
+    const linesCount = document.getElementById('totalLinesDisplay').textContent;
+
+    // Kostenkomponenten
+    const fixedD4A = parseFloat(document.getElementById('fixedFee').value) || 0;
+    const internalOneTime = parseFloat(document.getElementById('internalCost').value) || 0;
+    const recurringD4A = parseFloat(document.getElementById('variableCost').value) || 0;
+    const recurringInternal = parseFloat(document.getElementById('recurringInternalCost').value) || 0;
+
+    // Besparingen (Expected Scenario) uit de live interface kaarten halen
+    const saveY1 = document.getElementById('expectedYear1').textContent;
+    const saveY2 = document.getElementById('expectedYear2').textContent;
+    const saveY3 = document.getElementById('expectedYear3').textContent;
+    const breakEvenTime = document.getElementById('breakEvenYear').textContent;
+
+    // 3. Vul het rapport-sjabloon met de data
+    document.getElementById('pdf-meta-company').textContent = companyName;
+    document.getElementById('pdf-summary-sector').textContent = sectorText;
+    document.getElementById('pdf-summary-plants').textContent = `${plantsCount} Plant(s) / ${linesCount} Lijn(en)`;
+
+    document.getElementById('pdf-cost-fixed').textContent = formatCurrency(fixedD4A);
+    document.getElementById('pdf-cost-internal').textContent = formatCurrency(internalOneTime);
+    document.getElementById('pdf-cost-recurring-d4a').textContent = formatCurrency(recurringD4A);
+    document.getElementById('pdf-cost-recurring-int').textContent = formatCurrency(recurringInternal);
+
+    document.getElementById('pdf-save-y1').textContent = saveY1;
+    document.getElementById('pdf-save-y2').textContent = saveY2;
+    document.getElementById('pdf-save-y3').textContent = saveY3;
+    document.getElementById('pdf-save-be').textContent = breakEvenTime;
+
+    // 4. Kloon de berekeningstabel uit het overzicht en plak deze kaal in het rapport
+    const sourceTable = document.querySelector('.calc-breakdown-table');
+    const tableArea = document.getElementById('pdf-table-area');
+    
+    // Verwijder eventuele oude tabelresten in het sjabloon
+    const oldTable = tableArea.querySelector('table');
+    if (oldTable) oldTable.remove();
+
+    if (sourceTable) {
+        const clonedTable = sourceTable.cloneNode(true);
+        // Geef de gekloonde tabel een strakke, cleane styling mee voor op papier
+        clonedTable.style.width = '100%';
+        clonedTable.style.borderCollapse = 'collapse';
+        clonedTable.style.marginTop = '15px';
+        clonedTable.style.fontSize = '13px';
+        
+        clonedTable.querySelectorAll('th, td').forEach(cell => {
+            cell.style.padding = '8px';
+            cell.style.borderBottom = '1px solid #e2e8f0';
+            cell.style.textAlign = 'left';
+        });
+        
+        tableArea.appendChild(clonedTable);
+    }
+
+    // 5. Trigger de browser PDF/Print engine
+    window.print();
+}
 
 document.addEventListener('DOMContentLoaded', async () => {
     await loadSectorData();
