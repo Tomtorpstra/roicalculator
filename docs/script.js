@@ -5,7 +5,7 @@ const translations = {
     nl: {
         pageTitle: 'OEE ROI Calculator - D4A Besparing Berekening',
         subtitle: 'Bereken uw potentiele besparing met T4A/P4A OEE-optimalisatie',
-        dataProtectionNote: 'Ingevoerde data wordt niet opgeslagen.',
+        dataProtectionNote: 'Ingevoerde data wordt nu niet opgeslagen.',
         exportPdf: 'Export PDF',
         cardCurrentTitle: 'Uw Huidige Situatie',
         cardCurrentSubtitle: 'Selecteer uw sector en huidige OEE status',
@@ -52,7 +52,7 @@ const translations = {
         currentOEETooltipBody: 'Het huidige OEE-percentage van deze lijn vóór verbeteringen. Standaard waarde komt uit sector benchmark. Pas aan naar uw werkelijke situatie.',
         thLineName: 'Naam',
         thAction: 'Actie',
-        lineNamePlaceholder: 'Lijn',
+        lineNamePlaceholder: 'Lijn naam..',
         optionCustom: 'Handmatig',
         shift: 'ploeg',
         shifts: 'ploegen',
@@ -207,7 +207,7 @@ const translations = {
         currentOEETooltipBody: 'The current OEE percentage of this line before improvements. Default value comes from sector benchmark. Adjust to your actual situation.',
         thLineName: 'Name',
         thAction: 'Action',
-        lineNamePlaceholder: 'Line',
+        lineNamePlaceholder: 'Line tag..',
         optionCustom: 'Custom',
         shift: 'shift',
         shifts: 'shifts',
@@ -221,7 +221,7 @@ const translations = {
         recurringInternalCostLabel: 'Annual recurring internal costs',
         fixedFeePlaceholder: 'E.g. 15,000',
         internalCostPlaceholder: 'E.g. 5,000',
-        variableCostLabelPlaceholder: 'E.g. 3,000',
+        variableCostPlaceholder: 'E.g. 3,000',
         recurringInternalCostPlaceholder: 'E.g. 2,000',
         internalCostTooltipTitle: 'Internal costs could be:',
         internalCostTooltipBody: 'implementation hours, training hours, IT hardware, IT software.',
@@ -659,7 +659,7 @@ function renderPlantContent() {
             tableHTML += `
                 <tr data-line-index="${index}">
                     <td style="font-weight: bold; color: #94a3b8;">${index + 1}</td>
-                    <td><input type="text" class="line-input" value="${line.name || ''}" onchange="updateLineName(${p}, ${index}, this.value)" placeholder="Lijn naam.."></td>
+                    <td><input type="text" class="line-input" value="${line.name || ''}" onchange="updateLineName(${p}, ${index}, this.value)" placeholder="${t('lineNamePlaceholder')}"></td>
                     <td>
                         <select class="line-select" onchange="plantData[${p}].lines[${index}].situation=this.value; calculate();">
                             <option value="blueUpgrade" ${line.situation === 'blueUpgrade' ? 'selected' : ''}>${t('situationBlue')}</option>
@@ -920,10 +920,6 @@ function renderCalcBreakdown(rows, totalAnnual) {
     container.innerHTML = html;
 }
 
-function calculateBreakEven(yearData) {
-    // Deze interne logische hulpfunctie blijft ongewijzigd
-}
-
 function calculateBreakEven(annualBenefit, fixedFee, totalRecurringCosts) {
     let yearData = [{ year: 0, cumulativeBenefit: 0, cumulativeCost: fixedFee }];
     let cumulativeBenefit = 0, cumulativeCost = fixedFee;
@@ -980,7 +976,6 @@ function exportPDF() {
         return;
     }
 
-    // --- 1. Vertaal alle statische labels in het PDF template ---
     document.querySelectorAll('#pdf-report-template [data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (translations[currentLang][key] !== undefined) {
@@ -988,7 +983,6 @@ function exportPDF() {
         }
     });
 
-    // --- 2. Vertaal dynamische variabelen ---
     const sectorKey = sectorElement.value;
     const sectorText = t('sector' + sectorKey.charAt(0).toUpperCase() + sectorKey.slice(1)) || sectorElement.options[sectorElement.selectedIndex].text;
     
@@ -1008,12 +1002,10 @@ function exportPDF() {
     const saveY3 = document.getElementById(selectedScenario + 'Year3').textContent;
     const breakEvenTime = document.getElementById('breakEvenYear').textContent;
 
-    // Datumnotatie op basis van taal
     const localeStr = currentLang === 'en' ? 'en-US' : 'nl-NL';
     const dateOpt = { year: 'numeric', month: 'long', day: 'numeric' };
     document.getElementById('pdf-current-date').textContent = new Date().toLocaleDateString(localeStr, dateOpt);
     
-    // Waarden injecteren
     document.getElementById('pdf-summary-sector').textContent = sectorText;
     document.getElementById('pdf-summary-plants').textContent = plantsLinesText;
 
@@ -1027,7 +1019,6 @@ function exportPDF() {
     document.getElementById('pdf-save-y3').textContent = saveY3;
     document.getElementById('pdf-save-be').textContent = breakEvenTime;
 
-    // Dynamische scenario-afhankelijke titels/labels in de PDF
     const savingsHeader = document.getElementById('pdf-savings-header');
     const y3Label = document.getElementById('pdf-y3-label');
     if (selectedScenario === 'aangepast') {
@@ -1039,7 +1030,6 @@ function exportPDF() {
         y3Label.textContent = t('pdfY3LabelPotential');
     }
 
-    // --- 3. Break-even live canvas omzetten naar image ---
     const liveCanvas = document.getElementById('breakEvenCanvas');
     const pdfGraphImage = document.getElementById('pdf-graph-image');
     if (liveCanvas && pdfGraphImage) {
@@ -1051,12 +1041,10 @@ function exportPDF() {
         pdfGraphNote.textContent = `${t('breakEvenNotePrefix')} ${t(selectedScenario)} ${t('breakEvenNoteSuffix')}`;
     }
 
-    // --- 4. Berekeningstabel klonen en vertalen ---
     const tableArea = document.getElementById('pdf-table-area');
     const oldTable = tableArea.querySelector('table');
     if (oldTable) oldTable.remove();
 
-    // Genereer een schone, vertaalde tabel direct vanuit JavaScript data
     const sourceTable = document.querySelector('.calc-breakdown-table');
     if (sourceTable) {
         const clonedTable = sourceTable.cloneNode(true);
@@ -1065,7 +1053,6 @@ function exportPDF() {
         clonedTable.style.marginTop = '15px';
         clonedTable.style.fontSize = '13px';
         
-        // Vertaal de headers in de gekloonde tabel handmatig
         const ths = clonedTable.querySelectorAll('thead th');
         if (ths.length >= 6) {
             ths[0].textContent = t('calcBreakdownLine');
@@ -1076,13 +1063,11 @@ function exportPDF() {
             ths[5].textContent = t('calcBreakdownAnnual');
         }
 
-        // Vertaal de totalen-rij footer
         const footerTd = clonedTable.querySelector('tfoot tr td');
         if (footerTd) {
             footerTd.textContent = t('calcBreakdownTotal');
         }
 
-        // Ploegen/Modellen in de rijen vertalen indien nodig
         clonedTable.querySelectorAll('tbody tr').forEach(row => {
             const modelTd = row.cells[4];
             if (modelTd) {
@@ -1090,7 +1075,7 @@ function exportPDF() {
                 if (text.includes('Vraag') || text.includes('Demand')) {
                     modelTd.textContent = t('modelDemand');
                 } else if (text.includes('Kosten') || text.includes('Cost')) {
-                    const pctMatch = text.match(/\(.*\)/); // Behouw percentage (bijv. 30%)
+                    const pctMatch = text.match(/\(.*\)/);
                     modelTd.textContent = t('modelCost') + (pctMatch ? ' ' + pctMatch[0] : '');
                 }
             }
