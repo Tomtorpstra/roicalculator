@@ -17,13 +17,10 @@ const translations = {
         sectorOil: 'Olie & Raffinaderij',
         currentSituationLabel: 'Huidige OEE Situatie',
         situationDefault: '-- Selecteer uw huidige situatie --',
-        
-        // NIEUWE LABELS NEDERLANDS
         situationNoOEE: 'Geen OEE software aanwezig',
         situationBlue: 'Upgrade van bestaande software',
         situationLabelNoOEE: 'Geen OEE software aanwezig',
         situationLabelBlue: 'Upgrade van bestaande software',
-        
         numPlantsLabel: 'Aantal Plants',
         outputLabel: 'Maximal output per uur',
         benchmarkNote: '(sector benchmark)',
@@ -158,9 +155,9 @@ const translations = {
         pdfExpectedImprov: 'Verwachte verbetering',
         pdfPotentialOee: 'Potentieel OEE',
         pdfInvestment: 'Investering',
-        pdfFixedCosts: 'One-time D4A costs',
-        pdfInternalCosts: 'One-time internal costs',
-        pdfVariableCosts: 'Annual recurring D4A costs',
+        pdfFixedCosts: 'Eenmalige D4A kosten',
+        pdfInternalCosts: 'Eenmalige interne kosten',
+        pdfVariableCosts: 'Jaarlijks terugkomende D4A kosten',
         pdfTotalCosts3yr: 'Totale kosten (3 jaar)',
         pdfNetBenefitExpected: 'Netto Voordeel (3 jaar, verwacht)',
         pdfPlantsLines: 'Plants & Lijnen',
@@ -200,13 +197,10 @@ const translations = {
         sectorOil: 'Oil & Refinery',
         currentSituationLabel: 'Current OEE Situation',
         situationDefault: '-- Select your current situation --',
-        
-        // NIEUWE LABELS ENGELS
         situationNoOEE: 'No OEE software in place',
         situationBlue: 'Upgrade of existing software',
         situationLabelNoOEE: 'No OEE software in place',
         situationLabelBlue: 'Upgrade of existing software',
-        
         numPlantsLabel: 'Number of Plants',
         outputLabel: 'Maximum output per hour',
         benchmarkNote: '(sector benchmark)',
@@ -410,7 +404,8 @@ function applyTranslations() {
 // CALCULATION MODAL
 // ==========================================
 function openCalcModal() {
-    document.getElementById('calcModal').open;
+    // GECORRIGEERD: opent nu correct de pop-up via classList
+    document.getElementById('calcModal').classList.add('open');
 }
 
 function closeCalcModal(event) {
